@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,37 +11,26 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class SpinButton extends Button{
 
 
-    public SpinButton(Rectangle bounds, World world, TiledMap map, int mapLayer) {
-        super(bounds, world, map, mapLayer);
+    private TextureRegion spinButtonTexture;
+
+    public SpinButton(PlayScreen playScreen, World world, float posX, float posY, float width, float height) {
+        super(playScreen, world, posX, posY, width, height);
+
+        setBounds(0, 0, width, height);
+        setRegion(playScreen.getAtlas().findRegion("spin"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setPosition(posX, posY);
     }
 
     @Override
-    public void defineButton(Rectangle bounds) {
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((bounds.getWidth() / 2)  / FallingMan.PPM, (bounds.getHeight() / 2)  / FallingMan.PPM);
-
-        bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / FallingMan.PPM, (bounds.getY() + bounds.getHeight() / 2) / FallingMan.PPM);
-
-        b2body = world.createBody(bdef);
-        fdef = new FixtureDef();
-        fdef.shape = shape;
-        fdef.filter.categoryBits = FallingMan.SPIN_BIT;
-        fdef.filter.maskBits = FallingMan.TOUCHED_POINT_BIT;
-        //fdef.isSensor = true;
-        b2body.createFixture(fdef).setUserData(this);
+    public void touched() {
+        setRegion(playScreen.getAtlas().findRegion("spin_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        clicked = true;
     }
 
-    @Override
-    public Body getB2body() {
-        return b2body;
-    }
-
-
+//, 448, 7936, 544, 192
 }

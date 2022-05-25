@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -58,7 +59,6 @@ public class Player extends Sprite {
     private boolean headJointsExist;
     private boolean removeHeadJointsAndButton;
     private RevoluteJoint headJoint;
-    private RopeJoint ropeHeadJoint;
 
     public Player(World world, PlayScreen playScreen) {
         super(playScreen.getAtlas().findRegion("player"));
@@ -127,8 +127,9 @@ public class Player extends Sprite {
             if(headJointsExist) {
                 world.destroyJoint(headJoint);
                 headJointsExist = false;
+                Gdx.app.log("kkk", "kkk");
             }
-            world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
+            //world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
             //world.destroyJoint(ropeHeadJoint);
             removeHeadJointsAndButton = false;
         }

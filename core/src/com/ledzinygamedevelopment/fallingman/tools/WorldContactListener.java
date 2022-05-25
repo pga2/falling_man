@@ -43,7 +43,7 @@ public class WorldContactListener implements ContactListener {
                     ((DeadMachine) fixA.getUserData()).touched();
                 }
                 break;
-            case FallingMan.TOUCHED_POINT_BIT | FallingMan.SPIN_BIT:
+            /*case FallingMan.TOUCHED_POINT_BIT | FallingMan.SPIN_BIT:
 
                 if(fixA.getFilterData().categoryBits == FallingMan.TOUCHED_POINT_BIT) {
                     Gdx.app.log("dead machine", "dasdsa");
@@ -56,7 +56,7 @@ public class WorldContactListener implements ContactListener {
                     ((SpinButton) fixA.getUserData()).removeCells();
                     player.setRemoveHeadJointsAndButton(true);
                 }
-                break;
+                break;*/
         }
     }
 

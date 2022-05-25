@@ -19,10 +19,12 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.Coin;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
@@ -30,6 +32,8 @@ import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
 import java.util.Random;
+
+import sun.security.provider.ConfigFile;
 
 public class PlayScreen implements Screen {
 
@@ -54,13 +58,9 @@ public class PlayScreen implements Screen {
     //all bodies from map
     private B2WorldCreator b2WorldCreator;
 
-    //touch sensor
-    private Body touchSensorKinematicBody;
-    private Fixture touchSensorKinematicFixture;
-    private Body touchSensorDynamicBody;
-    private Fixture touchSensorDynamicFixture;
-
     private  OneArmBandit oneArmBandit;
+    private SpinButton spinButton;
+    private Array<Button> buttons;
 
     public PlayScreen(FallingMan game) {
         atlas = new TextureAtlas("player.pack");
@@ -77,11 +77,14 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         b2WorldCreator = new B2WorldCreator(world, map);
-        createTouchSensor();
         //creating player
         player = new Player(world, this);
         oneArmBandit = new OneArmBandit(this, world);
         world.setContactListener(new WorldContactListener(player));
+
+        buttons = new Array<>();
+        spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, 7936 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
+        buttons.add(spinButton);
         //gameCam.zoom = 5;
     }
 
@@ -109,19 +112,27 @@ public class PlayScreen implements Screen {
         //mobile
         if(Gdx.input.isTouched()) {
 
-            // setting touched point to collide with buttons
-            setCategoryTouchSensorFilter(FallingMan.TOUCHED_POINT_BIT);
+            // check if buttons click
             Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            touchSensorKinematicBody.setTransform(mouseVector, 0);
-            touchSensorDynamicBody.setTransform(mouseVector, 0);
+            for (Button button : buttons) {
+                if(button.mouseOver(mouseVector)) {
+                    button.touched();
+                }
+            }
+
             //moving player
             if(Gdx.input.getX() < Gdx.graphics.getWidth() / 2f) {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.5f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             } else {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.5f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             }
-        } else if(touchSensorKinematicFixture.getFilterData().categoryBits != FallingMan.UNTOUCHED_POINT_BIT){ // if screen untouched then set touch sensor filter to not collide with buttons
-            setCategoryTouchSensorFilter(FallingMan.UNTOUCHED_POINT_BIT);
+        } else {
+            for(Button button : buttons) {
+                if(button.isClicked()) {
+                    player.setRemoveHeadJointsAndButton(true);
+                    removeButton(button);
+                }
+            }
         }
     }
 
@@ -159,6 +170,9 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
         oneArmBandit.draw(game.batch);
+        for(Button button : buttons) {
+            button.draw(game.batch);
+        }
         game.batch.end();
     }
 
@@ -206,60 +220,11 @@ public class PlayScreen implements Screen {
         player.updateBodyParts();
     }
 
-    private void createTouchSensor() {
-
-        BodyDef bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        touchSensorDynamicBody = world.createBody(bdef);
-
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(10 / FallingMan.PPM);
-
-        fdef.shape = shape;
-        //fdef.isSensor = true;
-        fdef.filter.categoryBits = FallingMan.UNTOUCHED_POINT_BIT;
-        fdef.filter.maskBits = FallingMan.SPIN_BIT;
-        touchSensorDynamicFixture = touchSensorDynamicBody.createFixture(fdef);
-
-        bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.KinematicBody;
-        touchSensorKinematicBody = world.createBody(bdef);
-
-        fdef = new FixtureDef();
-        shape.setRadius(10 / 100f);
-        fdef.shape = shape;
-        fdef.isSensor = true;
-        fdef.filter.categoryBits = FallingMan.UNTOUCHED_POINT_BIT;
-        fdef.filter.maskBits = FallingMan.SPIN_BIT;
-        touchSensorKinematicFixture = touchSensorKinematicBody.createFixture(fdef);
-
-
-        RopeJointDef ropeJointDef = new RopeJointDef();
-        ropeJointDef.localAnchorA.x = 0;
-        ropeJointDef.localAnchorB.x = 0;
-        ropeJointDef.localAnchorA.y = 0;
-        ropeJointDef.localAnchorB.y = 0;
-        ropeJointDef.bodyA = touchSensorDynamicBody;
-        ropeJointDef.bodyB = touchSensorKinematicBody;
-        ropeJointDef.maxLength = 1 / FallingMan.PPM;
-        world.createJoint(ropeJointDef);
-
-    }
-
-    public void setCategoryTouchSensorFilter(short filterBit) {
-        Filter filter = new Filter();
-        filter.categoryBits = filterBit;
-        filter.maskBits = FallingMan.SPIN_BIT;
-        touchSensorKinematicFixture.setFilterData(filter);
-
-        filter = new Filter();
-        filter.categoryBits = filterBit;
-        filter.maskBits = FallingMan.SPIN_BIT;
-        touchSensorDynamicFixture.setFilterData(filter);
-    }
-
     public B2WorldCreator getB2WorldCreator() {
         return b2WorldCreator;
+    }
+
+    public void removeButton(Button button) {
+        buttons.removeValue(button, false);
     }
 }

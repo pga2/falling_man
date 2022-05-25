@@ -59,11 +59,11 @@ public class B2WorldCreator {
             b2bodies.add(new DeadMachine(world, map, rect, 3).getBody());
         }
 
-        //one-armed bandit spin button
+        /*//one-armed bandit spin button
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             button = new SpinButton(rect, world, map, 1);
-        }
+        }*/
     }
 
     public Array<Body> getB2bodies() {
