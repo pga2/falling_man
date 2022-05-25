@@ -30,8 +30,8 @@ public class Hand extends PlayerBodyPart {
             shape.set(shapeVertices);
 
         fdef.shape = shape;
-        fdef.filter.categoryBits = FallingMan.HAND_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.FORE_ARM_BIT;
+        fdef.filter.categoryBits = FallingMan.PLAYER_HAND_BIT;
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
 }

@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects;
+package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;

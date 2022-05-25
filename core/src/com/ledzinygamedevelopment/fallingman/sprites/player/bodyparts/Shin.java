@@ -32,9 +32,9 @@ public class Shin extends PlayerBodyPart {
         shape.set(shapeVertices);
 
         fdef.shape = shape;
-        fdef.filter.categoryBits = FallingMan.SHIN_BIT;
+        fdef.filter.categoryBits = FallingMan.PLAYER_SHIN_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT
-                | FallingMan.PLAYER_THIGH_BIT | FallingMan.FOOT_BIT;
+                | FallingMan.PLAYER_THIGH_BIT | FallingMan.PLAYER_FOOT_BIT;
         b2body.createFixture(fdef).setUserData(this);
 
     }

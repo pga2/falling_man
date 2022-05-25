@@ -1,8 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,12 +11,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.Coin;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.DeadMachine;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Coin;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-
-import java.util.ArrayList;
 
 public class B2WorldCreator {
 

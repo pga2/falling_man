@@ -4,15 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class OneArmBandit extends Sprite {
-    private TextureRegion playerHeadTexture;
+    private TextureRegion oneArmedBanditTexture;
     private PlayScreen playScreen;
     private World world;
     private BodyDef bdef;
@@ -23,14 +21,15 @@ public class OneArmBandit extends Sprite {
         super(playScreen.getAtlas().findRegion("one-armed_bandit"));
         this.playScreen = playScreen;
         this.world = world;
-        playerHeadTexture = new TextureRegion(getTexture(), 0, 0, 1056, 416);
+        oneArmedBanditTexture = new TextureRegion(getTexture(), 1, 69, 1056, 416);
         setBounds(0, 0, 1056 / FallingMan.PPM, 416 / FallingMan.PPM);
-        setRegion(playerHeadTexture);
-        setOrigin(getWidth() / 2, getHeight() / 2);
-        defineBody();
+        setRegion(oneArmedBanditTexture);
+        setPosition(192 / FallingMan.PPM, 7488 / FallingMan.PPM);
+        //setOrigin(getWidth() / 2, getHeight() / 2);
+        //defineBody();
     }
 
-    public void defineBody() {
+    /*public void defineBody() {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(1056  / FallingMan.PPM / 2, 416  / FallingMan.PPM / 2);
 
@@ -50,5 +49,5 @@ public class OneArmBandit extends Sprite {
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-    }
+    }*/
 }

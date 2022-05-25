@@ -19,20 +19,17 @@ public class FallingMan extends Game {
 	public static final int PLAYER_STARTING_Y_POINT = 8640;
 
 	public static final short DEFAULT_BIT = 1;
-	public static final short PLAYER_HEAD_BIT = 2;
-	public static final short PLAYER_BELLY_BIT = 4;
-	public static final short PLAYER_ARM_BIT = 8;
-	public static final short PLAYER_THIGH_BIT = 16;
-	public static final short UNTOUCHED_POINT_BIT = 32;
-	public static final short COIN_BIT = 64;
-	public static final short DEAD_MACHINE_BIT = 128;
-	public static final short DESTROYED_BIT = 256;
-	public static final short FORE_ARM_BIT = 512;
-	public static final short SHIN_BIT = 1024;
-	public static final short HAND_BIT = 2048;
-	public static final short FOOT_BIT = 4096;
-	public static final short SPIN_BIT = 8192;
-	public static final short TOUCHED_POINT_BIT = 16348;
+	public static final short COIN_BIT = 2;
+	public static final short DEAD_MACHINE_BIT = 4;
+	public static final short DESTROYED_BIT = 8;
+	public static final short PLAYER_HEAD_BIT = 16;
+	public static final short PLAYER_BELLY_BIT = 32;
+	public static final short PLAYER_ARM_BIT = 64;
+	public static final short PLAYER_THIGH_BIT = 128;
+	public static final short PLAYER_FORE_ARM_BIT = 256;
+	public static final short PLAYER_SHIN_BIT = 512;
+	public static final short PLAYER_HAND_BIT = 1024;
+	public static final short PLAYER_FOOT_BIT = 2048;
 
 	@Override
 	public void create () {

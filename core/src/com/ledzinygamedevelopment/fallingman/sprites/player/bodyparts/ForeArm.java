@@ -32,9 +32,9 @@ public class ForeArm extends PlayerBodyPart {
         shape.set(shapeVertices);
 
         fdef.shape = shape;
-        fdef.filter.categoryBits = FallingMan.FORE_ARM_BIT;
+        fdef.filter.categoryBits = FallingMan.PLAYER_FORE_ARM_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT
-                | FallingMan.PLAYER_ARM_BIT | FallingMan.HAND_BIT;
+                | FallingMan.PLAYER_ARM_BIT | FallingMan.PLAYER_HAND_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
 }

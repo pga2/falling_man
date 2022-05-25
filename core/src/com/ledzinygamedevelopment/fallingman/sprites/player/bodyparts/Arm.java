@@ -36,7 +36,7 @@ public class Arm extends PlayerBodyPart {
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_ARM_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT
-                | FallingMan.PLAYER_BELLY_BIT | FallingMan.FORE_ARM_BIT;
+                | FallingMan.PLAYER_BELLY_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
 }
