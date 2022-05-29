@@ -24,18 +24,18 @@ public class Arm extends PlayerBodyPart {
         FixtureDef fdef = new FixtureDef();
         fdef.density = 0.3f;
         fdef.friction = 0.01f;
-        fdef.restitution = 0.1f;
+        fdef.restitution = 0.3f;
 
         PolygonShape shape = new PolygonShape();
-        float[] shapeVertices = {-8 / FallingMan.PPM, 0 / FallingMan.PPM, 8 / FallingMan.PPM, 0 / FallingMan.PPM,
-                -8 / FallingMan.PPM, -70 / FallingMan.PPM,
-                0, -90 / FallingMan.PPM,
-                8 / FallingMan.PPM, -70 / FallingMan.PPM};
+        float[] shapeVertices = {-8 / FallingMan.PPM, 45 / FallingMan.PPM, 8 / FallingMan.PPM, 45 / FallingMan.PPM,
+                -8 / FallingMan.PPM, -25 / FallingMan.PPM,
+                0, -45 / FallingMan.PPM,
+                8 / FallingMan.PPM, -25 / FallingMan.PPM};
         shape.set(shapeVertices);
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_ARM_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT
                 | FallingMan.PLAYER_BELLY_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }

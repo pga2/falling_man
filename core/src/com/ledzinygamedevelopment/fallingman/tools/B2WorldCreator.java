@@ -11,25 +11,29 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Spins;
 
 public class B2WorldCreator {
 
     private SpinButton button;
     private Array<Body> b2bodies;
+    private Array<InteractiveTileObject> interactiveTileObjects;
 
-    public B2WorldCreator(World world, TiledMap map) {
+    public B2WorldCreator(PlayScreen playScreen, World world, TiledMap map) {
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
         Body body;
         b2bodies = new Array<>();
-
+        interactiveTileObjects = new Array<>();
 
         //walls
-        for(MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -41,17 +45,26 @@ public class B2WorldCreator {
             b2bodies.add(body);
         }
         //coins
-        for(MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            b2bodies.add(new Coin(world, map, rect, 2).getBody());
+            InteractiveTileObject coin = new Coin(world, map, rect, 2);
+            b2bodies.add(coin.getBody());
+            interactiveTileObjects.add(coin);
         }
 
         //deadly things
-        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveTileObject deadMachine = new DeadMachine(world, map, rect, 3);
+            b2bodies.add(deadMachine.getBody());
+            interactiveTileObjects.add(deadMachine);
+        }
 
-            b2bodies.add(new DeadMachine(world, map, rect, 3).getBody());
+        for(MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveTileObject spins = new Spins(playScreen, world, map, rect, 3);
+            b2bodies.add(spins.getBody());
+            interactiveTileObjects.add(spins);
         }
 
         /*//one-armed bandit spin button
@@ -67,5 +80,9 @@ public class B2WorldCreator {
 
     public SpinButton getButton() {
         return button;
+    }
+
+    public Array<InteractiveTileObject> getInteractiveTileObjects() {
+        return interactiveTileObjects;
     }
 }

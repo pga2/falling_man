@@ -23,23 +23,24 @@ public class Foot extends PlayerBodyPart {
         FixtureDef fdef = new FixtureDef();
         fdef.density = 0.2f;
         fdef.friction = 0.01f;
-        fdef.restitution = 0.1f;
+        fdef.restitution = 0.3f;
 
         PolygonShape shape = new PolygonShape();
         if(sideOfBodyPart == 0) {
-            float[] shapeVertices = {-12 / FallingMan.PPM, 0 / FallingMan.PPM, 22 / FallingMan.PPM, 0 / FallingMan.PPM,
-                    -12 / FallingMan.PPM, -14 / FallingMan.PPM, 22 / FallingMan.PPM, -14 / FallingMan.PPM};
+            float[] shapeVertices = {-18 / FallingMan.PPM, 7 / FallingMan.PPM, 18 / FallingMan.PPM, 8 / FallingMan.PPM,
+                    -18 / FallingMan.PPM, -7 / FallingMan.PPM, 18 / FallingMan.PPM, -7 / FallingMan.PPM};
             shape.set(shapeVertices);
         } else {
-            float[] shapeVertices = {-22 / FallingMan.PPM, 0 / FallingMan.PPM, 12 / FallingMan.PPM, 0 / FallingMan.PPM,
-                    -22 / FallingMan.PPM, -14 / FallingMan.PPM, 12 / FallingMan.PPM, -14 / FallingMan.PPM};
+            float[] shapeVertices = {-18 / FallingMan.PPM, 8 / FallingMan.PPM, 18 / FallingMan.PPM, 7 / FallingMan.PPM,
+                    -18 / FallingMan.PPM, -7 / FallingMan.PPM, 18 / FallingMan.PPM, -7 / FallingMan.PPM};
             shape.set(shapeVertices);
         }
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_FOOT_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT
                  | FallingMan.PLAYER_SHIN_BIT;
         b2body.createFixture(fdef).setUserData(this);
+        b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y, 3.14f);
     }
 }

@@ -3,31 +3,94 @@ player.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-one-armed_bandit
+one_armed_bandit
   rotate: false
-  xy: 1, 69
-  size: 1056, 416
-  orig: 1056, 416
+  xy: 1, 935
+  size: 1056, 1040
+  orig: 1056, 1040
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 1, 773
+  size: 800, 160
+  orig: 800, 160
+  offset: 0, 0
+  index: -1
+roll0
+  rotate: false
+  xy: 1059, 1399
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll1
+  rotate: false
+  xy: 1, 195
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll2
+  rotate: false
+  xy: 1253, 1399
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll3
+  rotate: false
+  xy: 195, 195
+  size: 192, 576
+  orig: 192, 576
   offset: 0, 0
   index: -1
 spin
   rotate: false
-  xy: 1059, 293
+  xy: 1447, 1783
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 spin_clicked
   rotate: false
-  xy: 1059, 99
+  xy: 1447, 1589
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
-player
+smallRoll0
   rotate: false
-  xy: 1059, 1
-  size: 480, 96
-  orig: 480, 96
+  xy: 1059, 1205
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll1
+  rotate: false
+  xy: 1, 1
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll2
+  rotate: false
+  xy: 389, 579
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll3
+  rotate: false
+  xy: 1059, 1011
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+rock
+  rotate: false
+  xy: 803, 837
+  size: 96, 96
+  orig: 96, 96
   offset: 0, 0
   index: -1

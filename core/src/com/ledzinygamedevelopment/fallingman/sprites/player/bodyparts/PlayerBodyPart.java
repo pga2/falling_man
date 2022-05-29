@@ -20,13 +20,15 @@ public abstract class PlayerBodyPart extends Sprite {
         this.world = world;
         this.sideOfBodyPart = sideOfBodyPart;
         defineBodyPart();
-        bodyPartTexture = new TextureRegion(getTexture(), 96 * texturePos, 0, 96, 96);
-        setBounds(0, 0, 96 / FallingMan.PPM, 96 / FallingMan.PPM);
+        bodyPartTexture = new TextureRegion(getTexture(), 1 + 160 * texturePos, 773, 160, 160);
+        setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
+        setOrigin(getWidth() / 2, getHeight() / 2);
     }
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setRotation((float) Math.toDegrees(b2body.getAngle()));
     }
 
     public abstract void defineBodyPart();

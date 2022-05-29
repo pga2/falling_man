@@ -17,14 +17,14 @@ public class OneArmBandit extends Sprite {
     private Body b2body;
     private FixtureDef fdef;
 
-    public OneArmBandit(PlayScreen playScreen, World world) {
-        super(playScreen.getAtlas().findRegion("one-armed_bandit"));
+    public OneArmBandit(PlayScreen playScreen, World world, float posY) {
+        super(playScreen.getAtlas().findRegion("one_armed_bandit"));
         this.playScreen = playScreen;
         this.world = world;
-        oneArmedBanditTexture = new TextureRegion(getTexture(), 1, 69, 1056, 416);
-        setBounds(0, 0, 1056 / FallingMan.PPM, 416 / FallingMan.PPM);
+        oneArmedBanditTexture = new TextureRegion(getTexture(), 1, 935, 1056, 1040);
+        setBounds(0, 0, 1056 / FallingMan.PPM, 1040 / FallingMan.PPM);
         setRegion(oneArmedBanditTexture);
-        setPosition(192 / FallingMan.PPM, 7488 / FallingMan.PPM);
+        setPosition(192 / FallingMan.PPM, posY);
         //setOrigin(getWidth() / 2, getHeight() / 2);
         //defineBody();
     }

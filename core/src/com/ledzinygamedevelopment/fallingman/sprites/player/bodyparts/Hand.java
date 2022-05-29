@@ -22,16 +22,16 @@ public class Hand extends PlayerBodyPart {
         FixtureDef fdef = new FixtureDef();
         fdef.density = 0.2f;
         fdef.friction = 0.01f;
-        fdef.restitution = 0.1f;
+        fdef.restitution = 0.3f;
 
         PolygonShape shape = new PolygonShape();
-            float[] shapeVertices = {-12 / FallingMan.PPM, 0 / FallingMan.PPM, 12 / FallingMan.PPM, 0 / FallingMan.PPM,
-                    -12 / FallingMan.PPM, -14 / FallingMan.PPM, 12 / FallingMan.PPM, -14 / FallingMan.PPM};
+            float[] shapeVertices = {-12 / FallingMan.PPM, 7 / FallingMan.PPM, 12 / FallingMan.PPM, 7 / FallingMan.PPM,
+                    -12 / FallingMan.PPM, -7 / FallingMan.PPM, 12 / FallingMan.PPM, -7 / FallingMan.PPM};
             shape.set(shapeVertices);
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_HAND_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.COIN_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
 }

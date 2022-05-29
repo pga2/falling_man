@@ -20,9 +20,6 @@ import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public abstract class Button extends Sprite {
 
-    protected BodyDef bdef;
-    protected Body b2body;
-    protected FixtureDef fdef;
     protected PlayScreen playScreen;
     protected World world;
     protected float posX;
@@ -30,6 +27,7 @@ public abstract class Button extends Sprite {
     protected float width;
     protected float height;
     protected boolean clicked;
+    protected boolean locked;
 
     public Button(PlayScreen playScreen, World world, float posX, float posY, float width, float height) {
         this.playScreen = playScreen;
@@ -39,9 +37,12 @@ public abstract class Button extends Sprite {
         this.width = width;
         this.height = height;
         clicked = false;
+        locked = false;
     }
 
     public abstract void touched();
+
+    public abstract void notTouched();
 
     // checking if mouse position equals button position
     public boolean mouseOver(Vector2 mousePosition) {
@@ -54,5 +55,17 @@ public abstract class Button extends Sprite {
 
     public boolean isClicked() {
         return clicked;
+    }
+
+    public void setClicked(boolean clicked) {
+        this.clicked = clicked;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

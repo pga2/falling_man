@@ -11,7 +11,7 @@ public class Coin extends InteractiveTileObject{
     public Coin(World world, TiledMap map, Rectangle bounds, int mapLayer) {
         super(world, map, bounds, mapLayer);
         fixture.setUserData(this);
-        setCategoryFilter(FallingMan.COIN_BIT);
+        setCategoryFilter(FallingMan.INTERACTIVE_TILE_OBJECT_BIT);
     }
 
     @Override

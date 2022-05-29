@@ -19,7 +19,7 @@ public class FallingMan extends Game {
 	public static final int PLAYER_STARTING_Y_POINT = 8640;
 
 	public static final short DEFAULT_BIT = 1;
-	public static final short COIN_BIT = 2;
+	public static final short INTERACTIVE_TILE_OBJECT_BIT = 2;
 	public static final short DEAD_MACHINE_BIT = 4;
 	public static final short DESTROYED_BIT = 8;
 	public static final short PLAYER_HEAD_BIT = 16;
