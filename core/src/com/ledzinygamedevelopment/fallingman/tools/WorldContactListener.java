@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
@@ -14,10 +15,12 @@ import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 public class WorldContactListener implements ContactListener {
 
     private Player player;
+    private PlayScreen playScreen;
 
-    public WorldContactListener(Player player) {
+    public WorldContactListener(Player player, PlayScreen playScreen) {
 
         this.player = player;
+        this.playScreen = playScreen;
     }
 
     @Override
@@ -91,20 +94,17 @@ public class WorldContactListener implements ContactListener {
                     ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
                 }
                 break;
-            /*case FallingMan.TOUCHED_POINT_BIT | FallingMan.SPIN_BIT:
+            case FallingMan.PLAYER_HEAD_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_FOOT_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_BELLY_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_ARM_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_HAND_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_THIGH_BIT | FallingMan.ROCK_BIT:
+            case FallingMan.PLAYER_SHIN_BIT | FallingMan.ROCK_BIT:
+                playScreen.setGameOver(true);
+                break;
 
-                if(fixA.getFilterData().categoryBits == FallingMan.TOUCHED_POINT_BIT) {
-                    Gdx.app.log("dead machine", "dasdsa");
-
-                    ((SpinButton) fixB.getUserData()).removeCells();
-                    player.setRemoveHeadJointsAndButton(true);
-                } else {
-                    Gdx.app.log("dead machine", "dasdsa");
-
-                    ((SpinButton) fixA.getUserData()).removeCells();
-                    player.setRemoveHeadJointsAndButton(true);
-                }
-                break;*/
         }
     }
 

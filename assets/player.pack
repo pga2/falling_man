@@ -87,10 +87,31 @@ smallRoll3
   orig: 192, 192
   offset: 0, 0
   index: -1
+rock160
+  rotate: false
+  xy: 803, 773
+  size: 160, 160
+  orig: 160, 160
+  offset: 0, 0
+  index: -1
 rock
   rotate: false
-  xy: 803, 837
+  xy: 1447, 1491
   size: 96, 96
   orig: 96, 96
+  offset: 0, 0
+  index: -1
+rock96
+  rotate: false
+  xy: 1447, 1491
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+rock48
+  rotate: false
+  xy: 1993, 1927
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1

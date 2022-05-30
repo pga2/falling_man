@@ -22,7 +22,7 @@ public class Hand extends PlayerBodyPart {
         FixtureDef fdef = new FixtureDef();
         fdef.density = 0.2f;
         fdef.friction = 0.01f;
-        fdef.restitution = 0.3f;
+        fdef.restitution = 1;
 
         PolygonShape shape = new PolygonShape();
             float[] shapeVertices = {-12 / FallingMan.PPM, 7 / FallingMan.PPM, 12 / FallingMan.PPM, 7 / FallingMan.PPM,
@@ -31,7 +31,8 @@ public class Hand extends PlayerBodyPart {
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_HAND_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT;
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT;
         b2body.createFixture(fdef).setUserData(this);
+        b2bodies.add(b2body);
     }
 }

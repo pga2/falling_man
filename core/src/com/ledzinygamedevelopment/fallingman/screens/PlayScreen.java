@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.scenes.HUD;
+import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
@@ -28,12 +30,12 @@ import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBody
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class PlayScreen implements Screen {
 
+    private HUD hud;
     private FallingMan game;
     private TextureAtlas atlas;
 
@@ -51,6 +53,7 @@ public class PlayScreen implements Screen {
 
     //player
     private Player player;
+    private boolean gameOver;
 
     //all bodies from map
     private B2WorldCreator b2WorldCreator;
@@ -65,7 +68,15 @@ public class PlayScreen implements Screen {
     private boolean winOneArmedBandit;
     private float winOneArmedBanditTime;
     private boolean winOneArmedBanditScaleUp;
-    private boolean temp;
+    private boolean spinState;
+    private int numberOfSpins;
+    private float loseOneArmedBanditEndTime;
+    private boolean loseOneArmedBandit;
+
+    //Rocks falling from sky
+    private Array<Rock> rocks;
+
+    private LinkedList<Float> allFPSData;
 
     public PlayScreen(FallingMan game) {
         atlas = new TextureAtlas("player.pack");
@@ -84,15 +95,26 @@ public class PlayScreen implements Screen {
         b2WorldCreator = new B2WorldCreator(this, world, map);
         //creating player
         player = new Player(world, this);
-        world.setContactListener(new WorldContactListener(player));
+        gameOver = false;
+        world.setContactListener(new WorldContactListener(player, this));
 
         //createOneArmedBanditObjects();
         rolls = new Array<>();
         oneArmBandits = new Array<>();
         buttons = new Array<>();
         smallRolls = new Array<>();
+        spinState = false;
+        loseOneArmedBanditEndTime = 0;
+        loseOneArmedBandit = false;
+        //Rocks falling from sky
+        rocks = new Array<>();
+        for (int i = 0; i < 200; i++) {
+            rocks.add(new Rock(this, world));
+        }
+        allFPSData = new LinkedList<>();
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
         //gameCam.zoom = 5;
+        hud = new HUD(game.batch);
     }
 
     public TextureAtlas getAtlas() {
@@ -125,7 +147,6 @@ public class PlayScreen implements Screen {
                 if(button.mouseOver(mouseVector) && !button.isLocked()) {
                     button.touched();
                     button.setClicked(true);
-                    temp = true;
                 }
             }
             System.out.println(buttons.size);
@@ -164,6 +185,7 @@ public class PlayScreen implements Screen {
         for(InteractiveTileObject interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
             if (interactiveTileObject.isTouched()) {
                 interactiveTileObject.touched();
+                interactiveTileObject.setTouched(false);
             }
         }
         if(startRolling) {
@@ -171,16 +193,31 @@ public class PlayScreen implements Screen {
             startRolling(dt);
         } else if(winOneArmedBandit) {
             winOneArmedBandit(dt);
+        } else if (loseOneArmedBandit) {
+            loseOneArmedBanditEndTime += dt;
+            if(loseOneArmedBanditEndTime > 0.5f) {
+                removeOneArmedBanditbundle();
+                loseOneArmedBanditEndTime = 0;
+                loseOneArmedBandit = false;
+            }
         }
 
 
 
         player.update(dt);
+        hud.update(dt, player.b2body.getPosition().y);
+
+        Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
+        for (Rock rock : rocks) {
+            rock.update(dt, playerPos, spinState);
+        }
+
         //oneArmBandit.update(dt);
         gameCam.position.y = player.b2body.getPosition().y;
 
         gameCam.update();
         renderer.setView(gameCam);
+
     }
 
     @Override
@@ -195,11 +232,14 @@ public class PlayScreen implements Screen {
         renderer.render();
 
         //render box2d debug renderer
-        b2dr.render(world, gameCam.combined);
+        //b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        for (Rock rock : rocks) {
+            rock.draw(game.batch);
+        }
         for(PlayerBodyPart bodyPart : player.getBodyParts()) {
             bodyPart.draw(game.batch);
         }
@@ -217,6 +257,20 @@ public class PlayScreen implements Screen {
             button.draw(game.batch);
         }
         game.batch.end();
+        game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
+
+        if(gameOver) {
+            dispose();
+            game.setScreen(new PlayScreen(game));
+        }
+        Gdx.app.log("FPS: ", String.valueOf(1 / delta));
+        allFPSData.add(1 / delta);
+        Long allFps = 0l;
+        for(Float integer : allFPSData) {
+            allFps += integer.longValue();
+        }
+        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));
     }
 
     @Override
@@ -260,7 +314,14 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
 
         //transforming player position to new map
+        Vector2 playerPosPrevious = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
         player.updateBodyParts();
+
+        for(Rock rock : rocks) {
+            rock.generateMapRockUpdate(playerPosPrevious);
+        }
+        hud.setPreviousDist(hud.getPreviousDist() + hud.getDistance());
+        hud.setDistance(0);
     }
 
     public void startRolling(float dt) {
@@ -298,11 +359,18 @@ public class PlayScreen implements Screen {
                                 smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, player.b2body.getPosition().y - 1040 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                 smallRolls.add(new OnePartRoll(this, 950 / FallingMan.PPM, player.b2body.getPosition().y - 1040 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                 rolls = new Array<>();
+                                hud.setGold(hud.getGold() + new Random().nextInt(4000) + 8000);
                             } else {
                                 spinButton.setLocked(false);
+                                if(--numberOfSpins <= 0) {
+                                    loseOneArmedBandit = true;
+                                    removeButton(spinButton);
+                                }
                             }
                             rollingTime = 0;
                             startRolling = false;
+
+
                         }
                         roll.setRollingCurrently(false);
                     }
@@ -315,10 +383,7 @@ public class PlayScreen implements Screen {
     public void winOneArmedBandit(float dt) {
         for (OnePartRoll smallRoll : smallRolls) {
             if(winOneArmedBanditTime > 10) {
-                winOneArmedBanditTime = 0;
-                oneArmBandits = new Array<>();
-                player.setRemoveHeadJointsAndButton(true);
-                smallRolls = new Array<>();
+                removeOneArmedBanditbundle();
             } else {
                 if (smallRoll.isWinOneArmedBanditScaleUp()) {
                     smallRoll.setScale(smallRoll.getScaleX() + 0.02f);
@@ -334,6 +399,16 @@ public class PlayScreen implements Screen {
                 winOneArmedBanditTime += dt;
             }
         }
+    }
+
+    public void removeOneArmedBanditbundle() {
+        winOneArmedBanditTime = 0;
+        oneArmBandits = new Array<>();
+        player.setRemoveHeadJointsAndButton(true);
+        smallRolls = new Array<>();
+        rolls = new Array<>();
+        spinState = false;
+        startRolling = false;
     }
 
     public void createOneArmedBanditObjects() {
@@ -369,5 +444,25 @@ public class PlayScreen implements Screen {
 
     public void setStartRolling(boolean startRolling) {
         this.startRolling = startRolling;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setSpinState(boolean spinState) {
+        this.spinState = spinState;
+    }
+
+    public HUD getHud() {
+        return hud;
+    }
+
+    public void setNumberOfSpins(int numberOfSpins) {
+        this.numberOfSpins = numberOfSpins;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }

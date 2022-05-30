@@ -74,7 +74,7 @@ public class Player extends Sprite {
         createBodyParts();
 
         for(PlayerBodyPart sprite : bodyParts) {
-            bodyPartsAll.add(sprite.getB2body());
+            bodyPartsAll.addAll(sprite.getB2bodies());
         }
         headJointsExist = false;
         removeHeadJointsAndButton = false;
@@ -129,7 +129,6 @@ public class Player extends Sprite {
             if(headJointsExist) {
                 world.destroyJoint(headJoint);
                 headJointsExist = false;
-                Gdx.app.log("kkk", "kkk");
             }
             //world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
             //world.destroyJoint(ropeHeadJoint);
@@ -170,7 +169,7 @@ public class Player extends Sprite {
         fdef.friction = 0.01f;
         fdef.restitution = 0.3f;
         fdef.filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.DEFAULT_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER
                 | FallingMan.PLAYER_BELLY_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
@@ -202,17 +201,12 @@ public class Player extends Sprite {
         //transforming player position to new map (unvisible body parts)
         float playerHeadPreviusX = b2body.getPosition().x;
         float playerHeadPreviusY = b2body.getPosition().y;
-        b2body.setTransform(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM, b2body.getAngle());
+        b2body.setTransform(b2body.getPosition().x, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM, b2body.getAngle());
         for(Body body : bodyPartsAll) {
 
             //calculating distance between body part and player
-            float xDiff;
             float yDiff;
-            if(body.getPosition().x < playerHeadPreviusX) {
-                xDiff = -Math.abs(Math.abs(body.getPosition().x) - Math.abs(playerHeadPreviusX));
-            } else {
-                xDiff = Math.abs(Math.abs(body.getPosition().x) - Math.abs(playerHeadPreviusX));
-            }
+
             if(body.getPosition().y < playerHeadPreviusY) {
                 yDiff = -Math.abs(Math.abs(body.getPosition().y) - Math.abs(playerHeadPreviusY));
             } else {
@@ -223,7 +217,7 @@ public class Player extends Sprite {
             float previosBodyAngle = b2body.getAngle();
 
             //Teleporting body part
-            body.setTransform(body.getPosition().x + xDiff, 8640 / FallingMan.PPM + yDiff, previosBodyAngle);
+            body.setTransform(body.getPosition().x, 8640 / FallingMan.PPM + yDiff, body.getAngle());
 
             //checking pos o body part, if out of the walls, then transforming to pos inside walls
             if(body.getPosition().x < 0) {
@@ -348,6 +342,10 @@ public class Player extends Sprite {
 
     public void setRemoveHeadJointsAndButton(boolean removeHeadJointsAndButton) {
         this.removeHeadJointsAndButton = removeHeadJointsAndButton;
+    }
+
+    public Array<Body> getBodyPartsAll() {
+        return bodyPartsAll;
     }
 }
 

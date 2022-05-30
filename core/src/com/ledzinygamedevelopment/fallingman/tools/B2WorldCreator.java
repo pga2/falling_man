@@ -41,26 +41,41 @@ public class B2WorldCreator {
             body = world.createBody(bdef);
             shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
             fdef.shape = shape;
+            //
+            body.createFixture(fdef);
+            b2bodies.add(body);
+        }
+
+        //walls inside tower
+        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / FallingMan.PPM, (rect.getY() + rect.getHeight() / 2) / FallingMan.PPM);
+            body = world.createBody(bdef);
+            shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
+            fdef.shape = shape;
+            fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
             body.createFixture(fdef);
             b2bodies.add(body);
         }
         //coins
-        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveTileObject coin = new Coin(world, map, rect, 2);
+            InteractiveTileObject coin = new Coin(world, map, rect, 2, playScreen);
             b2bodies.add(coin.getBody());
             interactiveTileObjects.add(coin);
         }
 
         //deadly things
-        for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             InteractiveTileObject deadMachine = new DeadMachine(world, map, rect, 3);
             b2bodies.add(deadMachine.getBody());
             interactiveTileObjects.add(deadMachine);
         }
 
-        for(MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
+        for(MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             InteractiveTileObject spins = new Spins(playScreen, world, map, rect, 3);
             b2bodies.add(spins.getBody());

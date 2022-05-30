@@ -24,6 +24,14 @@ public class Spins extends InteractiveTileObject{
 
     @Override
     public void touched() {
+        switch (getCells().size) {
+            case 4:
+                playScreen.setNumberOfSpins(1);
+                break;
+            case 9:
+                playScreen.setNumberOfSpins(3);
+                break;
+        }
         for(TiledMapTileLayer.Cell cell : getCells()) {
             try {
 
@@ -34,6 +42,7 @@ public class Spins extends InteractiveTileObject{
         }
         playScreen.createOneArmedBanditObjects();
         setCategoryFilter(FallingMan.DESTROYED_BIT);
+        playScreen.setSpinState(true);
         touched = false;
     }
 }

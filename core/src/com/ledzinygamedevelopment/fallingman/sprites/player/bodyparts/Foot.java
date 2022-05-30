@@ -23,7 +23,7 @@ public class Foot extends PlayerBodyPart {
         FixtureDef fdef = new FixtureDef();
         fdef.density = 0.2f;
         fdef.friction = 0.01f;
-        fdef.restitution = 0.3f;
+        fdef.restitution = 1;
 
         PolygonShape shape = new PolygonShape();
         if(sideOfBodyPart == 0) {
@@ -38,9 +38,10 @@ public class Foot extends PlayerBodyPart {
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_FOOT_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                  | FallingMan.PLAYER_SHIN_BIT;
         b2body.createFixture(fdef).setUserData(this);
         b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y, 3.14f);
+        b2bodies.add(b2body);
     }
 }

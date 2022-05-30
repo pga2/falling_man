@@ -64,13 +64,9 @@ public abstract class InteractiveTileObject {
         int maxSizeWidth = (bounds.getWidth() / FallingMan.CELL_SIZE) % 2 == 0 ? sizeWidth - 1 : sizeWidth;
         int sizeHeight = (int) bounds.getHeight() / FallingMan.CELL_SIZE / 2;
         int maxSizeHeight = (bounds.getHeight() / FallingMan.CELL_SIZE) % 2 == 0 ? sizeHeight - 1 : sizeHeight;
-        Gdx.app.log("1 " , String.valueOf(sizeWidth));
 
-        Gdx.app.log("2 " , String.valueOf(maxSizeWidth));
 
-        Gdx.app.log("3 " , String.valueOf(sizeHeight));
 
-        Gdx.app.log("4 " , String.valueOf(maxSizeHeight));
 
         for(int i = -sizeWidth; i <= maxSizeWidth; i++) {
             for(int j = -sizeHeight; j <= maxSizeHeight; j++) {
@@ -91,6 +87,7 @@ public abstract class InteractiveTileObject {
     }
 
     public void setTouched(boolean touched) {
+
         this.touched = touched;
     }
 }

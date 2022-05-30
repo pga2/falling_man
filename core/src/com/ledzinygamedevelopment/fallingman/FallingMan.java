@@ -30,6 +30,9 @@ public class FallingMan extends Game {
 	public static final short PLAYER_SHIN_BIT = 512;
 	public static final short PLAYER_HAND_BIT = 1024;
 	public static final short PLAYER_FOOT_BIT = 2048;
+	public static final short ROCK_BIT = 4096;
+	public static final short WALL_INSIDE_TOWER = 8192;
+	public static final short INVISIBLE_BODY_PART_BIT = 16384;
 
 	@Override
 	public void create () {
