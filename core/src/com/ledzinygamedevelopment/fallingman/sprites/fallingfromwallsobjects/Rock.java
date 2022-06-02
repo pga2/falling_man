@@ -8,19 +8,19 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 
 import java.util.Random;
 
 public class Rock extends Sprite {
 
     private Random random;
-    private PlayScreen playScreen;
+    private GameScreen gameScreen;
     private World world;
     private Body b2body;
 
-    public Rock(PlayScreen playScreen, World world) {
-        this.playScreen = playScreen;
+    public Rock(GameScreen gameScreen, World world) {
+        this.gameScreen = gameScreen;
         this.world = world;
 
         random = new Random();
@@ -36,15 +36,15 @@ public class Rock extends Sprite {
         switch (chosenSprite) {
             case 0:
                 setBounds(0, 0, 48 / FallingMan.PPM, 48 / FallingMan.PPM);
-                setRegion(playScreen.getAtlas().findRegion("rock48"), 0, 0, 48, 48);
+                setRegion(gameScreen.getAtlas().findRegion("rock48"), 0, 0, 48, 48);
                 break;
             case 1:
                 setBounds(0, 0, 96 / FallingMan.PPM, 96 / FallingMan.PPM);
-                setRegion(playScreen.getAtlas().findRegion("rock96"), 0, 0, 96, 96);
+                setRegion(gameScreen.getAtlas().findRegion("rock96"), 0, 0, 96, 96);
                 break;
             default:
                 setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
-                setRegion(playScreen.getAtlas().findRegion("rock160"), 0, 0, 160, 160);
+                setRegion(gameScreen.getAtlas().findRegion("rock160"), 0, 0, 160, 160);
                 break;
         }
 
@@ -102,17 +102,17 @@ public class Rock extends Sprite {
         FixtureDef fdef = new FixtureDef();
         switch (chosenSprite) {
             case 0:
-                bdef.position.set((random.nextInt(1440 - 96) + 48) / FallingMan.PPM, playScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
+                bdef.position.set((random.nextInt(1440 - 96) + 48) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
                 shape.setRadius(24 / FallingMan.PPM);
                 fdef.density = 5f;
                 break;
             case 1:
-                bdef.position.set((random.nextInt(1440 - 192) + 96) / FallingMan.PPM, playScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
+                bdef.position.set((random.nextInt(1440 - 192) + 96) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
                 shape.setRadius(48 / FallingMan.PPM);
                 fdef.density = 10f;
                 break;
             default:
-                bdef.position.set((random.nextInt(1440 - 320) + 160) / FallingMan.PPM, playScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
+                bdef.position.set((random.nextInt(1440 - 320) + 160) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1000) / FallingMan.PPM);
                 shape.setRadius(80 / FallingMan.PPM);
                 fdef.density = 15f;
                 break;

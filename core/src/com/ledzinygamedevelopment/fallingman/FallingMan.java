@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class FallingMan extends Game {
@@ -37,7 +38,8 @@ public class FallingMan extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		//setScreen(new PlayScreen(this));
+		setScreen(new MenuScreen(this));
 	}
 
 	@Override

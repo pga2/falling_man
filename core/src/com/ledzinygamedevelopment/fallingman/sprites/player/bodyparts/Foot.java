@@ -5,11 +5,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Foot extends PlayerBodyPart {
 
-    public Foot(World world, PlayScreen playScreen, int texturePos, int sideOfBodyPart) {
+    public Foot(World world, GameScreen playScreen, int texturePos, int sideOfBodyPart) {
         super(world, playScreen, texturePos, sideOfBodyPart);
     }
 
@@ -21,9 +22,9 @@ public class Foot extends PlayerBodyPart {
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        fdef.density = 0.2f;
-        fdef.friction = 0.01f;
-        fdef.restitution = 1;
+        fdef.density = 0.0075f;
+        fdef.friction = 0.001f;
+        fdef.restitution = 0.01f;
 
         PolygonShape shape = new PolygonShape();
         if(sideOfBodyPart == 0) {
@@ -40,7 +41,9 @@ public class Foot extends PlayerBodyPart {
         fdef.filter.categoryBits = FallingMan.PLAYER_FOOT_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                  | FallingMan.PLAYER_SHIN_BIT;
-        b2body.createFixture(fdef).setUserData(this);
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData(this);
+        b2body.setUserData(this);
         b2body.setTransform(b2body.getPosition().x, b2body.getPosition().y, 3.14f);
         b2bodies.add(b2body);
     }

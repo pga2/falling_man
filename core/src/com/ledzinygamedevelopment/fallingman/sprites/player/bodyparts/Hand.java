@@ -5,11 +5,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Hand extends PlayerBodyPart {
-    public Hand(World world, PlayScreen playScreen, int texturePos, int sideOfBodyPart) {
-        super(world, playScreen, texturePos, sideOfBodyPart);
+    public Hand(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart) {
+        super(world, gameScreen, texturePos, sideOfBodyPart);
     }
 
     @Override
@@ -20,9 +21,9 @@ public class Hand extends PlayerBodyPart {
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        fdef.density = 0.2f;
-        fdef.friction = 0.01f;
-        fdef.restitution = 1;
+        fdef.density = 0.0075f;
+        fdef.friction = 0.001f;
+        fdef.restitution = 0.01f;
 
         PolygonShape shape = new PolygonShape();
             float[] shapeVertices = {-12 / FallingMan.PPM, 7 / FallingMan.PPM, 12 / FallingMan.PPM, 7 / FallingMan.PPM,
@@ -32,7 +33,9 @@ public class Hand extends PlayerBodyPart {
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_HAND_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT;
-        b2body.createFixture(fdef).setUserData(this);
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData(this);
+        b2body.setUserData(this);
         b2bodies.add(b2body);
     }
 }

@@ -1,26 +1,13 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 
 public abstract class Button extends Sprite {
 
-    protected PlayScreen playScreen;
+    protected GameScreen gameScreen;
     protected World world;
     protected float posX;
     protected float posY;
@@ -29,8 +16,8 @@ public abstract class Button extends Sprite {
     protected boolean clicked;
     protected boolean locked;
 
-    public Button(PlayScreen playScreen, World world, float posX, float posY, float width, float height) {
-        this.playScreen = playScreen;
+    public Button(GameScreen gameScreen, World world, float posX, float posY, float width, float height) {
+        this.gameScreen = gameScreen;
         this.world = world;
         this.posX = posX;
         this.posY = posY;
@@ -38,6 +25,12 @@ public abstract class Button extends Sprite {
         this.height = height;
         clicked = false;
         locked = false;
+    }
+
+    public void update(float dt, Vector2 pos) {
+        posX = pos.x;
+        posY = pos.y;
+        setPosition(pos.x, pos.y);
     }
 
     public abstract void touched();

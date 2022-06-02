@@ -21,7 +21,7 @@ public class OneArmBandit extends Sprite {
         super(playScreen.getAtlas().findRegion("one_armed_bandit"));
         this.playScreen = playScreen;
         this.world = world;
-        oneArmedBanditTexture = new TextureRegion(getTexture(), 1, 935, 1056, 1040);
+        oneArmedBanditTexture = new TextureRegion(getTexture(), 1, 965, 1056, 1040);
         setBounds(0, 0, 1056 / FallingMan.PPM, 1040 / FallingMan.PPM);
         setRegion(oneArmedBanditTexture);
         setPosition(192 / FallingMan.PPM, posY);

@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.BodyPartsRestorer;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
@@ -75,11 +76,20 @@ public class B2WorldCreator {
             interactiveTileObjects.add(deadMachine);
         }
 
+        //spins
         for(MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             InteractiveTileObject spins = new Spins(playScreen, world, map, rect, 3);
             b2bodies.add(spins.getBody());
             interactiveTileObjects.add(spins);
+        }
+
+        //restore body parts
+        for(MapObject object : map.getLayers().get(12).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveTileObject bodyPartsRestorer = new BodyPartsRestorer(world, map, rect, 2, playScreen);
+            b2bodies.add(bodyPartsRestorer.getBody());
+            interactiveTileObjects.add(bodyPartsRestorer);
         }
 
         /*//one-armed bandit spin button

@@ -10,13 +10,14 @@ import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Belly extends PlayerBodyPart {
 
 
-    public Belly(World world, PlayScreen playScreen, int texturePos, int sideOfBodyPart) {
-        super(world, playScreen, texturePos, sideOfBodyPart);
+    public Belly(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart) {
+        super(world, gameScreen, texturePos, sideOfBodyPart);
     }
 
     @Override
@@ -28,9 +29,9 @@ public class Belly extends PlayerBodyPart {
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        fdef.density = 1f;
-        fdef.friction = 0.01f;
-        fdef.restitution = 0.3f;
+        fdef.density = 0.05f;
+        fdef.friction = 0.001f;
+        fdef.restitution = 0.03f;
 
         PolygonShape shape = new PolygonShape();
         float[] shapeVertices = {-23 / FallingMan.PPM, 50 / FallingMan.PPM,
@@ -46,7 +47,9 @@ public class Belly extends PlayerBodyPart {
         fdef.filter.categoryBits = FallingMan.PLAYER_BELLY_BIT;
         fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                 | FallingMan.PLAYER_ARM_BIT | FallingMan.PLAYER_HEAD_BIT | FallingMan.PLAYER_THIGH_BIT;
-        b2body.createFixture(fdef).setUserData(this);
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData(this);
+        b2body.setUserData(this);
 
 
 
@@ -56,9 +59,9 @@ public class Belly extends PlayerBodyPart {
         b2bodyInvisible = world.createBody(bdef);
 
         fdef = new FixtureDef();
-        fdef.density = 1f;
-        fdef.friction = 0.01f;
-        fdef.restitution = 1;
+        fdef.density = 0.0001f;
+        fdef.friction = 0.001f;
+        fdef.restitution = 1f;
 
         shape = new PolygonShape();
         float[] shapeVertices2 = {-35 / FallingMan.PPM, 50 / FallingMan.PPM,
