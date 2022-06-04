@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Arm;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Belly;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Foot;
@@ -27,6 +29,10 @@ public class Player extends Sprite {
 
     public static final int LEFT_BODY_PART = 0;
     public static final int RIGHT_BODY_PART = 1;
+
+    private enum CurrentState {NORMAL, TELEPORTING}
+
+    private CurrentState currentState;
 
     private World world;
     public Body b2body;
@@ -56,10 +62,17 @@ public class Player extends Sprite {
     private boolean rightThighOutOfBody;
     private Body headHolderBody;
     private boolean headJointsExist;
-    private boolean removeHeadJointsAndButton;
+    private boolean removeHeadJoint;
     private RevoluteJoint headJoint;
 
     private boolean temp;
+    private boolean changeTexturesToTeleportationEffect;
+    private boolean beforeTeleportation;
+    private boolean restoreOldTextures;
+    private float teleportationTimer;
+    private float xDist;
+    private float yDist;
+    private Vector2 teleportTargetPos;
 
     public Player(World world, GameScreen gameScreen) {
         super(gameScreen.getAtlas().findRegion("player"));
@@ -67,7 +80,7 @@ public class Player extends Sprite {
         this.gameScreen = gameScreen;
         bodyPartsAll = new Array<>();
         definePlayer();
-        playerHeadTexture = new TextureRegion(getTexture(), 1059, 879, 160, 160);
+        playerHeadTexture = new TextureRegion(getTexture(), 1, 99, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(playerHeadTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -78,13 +91,17 @@ public class Player extends Sprite {
             bodyPartsAll.addAll(sprite.getB2bodies());
         }
         headJointsExist = false;
-        removeHeadJointsAndButton = false;
+        removeHeadJoint = false;
         //createHeadJoint();
 
         leftArmOutOfBody = false;
         rightArmOutOfBody = false;
         leftThighOutOfBody = false;
         rightThighOutOfBody = false;
+        currentState = CurrentState.NORMAL;
+        changeTexturesToTeleportationEffect = false;
+        beforeTeleportation = false;
+        restoreOldTextures = false;
     }
 
     public void createHeadJoint() {
@@ -116,43 +133,82 @@ public class Player extends Sprite {
 
 
     public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRotation((float) Math.toDegrees(b2body.getAngle()));
-        //Gdx.app.log("pos x ", String.valueOf(b2body.getPosition().x));
-        //Gdx.app.log("left arm angle", String.valueOf((armLeft.getB2body().getAngle() / 6.283185307179586476925286766559 * 360) % 360));
-        //Gdx.app.log("right angle", String.valueOf((armRight.getB2body().getAngle() / 6.283185307179586476925286766559 * 360) % 360));
+        switch (currentState) {
+            case NORMAL:
+                setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+                setRotation((float) Math.toDegrees(b2body.getAngle()));
+                //Gdx.app.log("pos x ", String.valueOf(b2body.getPosition().x));
+                //Gdx.app.log("left arm angle", String.valueOf((armLeft.getB2body().getAngle() / 6.283185307179586476925286766559 * 360) % 360));
+                //Gdx.app.log("right angle", String.valueOf((armRight.getB2body().getAngle() / 6.283185307179586476925286766559 * 360) % 360));
 
-        for (PlayerBodyPart bodyPart : bodyParts) {
-            bodyPart.update(dt);
-        }
+                for (PlayerBodyPart bodyPart : bodyParts) {
+                    bodyPart.update(dt);
+                }
 
-        if (removeHeadJointsAndButton) {
-            if (headJointsExist) {
-                world.destroyJoint(headJoint);
-                headJointsExist = false;
-            }
-            //world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
-            //world.destroyJoint(ropeHeadJoint);
-            removeHeadJointsAndButton = false;
-        }
+                if (removeHeadJoint) {
+                    if (headJointsExist) {
+                        world.destroyJoint(headJoint);
+                        headJointsExist = false;
+                    }
+                    //world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
+                    //world.destroyJoint(ropeHeadJoint);
+                    removeHeadJoint = false;
+                }
 
-        if (leftArmOutOfBody) {
-            //setLeftArmOutOfBody();
-            leftArmOutOfBody = false;
-        }
-        if (rightArmOutOfBody) {
-            //setRightArmOutOfBody();
-            rightArmOutOfBody = false;
-        }
-        if (leftThighOutOfBody) {
-            //setLeftThighOutOfBody();
-            leftThighOutOfBody = false;
-        }
-        if (rightThighOutOfBody) {
-            //setRightThighOutOfBody();
-            rightThighOutOfBody = false;
-        }
+                if (leftArmOutOfBody) {
+                    //setLeftArmOutOfBody();
+                    leftArmOutOfBody = false;
+                }
+                if (rightArmOutOfBody) {
+                    //setRightArmOutOfBody();
+                    rightArmOutOfBody = false;
+                }
+                if (leftThighOutOfBody) {
+                    //setLeftThighOutOfBody();
+                    leftThighOutOfBody = false;
+                }
+                if (rightThighOutOfBody) {
+                    //setRightThighOutOfBody();
+                    rightThighOutOfBody = false;
+                }
+                break;
+            case TELEPORTING:
+                if (teleportationTimer < 0.5f && beforeTeleportation) {
+                    setScale(8 * (1 - teleportationTimer * 2));
+                    teleportationTimer += dt;
+                } else if (beforeTeleportation) {
+                    world.destroyJoint(headJoint);
+                    headJointsExist = false;
+                    removeHeadJoint = false;
+                    teleportationTimer = 0;
+                    b2body.setTransform(b2body.getPosition().x + xDist, b2body.getPosition().y + yDist, b2body.getAngle());
+                    setPosition(teleportTargetPos.x - getWidth() / 2, teleportTargetPos.y - getHeight() / 2);
+                    for (Body body : getBodyPartsAll()) {
+                        body.setTransform(body.getPosition().x + xDist, body.getPosition().y + yDist, body.getAngle());
+                    }
 
+                    beforeTeleportation = false;
+                } else if (restoreOldTextures){
+                    for (PlayerBodyPart playerBodyPart : bodyParts) {
+                        playerBodyPart.setTextureToBasic();
+                    }
+                    restoreOldTextures = false;
+                    createHeadJoint();
+                } else if (teleportationTimer < 0.5f) {
+                    setScale(8 * teleportationTimer * 2);
+                    teleportationTimer += dt;
+                } else {
+                    setRegion(playerHeadTexture);
+                    setScale(1);
+                    //setOrigin(0, 0);
+                    world.destroyJoint(headJoint);
+                    headJointsExist = false;
+                    removeHeadJoint = false;
+                    currentState = CurrentState.NORMAL;
+                    gameScreen.setStopRock(false);
+                }
+                break;
+        }
     }
 
     public void definePlayer() {
@@ -370,8 +426,8 @@ public class Player extends Sprite {
         return headJointsExist;
     }
 
-    public void setRemoveHeadJointsAndButton(boolean removeHeadJointsAndButton) {
-        this.removeHeadJointsAndButton = removeHeadJointsAndButton;
+    public void setRemoveHeadJoint(boolean removeHeadJoint) {
+        this.removeHeadJoint = removeHeadJoint;
     }
 
     public Array<Body> getBodyPartsAll() {
@@ -426,5 +482,34 @@ public class Player extends Sprite {
     public void setGameScreen(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }
+
+    public void setCurrentStateToTeleport(TeleportTarget teleportTarget, Teleport teleport) {
+
+        setRegion(gameScreen.getAtlas().findRegion("teleportation_effect"), 0, 0, 1280, 1280);
+        setPosition(teleport.getBody().getPosition().x - getWidth() / 2, teleport.getBody().getPosition().y - getHeight() / 2);
+        setOrigin(getWidth() / 2, getHeight() / 2);
+        setScale(8);
+        for (PlayerBodyPart playerBodyPart : bodyParts) {
+            playerBodyPart.setRegion(gameScreen.getAtlas().findRegion("blank160"), 0, 0, 160, 160);
+        }
+        createHeadJoint();
+        currentState = CurrentState.TELEPORTING;
+        changeTexturesToTeleportationEffect = true;
+        beforeTeleportation = true;
+
+        yDist = teleportTarget.getBody().getPosition().y - teleport.getBody().getPosition().y;
+        xDist = teleportTarget.getBody().getPosition().x - teleport.getBody().getPosition().x;
+
+        teleportTargetPos = teleportTarget.getBody().getPosition();
+        /*b2body.setTransform(xDist, yDist, b2body.getAngle());
+
+        for (Body body : bodyPartsAll) {
+            body.setTransform(xDist, yDist, body.getAngle());
+        }*/
+        teleportationTimer = 0;
+        restoreOldTextures = true;
+        gameScreen.setStopRock(true);
+    }
+
 }
 

@@ -2,9 +2,11 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -20,10 +22,13 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.windows.DefaultWindow;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.MenuButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayAgainButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
@@ -31,13 +36,17 @@ import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
+import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class PlayScreen implements GameScreen {
 
+    private SaveData saveData;
+    private BitmapFont font;
     private HUD hud;
     private FallingMan game;
     private TextureAtlas atlas;
@@ -71,7 +80,7 @@ public class PlayScreen implements GameScreen {
     private boolean winOneArmedBandit;
     private float winOneArmedBanditTime;
     private boolean winOneArmedBanditScaleUp;
-    private boolean spinState;
+    private boolean stopRock;
     private int numberOfSpins;
     private float loseOneArmedBanditEndTime;
     private boolean loseOneArmedBandit;
@@ -83,10 +92,19 @@ public class PlayScreen implements GameScreen {
 
     private Array<DefaultWindow> defaultWindows;
     private boolean loadNewGame;
+    private boolean loadMenu;
+
+    private ArrayList<FontMapObject> fontMapObjects;
+    private Array<Spark> sparks;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors) {
         atlas = new TextureAtlas("player.pack");
         this.game = game;
+        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(238/256f, 188/256f, 29/256f, 1);
+        font.getData().setScale(0.007f);
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
@@ -110,7 +128,7 @@ public class PlayScreen implements GameScreen {
         oneArmBandits = new Array<>();
         buttons = new Array<>();
         smallRolls = new Array<>();
-        spinState = false;
+        stopRock = false;
         loseOneArmedBanditEndTime = 0;
         loseOneArmedBandit = false;
         //Rocks falling from sky
@@ -125,6 +143,10 @@ public class PlayScreen implements GameScreen {
 
         defaultWindows = new Array<>();
         loadNewGame = false;
+        loadMenu = false;
+        fontMapObjects = new ArrayList<>();
+        sparks = new Array<>();
+        saveData = new SaveData();
         //gameCam.zoom = 0.3f;
 
         //player.createHeadJoint();
@@ -219,12 +241,19 @@ public class PlayScreen implements GameScreen {
             }
         }
 
-
+        for (int i = 0; i < sparks.size; i++) {
+            Spark spark = sparks.get(i);
+            spark.update(dt);
+            if (spark.isRemoveSpark()) {
+                sparks.removeIndex(i);
+            }
+        }
         player.update(dt);
+
         hud.update(dt, player.b2body.getPosition().y);
         Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
         for (Rock rock : rocks) {
-            rock.update(dt, playerPos, spinState);
+            rock.update(dt, playerPos, stopRock);
         }
 
         //oneArmBandit.update(dt);
@@ -235,9 +264,13 @@ public class PlayScreen implements GameScreen {
 
         if (gameOver) {
             if (defaultWindows.size == 0) {
+                saveData.addGold(hud.getGold());
+                saveData.setHighScore(hud.getWholeDistance());
                 defaultWindows.add(new DefaultWindow(this, world));
                 player.createHeadJoint();
                 hud.newStageGameOver();
+                buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
+                buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
             }
             gameOver = false;
             //dispose();
@@ -262,12 +295,19 @@ public class PlayScreen implements GameScreen {
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
+        for (Spark spark : sparks) {
+            spark.draw(game.batch);
+        }
         player.draw(game.batch);
         for (Rock rock : rocks) {
             rock.draw(game.batch);
         }
         for (PlayerBodyPart bodyPart : player.getBodyParts()) {
             bodyPart.draw(game.batch);
+        }
+        for (FontMapObject fontMapObject : fontMapObjects) {
+            GlyphLayout glyphLayout = new GlyphLayout(font, fontMapObject.getText());
+            font.draw(game.batch, fontMapObject.getText(), fontMapObject.getPosX() - glyphLayout.width / 2, fontMapObject.getPosY() + glyphLayout.height * 1.6f);
         }
         for (Roll roll : rolls) {
 
@@ -286,6 +326,9 @@ public class PlayScreen implements GameScreen {
             button.draw(game.batch);
         }
 
+//        font.draw(game.batch, "dziala dziala dziala dziala dziala dziala dziala dziala dziala dziala", 0, 8000 / FallingMan.PPM);
+//        font.draw(game.batch, "2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 ", 0, 8100 / FallingMan.PPM);
+
         game.batch.end();
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
@@ -295,6 +338,10 @@ public class PlayScreen implements GameScreen {
             game.setScreen(new PlayScreen(game, new PlayerVectors(player, false)));
         }
 
+        if (loadMenu) {
+            dispose();
+            game.setScreen(new MenuScreen(game));
+        }
         /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
         allFPSData.add(1 / delta);
         Long allFps = 0l;
@@ -327,6 +374,7 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void dispose() {
+        font.dispose();
         map.dispose();
         renderer.dispose();
         world.dispose();
@@ -353,6 +401,7 @@ public class PlayScreen implements GameScreen {
         }
         hud.setPreviousDist(hud.getPreviousDist() + hud.getDistance());
         hud.setDistance(0);
+        fontMapObjects = new ArrayList<>();
     }
 
     public void startRolling(float dt) {
@@ -435,10 +484,10 @@ public class PlayScreen implements GameScreen {
     public void removeOneArmedBanditbundle() {
         winOneArmedBanditTime = 0;
         oneArmBandits = new Array<>();
-        player.setRemoveHeadJointsAndButton(true);
+        player.setRemoveHeadJoint(true);
         smallRolls = new Array<>();
         rolls = new Array<>();
-        spinState = false;
+        stopRock = false;
         startRolling = false;
     }
 
@@ -481,8 +530,8 @@ public class PlayScreen implements GameScreen {
         return player;
     }
 
-    public void setSpinState(boolean spinState) {
-        this.spinState = spinState;
+    public void setStopRock(boolean stopRock) {
+        this.stopRock = stopRock;
     }
 
     public HUD getHud() {
@@ -513,7 +562,19 @@ public class PlayScreen implements GameScreen {
         this.loadNewGame = loadNewGame;
     }
 
+    public void setLoadMenu(boolean loadMenu) {
+        this.loadMenu = loadMenu;
+    }
+
     public Array<Button> getButtons() {
         return buttons;
+    }
+
+    public ArrayList<FontMapObject> getFontMapObjects() {
+        return fontMapObjects;
+    }
+
+    public Array<Spark> getSparks() {
+        return sparks;
     }
 }

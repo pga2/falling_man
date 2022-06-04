@@ -21,14 +21,18 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.HighScoresButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
+import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
 import java.util.Random;
@@ -50,6 +54,9 @@ public class MenuScreen implements GameScreen {
     private Array<Body> worldBodies;
     private Array<Button> buttons;
     private boolean loadNewGame;
+    private GoldAndHighScoresIcons goldAndHighScoresIcons;
+    private GoldAndHighScoresBackground goldAndHighScoresBackground;
+    private SaveData saveData;
 
     public MenuScreen(FallingMan game) {
         this.game = game;
@@ -76,9 +83,10 @@ public class MenuScreen implements GameScreen {
         for (int i = 0; i < 200; i++) {
             rocks.add(new Rock(this, world));
         }
-
+        generateWindows();
         buttons = new Array<>();
         buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
+        buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //player.b2body.applyLinearImpulse(new Vector2(3, 0), player.b2body.getWorldCenter(), true);
     }
 
@@ -119,6 +127,10 @@ public class MenuScreen implements GameScreen {
         player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 100f, 0), player.b2body.getWorldCenter(), true);
 
         player.update(dt);
+
+        goldAndHighScoresBackground.update(dt, player.b2body.getPosition());
+        goldAndHighScoresIcons.update(dt, player.b2body.getPosition());
+
         for (Rock rock : rocks) {
             rock.update(dt, player.b2body.getPosition(), false);
         }
@@ -126,7 +138,7 @@ public class MenuScreen implements GameScreen {
             player.b2body.setLinearVelocity(new Vector2(player.b2body.getLinearVelocity().x, -20));
         }
         for (Button button : buttons) {
-            button.update(dt, new Vector2((FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM));
+            button.update(dt, new Vector2((FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + button.getyPosPlayerDiff() / FallingMan.PPM));
         }
 
 
@@ -159,6 +171,8 @@ public class MenuScreen implements GameScreen {
         for (Rock rock : rocks) {
             rock.draw(game.batch);
         }
+        goldAndHighScoresBackground.draw(game.batch);
+        goldAndHighScoresIcons.draw(game.batch);
         for (Button button : buttons) {
             button.draw(game.batch);
         }
@@ -220,6 +234,16 @@ public class MenuScreen implements GameScreen {
         this.loadNewGame = loadNewGame;
     }
 
+    @Override
+    public void setLoadMenu(boolean loadMenu) {
+
+    }
+
+    @Override
+    public void setStopRock(boolean stopRock) {
+
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
@@ -253,5 +277,11 @@ public class MenuScreen implements GameScreen {
             body.createFixture(fdef);
             worldBodies.add(body);
         }
+    }
+
+    public void generateWindows() {
+        saveData = new SaveData();
+        goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
+        goldAndHighScoresBackground = new GoldAndHighScoresBackground(this, world);
     }
 }

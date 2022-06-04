@@ -29,37 +29,4 @@ public class DefaultWindow extends Sprite {
         setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, playScreen.getPlayer().b2body.getPosition().y - height / 2);
 
     }
-
-    /*public void touched() {
-
-    }
-
-    public void notTouched() {
-
-    }
-
-    // checking if mouse position equals button position
-    public boolean mouseOver(Vector2 mousePosition) {
-        if(mousePosition.x > posX && mousePosition.x < posX + width
-                && mousePosition.y > posY && mousePosition.y < posY + height)
-            return true;
-        else
-            return false;
-    }
-
-    public boolean isClicked() {
-        return clicked;
-    }
-
-    public void setClicked(boolean clicked) {
-        this.clicked = clicked;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }*/
 }

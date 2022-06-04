@@ -7,6 +7,7 @@ import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 
 public abstract class Button extends Sprite {
 
+    protected float yPosPlayerDiff;
     protected GameScreen gameScreen;
     protected World world;
     protected float posX;
@@ -60,5 +61,9 @@ public abstract class Button extends Sprite {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public float getyPosPlayerDiff() {
+        return yPosPlayerDiff;
     }
 }

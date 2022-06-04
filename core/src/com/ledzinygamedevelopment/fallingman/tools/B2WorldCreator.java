@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,17 +14,20 @@ import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.BodyPartsRestorer;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Coin;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Spins;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
 
 public class B2WorldCreator {
 
     private SpinButton button;
     private Array<Body> b2bodies;
     private Array<InteractiveTileObject> interactiveTileObjects;
+    private Array<TeleportTarget> teleportsTarget;
 
     public B2WorldCreator(PlayScreen playScreen, World world, TiledMap map) {
         BodyDef bdef = new BodyDef();
@@ -32,6 +36,7 @@ public class B2WorldCreator {
         Body body;
         b2bodies = new Array<>();
         interactiveTileObjects = new Array<>();
+        teleportsTarget = new Array<>();
 
         //walls
         for(MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
@@ -63,9 +68,21 @@ public class B2WorldCreator {
         //coins
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveTileObject coin = new Coin(world, map, rect, 2, playScreen);
-            b2bodies.add(coin.getBody());
-            interactiveTileObjects.add(coin);
+            if (object.getProperties().get("tp") != null) {
+                Gdx.app.log("tp in b2world creator", String.valueOf(object.getProperties().get("tp")));
+                InteractiveTileObject teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
+                b2bodies.add(teleport.getBody());
+                interactiveTileObjects.add(teleport);
+            } else if (object.getProperties().get("tp_target") != null) {
+                InteractiveTileObject teleportTarget = new TeleportTarget(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp_target"))));
+                b2bodies.add(teleportTarget.getBody());
+                interactiveTileObjects.add(teleportTarget);
+                teleportsTarget.add((TeleportTarget) teleportTarget);
+            } else {
+                InteractiveTileObject coin = new Coin(world, map, rect, 2, playScreen);
+                b2bodies.add(coin.getBody());
+                interactiveTileObjects.add(coin);
+            }
         }
 
         //deadly things
@@ -109,5 +126,9 @@ public class B2WorldCreator {
 
     public Array<InteractiveTileObject> getInteractiveTileObjects() {
         return interactiveTileObjects;
+    }
+
+    public Array<TeleportTarget> getTeleportsTarget() {
+        return teleportsTarget;
     }
 }

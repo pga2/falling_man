@@ -1,15 +1,11 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 
 public class Spins extends InteractiveTileObject{
     private PlayScreen playScreen;
@@ -42,7 +38,7 @@ public class Spins extends InteractiveTileObject{
         }
         playScreen.createOneArmedBanditObjects();
         setCategoryFilter(FallingMan.DESTROYED_BIT);
-        playScreen.setSpinState(true);
+        playScreen.setStopRock(true);
         touched = false;
     }
 }

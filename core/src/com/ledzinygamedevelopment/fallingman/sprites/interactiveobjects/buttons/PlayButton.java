@@ -9,6 +9,7 @@ public class PlayButton extends Button{
 
     public PlayButton(GameScreen gameScreen, World world, float posX, float posY, float width, float height) {
         super(gameScreen, world, posX, posY, width, height);
+        yPosPlayerDiff = 200;
 
         setBounds(0, 0, width, height);
         setRegion(gameScreen.getAtlas().findRegion("play_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));

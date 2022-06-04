@@ -11,4 +11,6 @@ public interface GameScreen extends Screen {
     public Player getPlayer();
     public void setGameOver(boolean gameOver);
     public void setLoadNewGame(boolean loadNewGame);
+    public void setLoadMenu(boolean loadMenu);
+    public void setStopRock(boolean stopRock);
 }
