@@ -17,12 +17,16 @@ public class SpinButton extends Button{
 
     @Override
     public void touched() {
-        setRegion(gameScreen.getAtlas().findRegion("spin_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
-        clicked = true;
+        if (!locked) {
+            setRegion(gameScreen.getAtlas().findRegion("spin_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+            clicked = true;
+        }
     }
 
     public void notTouched() {
-        setRegion(gameScreen.getAtlas().findRegion("spin"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        if (!locked) {
+            setRegion(gameScreen.getAtlas().findRegion("spin"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        }
     }
 
 //, 448, 7936, 544, 192

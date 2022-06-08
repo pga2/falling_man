@@ -17,9 +17,11 @@ public class Spark extends Sprite {
     private boolean removeSpark;
 
     public Spark(PlayScreen playScreen, float posX, float posY) {
-        super(playScreen.getAtlas().findRegion("spark"));
+        //super(playScreen.getAtlas().findRegion("spark"));
         this.playScreen = playScreen;
-        sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
+
+        sparkTexture = new TextureRegion(playScreen.getAtlas().findRegion("spark"), 0, 0, 32, 32);
+        //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
         setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
         setRegion(sparkTexture);
         setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);

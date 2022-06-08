@@ -68,19 +68,19 @@ public class Player extends Sprite {
     private boolean temp;
     private boolean changeTexturesToTeleportationEffect;
     private boolean beforeTeleportation;
-    private boolean restoreOldTextures;
+    private boolean createSecondStateHeadJoint;
     private float teleportationTimer;
     private float xDist;
     private float yDist;
     private Vector2 teleportTargetPos;
 
     public Player(World world, GameScreen gameScreen) {
-        super(gameScreen.getAtlas().findRegion("player"));
+        //super(gameScreen.getAtlas().findRegion("player"));
         this.world = world;
         this.gameScreen = gameScreen;
         bodyPartsAll = new Array<>();
         definePlayer();
-        playerHeadTexture = new TextureRegion(getTexture(), 1, 99, 160, 160);
+        playerHeadTexture = new TextureRegion(gameScreen.getAtlas().findRegion("player"), 0, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(playerHeadTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -101,7 +101,7 @@ public class Player extends Sprite {
         currentState = CurrentState.NORMAL;
         changeTexturesToTeleportationEffect = false;
         beforeTeleportation = false;
-        restoreOldTextures = false;
+        createSecondStateHeadJoint = false;
     }
 
     public void createHeadJoint() {
@@ -188,19 +188,18 @@ public class Player extends Sprite {
                     }
 
                     beforeTeleportation = false;
-                } else if (restoreOldTextures){
-                    for (PlayerBodyPart playerBodyPart : bodyParts) {
-                        playerBodyPart.setTextureToBasic();
-                    }
-                    restoreOldTextures = false;
+                } else if (createSecondStateHeadJoint){
+                    createSecondStateHeadJoint = false;
                     createHeadJoint();
                 } else if (teleportationTimer < 0.5f) {
                     setScale(8 * teleportationTimer * 2);
                     teleportationTimer += dt;
                 } else {
                     setRegion(playerHeadTexture);
+                    for (PlayerBodyPart playerBodyPart : bodyParts) {
+                        playerBodyPart.setTextureToBasic();
+                    }
                     setScale(1);
-                    //setOrigin(0, 0);
                     world.destroyJoint(headJoint);
                     headJointsExist = false;
                     removeHeadJoint = false;
@@ -507,7 +506,7 @@ public class Player extends Sprite {
             body.setTransform(xDist, yDist, body.getAngle());
         }*/
         teleportationTimer = 0;
-        restoreOldTextures = true;
+        createSecondStateHeadJoint = true;
         gameScreen.setStopRock(true);
     }
 

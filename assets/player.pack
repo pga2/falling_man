@@ -5,182 +5,189 @@ filter: Nearest,Nearest
 repeat: none
 window
   rotate: false
-  xy: 1, 2025
+  xy: 1, 1985
   size: 1312, 2048
   orig: 1312, 2048
   offset: 0, 0
   index: -1
 teleportation_effect
   rotate: false
-  xy: 1, 743
+  xy: 1, 703
   size: 1280, 1280
   orig: 1280, 1280
   offset: 0, 0
   index: -1
 one_armed_bandit
   rotate: false
-  xy: 1315, 3033
+  xy: 1315, 2993
   size: 1056, 1040
   orig: 1056, 1040
   offset: 0, 0
   index: -1
 menu_button
   rotate: false
-  xy: 1, 261
+  xy: 1, 221
   size: 992, 480
   orig: 992, 480
   offset: 0, 0
   index: -1
 menu_button_clicked
   rotate: false
-  xy: 1315, 2551
+  xy: 1315, 2511
   size: 992, 480
   orig: 992, 480
   offset: 0, 0
   index: -1
 play_again
   rotate: false
-  xy: 2373, 3593
+  xy: 2373, 3553
   size: 992, 480
   orig: 992, 480
   offset: 0, 0
   index: -1
 play_again_clicked
   rotate: false
-  xy: 1315, 2069
+  xy: 1315, 2029
   size: 992, 480
   orig: 992, 480
   offset: 0, 0
   index: -1
-player
+one_armed_bandit_spins_amount_background
   rotate: false
   xy: 1, 99
+  size: 956, 120
+  orig: 956, 120
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 2373, 3391
   size: 800, 160
   orig: 800, 160
   offset: 0, 0
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 2373, 3367
+  xy: 3367, 3809
   size: 640, 224
   orig: 640, 224
   offset: 0, 0
   index: -1
 high_scores
   rotate: false
-  xy: 3367, 3849
+  xy: 2373, 3165
   size: 640, 224
   orig: 640, 224
   offset: 0, 0
   index: -1
 high_scores_clicked
   rotate: false
-  xy: 2373, 3141
+  xy: 3367, 3583
   size: 640, 224
   orig: 640, 224
   offset: 0, 0
   index: -1
 play_button
   rotate: false
-  xy: 3367, 3623
+  xy: 2373, 2939
   size: 640, 224
   orig: 640, 224
   offset: 0, 0
   index: -1
 play_button_clicked
   rotate: false
-  xy: 2373, 2915
+  xy: 2309, 2713
   size: 640, 224
   orig: 640, 224
   offset: 0, 0
   index: -1
 roll0
   rotate: false
-  xy: 3015, 3015
+  xy: 2309, 2135
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 roll1
   rotate: false
-  xy: 3209, 3015
+  xy: 2503, 2135
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 roll2
   rotate: false
-  xy: 3403, 3045
+  xy: 2697, 2135
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 roll3
   rotate: false
-  xy: 3597, 3045
+  xy: 995, 125
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 spin
   rotate: false
-  xy: 2309, 2721
+  xy: 2309, 1941
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 spin_clicked
   rotate: false
-  xy: 2309, 2527
+  xy: 1315, 1835
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 smallRoll0
   rotate: false
-  xy: 995, 549
+  xy: 1861, 1835
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 smallRoll1
   rotate: false
-  xy: 3791, 3429
+  xy: 2055, 1835
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 smallRoll2
   rotate: false
-  xy: 2309, 2333
+  xy: 1283, 1641
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 smallRoll3
   rotate: false
-  xy: 995, 355
+  xy: 1283, 1447
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 2855, 2689
+  xy: 3015, 3165
   size: 112, 224
   orig: 112, 224
   offset: 0, 0
   index: -1
 blank160
   rotate: false
-  xy: 803, 99
+  xy: 3175, 3391
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 rock160
   rotate: false
-  xy: 3791, 3267
+  xy: 1477, 1673
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
@@ -199,16 +206,23 @@ rock96
   orig: 96, 96
   offset: 0, 0
   index: -1
+spins_amount_line
+  rotate: false
+  xy: 4009, 3913
+  size: 19, 120
+  orig: 19, 120
+  offset: 0, 0
+  index: -1
 rock48
   rotate: false
-  xy: 4009, 4025
+  xy: 2951, 2889
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 spark
   rotate: false
-  xy: 1315, 2035
+  xy: 2309, 2959
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

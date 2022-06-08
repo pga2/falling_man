@@ -22,7 +22,7 @@ public class MenuButton extends Button{
     public void notTouched() {
         setRegion(gameScreen.getAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         if(clicked) {
-            gameScreen.setLoadMenu(true);
+            gameScreen.setCurrentScreen(FallingMan.MENU_SCREEN);
         }
     }
 }

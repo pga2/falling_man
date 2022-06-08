@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.windows.DefaultWindow;
+import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
@@ -45,6 +46,7 @@ import java.util.Random;
 
 public class PlayScreen implements GameScreen {
 
+    private byte currentScreen;
     private SaveData saveData;
     private BitmapFont font;
     private HUD hud;
@@ -100,6 +102,7 @@ public class PlayScreen implements GameScreen {
     public PlayScreen(FallingMan game, PlayerVectors playerVectors) {
         atlas = new TextureAtlas("player.pack");
         this.game = game;
+        currentScreen = FallingMan.CURRENT_SCREEN;
         font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
@@ -333,14 +336,15 @@ public class PlayScreen implements GameScreen {
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
 
-        if (loadNewGame) {
-            dispose();
-            game.setScreen(new PlayScreen(game, new PlayerVectors(player, false)));
-        }
-
-        if (loadMenu) {
-            dispose();
-            game.setScreen(new MenuScreen(game));
+        switch (currentScreen) {
+            case FallingMan.PLAY_SCREEN:
+                dispose();
+                game.setScreen(new PlayScreen(game, new PlayerVectors(player, false)));
+                break;
+            case FallingMan.MENU_SCREEN:
+                dispose();
+                game.setScreen(new MenuScreen(game));
+                break;
         }
         /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
         allFPSData.add(1 / delta);
@@ -534,6 +538,27 @@ public class PlayScreen implements GameScreen {
         this.stopRock = stopRock;
     }
 
+    @Override
+    public GoldAndHighScoresBackground getGoldAndHighScoresBackground() {
+        return null;
+    }
+
+    @Override
+    public void setGameScreen(GameScreen gameScreen) {
+        dispose();
+        game.setScreen(gameScreen);
+    }
+
+    @Override
+    public FallingMan getFallingMan() {
+        return game;
+    }
+
+    @Override
+    public void setCurrentScreen(byte currentScreen) {
+        this.currentScreen = currentScreen;
+    }
+
     public HUD getHud() {
         return hud;
     }
@@ -576,5 +601,9 @@ public class PlayScreen implements GameScreen {
 
     public Array<Spark> getSparks() {
         return sparks;
+    }
+
+    public SaveData getSaveData() {
+        return saveData;
     }
 }

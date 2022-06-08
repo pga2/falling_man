@@ -8,7 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("Falling Man");
+		config.setTitle("Stick Man Falling");
+		config.setWindowSizeLimits(720, 1280, 1000, 2000);
 		new Lwjgl3Application(new FallingMan(), config);
 	}
 }

@@ -20,6 +20,7 @@ public class SaveData {
 
     public void addGold(int gold) {
         prefs.putInteger("gold", prefs.getInteger("gold") + gold);
+        prefs.flush();
     }
 
     public int getGold() {
@@ -28,6 +29,23 @@ public class SaveData {
 
     public int getHighScore() {
         return prefs.getInteger("highscore");
+    }
+
+    public void addSpins(int numberOfSpins) {
+        prefs.putInteger("spins", prefs.getInteger("spins") + numberOfSpins);
+        prefs.flush();
+    }
+
+    public void removeSpin() {
+        int spins = prefs.getInteger("spins");
+        if (spins > 0) {
+            prefs.putInteger("spins", spins - 1);
+            prefs.flush();
+        }
+    }
+
+    public int getNumberOfSpins() {
+        return prefs.getInteger("spins");
     }
 
 }

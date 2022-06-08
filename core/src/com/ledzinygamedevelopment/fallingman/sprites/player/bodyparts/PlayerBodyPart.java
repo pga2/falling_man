@@ -30,7 +30,7 @@ public abstract class PlayerBodyPart extends Sprite {
     protected String bodyPartName;
 
     public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart) {
-        super(gameScreen.getAtlas().findRegion("player"));
+        //super(gameScreen.getAtlas().findRegion("player"));
         this.world = world;
         this.gameScreen = gameScreen;
         this.texturePos = texturePos;
@@ -39,7 +39,8 @@ public abstract class PlayerBodyPart extends Sprite {
         joints = new Array<>();
         touchWall = false;
         defineBodyPart();
-        bodyPartTexture = new TextureRegion(getTexture(), 1 + 160 * texturePos, 99, 160, 160);
+
+        bodyPartTexture = new TextureRegion(gameScreen.getAtlas().findRegion("player"), 0 + 160 * texturePos, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);

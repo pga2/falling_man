@@ -1,7 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -27,8 +26,6 @@ import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Roc
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.HighScoresButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
@@ -39,7 +36,7 @@ import java.util.Random;
 
 public class MenuScreen implements GameScreen {
 
-
+    private byte currentScreen;
     private Array<Rock> rocks;
     private OrthographicCamera gameCam;
     private ExtendViewport gamePort;
@@ -60,6 +57,7 @@ public class MenuScreen implements GameScreen {
 
     public MenuScreen(FallingMan game) {
         this.game = game;
+        currentScreen = FallingMan.CURRENT_SCREEN;
         atlas = new TextureAtlas("player.pack");
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
@@ -178,11 +176,18 @@ public class MenuScreen implements GameScreen {
         }
         game.batch.end();
 
-        if (loadNewGame) {
-            PlayerVectors playerVectors = new PlayerVectors(player, true);
-            playerVectors.calculatePlayerVectors();
-            dispose();
-            game.setScreen(new PlayScreen(game, playerVectors));
+
+        switch (currentScreen) {
+            case FallingMan.ONE_ARMED_BANDIT_SCREEN:
+                dispose();
+                game.setScreen(new OneArmedBanditScreen(game));
+                break;
+            case FallingMan.PLAY_SCREEN:
+                PlayerVectors playerVectors = new PlayerVectors(player, true);
+                playerVectors.calculatePlayerVectors();
+                dispose();
+                game.setScreen(new PlayScreen(game, playerVectors));
+                break;
         }
     }
 
@@ -230,11 +235,6 @@ public class MenuScreen implements GameScreen {
     }
 
     @Override
-    public void setLoadNewGame(boolean loadNewGame) {
-        this.loadNewGame = loadNewGame;
-    }
-
-    @Override
     public void setLoadMenu(boolean loadMenu) {
 
     }
@@ -242,6 +242,27 @@ public class MenuScreen implements GameScreen {
     @Override
     public void setStopRock(boolean stopRock) {
 
+    }
+
+    @Override
+    public GoldAndHighScoresBackground getGoldAndHighScoresBackground() {
+        return goldAndHighScoresBackground;
+    }
+
+    @Override
+    public void setGameScreen(GameScreen gameScreen) {
+        dispose();
+        game.setScreen(gameScreen);
+    }
+
+    @Override
+    public FallingMan getFallingMan() {
+        return game;
+    }
+
+    @Override
+    public void setCurrentScreen(byte currentScreen) {
+        this.currentScreen = currentScreen;
     }
 
     public void generateNewMap() {
@@ -281,7 +302,7 @@ public class MenuScreen implements GameScreen {
 
     public void generateWindows() {
         saveData = new SaveData();
-        goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
         goldAndHighScoresBackground = new GoldAndHighScoresBackground(this, world);
+        goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
     }
 }

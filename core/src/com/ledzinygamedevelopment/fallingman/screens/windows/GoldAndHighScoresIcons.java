@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -44,6 +45,15 @@ public class GoldAndHighScoresIcons extends Sprite {
 
     public void update(float dt, Vector2 playerPos) {
         setPosition(106 / FallingMan.PPM, playerPos.y + 1046 / FallingMan.PPM);
+        GlyphLayout glyphLayout = new GlyphLayout(font, String.valueOf(gold));
+        if (glyphLayout.width + 150 / FallingMan.PPM > gameScreen.getGoldAndHighScoresBackground().getScaleX() * (640 / FallingMan.PPM)) {
+            gameScreen.getGoldAndHighScoresBackground().setScale((glyphLayout.width * FallingMan.PPM + 150) / 640, 1);
+        }
+        glyphLayout = new GlyphLayout(font, String.valueOf(highScore));
+        if (glyphLayout.width + 150 / FallingMan.PPM > gameScreen.getGoldAndHighScoresBackground().getScaleX() * (640 / FallingMan.PPM)) {
+            gameScreen.getGoldAndHighScoresBackground().setScale((glyphLayout.width * FallingMan.PPM + 150) / 640, 1);
+        }
+        //gameScreen.getGoldAndHighScoresBackground().setScale(2, 1);
     }
 
     public void draw (Batch batch) {

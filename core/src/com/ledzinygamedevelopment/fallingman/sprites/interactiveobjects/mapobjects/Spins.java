@@ -21,11 +21,12 @@ public class Spins extends InteractiveTileObject{
     @Override
     public void touched() {
         switch (getCells().size) {
-            case 4:
-                playScreen.setNumberOfSpins(1);
-                break;
             case 9:
-                playScreen.setNumberOfSpins(3);
+                playScreen.getSaveData().addSpins(3);
+                break;
+            case 4:
+            default:
+                playScreen.getSaveData().addSpins(1);
                 break;
         }
         for(TiledMapTileLayer.Cell cell : getCells()) {
@@ -36,9 +37,9 @@ public class Spins extends InteractiveTileObject{
                 e.printStackTrace();
             }
         }
-        playScreen.createOneArmedBanditObjects();
+        //playScreen.createOneArmedBanditObjects();
         setCategoryFilter(FallingMan.DESTROYED_BIT);
-        playScreen.setStopRock(true);
+        //playScreen.setStopRock(true);
         touched = false;
     }
 }

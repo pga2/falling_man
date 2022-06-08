@@ -35,6 +35,11 @@ public class FallingMan extends Game {
 	public static final short WALL_INSIDE_TOWER = 8192;
 	public static final short INVISIBLE_BODY_PART_BIT = 16384;
 
+	public static final byte CURRENT_SCREEN = 0;
+	public static final byte MENU_SCREEN = 1;
+	public static final byte PLAY_SCREEN = 2;
+	public static final byte ONE_ARMED_BANDIT_SCREEN = 3;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
