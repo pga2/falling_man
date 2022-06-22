@@ -48,4 +48,13 @@ public class SaveData {
         return prefs.getInteger("spins");
     }
 
+    public void setMillis(long millis) {
+        prefs.putLong("time", millis);
+        prefs.flush();
+    }
+
+    public long getMillis() {
+        return prefs.getLong("time");
+    }
+
 }

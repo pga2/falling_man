@@ -26,6 +26,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Roc
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.HighScoresButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
@@ -54,6 +55,7 @@ public class MenuScreen implements GameScreen {
     private GoldAndHighScoresIcons goldAndHighScoresIcons;
     private GoldAndHighScoresBackground goldAndHighScoresBackground;
     private SaveData saveData;
+    private boolean noButtonTouched;
 
     public MenuScreen(FallingMan game) {
         this.game = game;
@@ -78,14 +80,16 @@ public class MenuScreen implements GameScreen {
         world.setContactListener(new WorldContactListener(player, this));
 
         rocks = new Array<>();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             rocks.add(new Rock(this, world));
         }
+        rocks.add(new Rock(this, world, true));
         generateWindows();
         buttons = new Array<>();
-        buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
+        //buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //player.b2body.applyLinearImpulse(new Vector2(3, 0), player.b2body.getWorldCenter(), true);
+        noButtonTouched = true;
     }
 
     @Override
@@ -95,6 +99,7 @@ public class MenuScreen implements GameScreen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isTouched()) {
+            noButtonTouched = true;
 
             // check if buttons click
             Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
@@ -102,7 +107,11 @@ public class MenuScreen implements GameScreen {
                 if (button.mouseOver(mouseVector) && !button.isLocked()) {
                     button.touched();
                     button.setClicked(true);
+                    noButtonTouched = false;
                 }
+            }
+            if (noButtonTouched) {
+                currentScreen = FallingMan.PLAY_SCREEN;
             }
         } else {
             for (Button button : buttons) {
@@ -126,8 +135,8 @@ public class MenuScreen implements GameScreen {
 
         player.update(dt);
 
-        goldAndHighScoresBackground.update(dt, player.b2body.getPosition());
-        goldAndHighScoresIcons.update(dt, player.b2body.getPosition());
+        goldAndHighScoresBackground.update(dt, player.b2body.getPosition(), gamePort.getWorldHeight());
+        goldAndHighScoresIcons.update(dt, player.b2body.getPosition(), gamePort.getWorldHeight());
 
         for (Rock rock : rocks) {
             rock.update(dt, player.b2body.getPosition(), false);
@@ -263,6 +272,16 @@ public class MenuScreen implements GameScreen {
     @Override
     public void setCurrentScreen(byte currentScreen) {
         this.currentScreen = currentScreen;
+    }
+
+    @Override
+    public void addCoinsFromChest(int numberOfCoins) {
+
+    }
+
+    @Override
+    public void removeChest(BigChest bigChest) {
+
     }
 
     public void generateNewMap() {

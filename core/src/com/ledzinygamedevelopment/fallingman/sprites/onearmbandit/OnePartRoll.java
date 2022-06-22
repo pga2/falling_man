@@ -1,8 +1,13 @@
 package com.ledzinygamedevelopment.fallingman.sprites.onearmbandit;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.tools.SaveData;
+
+import java.util.Random;
 
 public class OnePartRoll extends Sprite {
 
@@ -11,6 +16,10 @@ public class OnePartRoll extends Sprite {
     private float height;
     private int currentTextureNumber;
     private boolean winOneArmedBanditScaleUp;
+    private float flyingTime;
+    private Vector3 flyingDirection;
+    private boolean toRemove;
+    private float endAnimationTime;
 
     public OnePartRoll(GameScreen gameScreen, float posX, float posY, float width, float height, int rollTexture) {
         this.gameScreen = gameScreen;
@@ -24,6 +33,33 @@ public class OnePartRoll extends Sprite {
         setPosition(posX, posY);
         setOrigin(getWidth() / 2, getHeight() / 2);
         winOneArmedBanditScaleUp = true;
+        flyingTime = 0;
+        toRemove = false;
+    }
+
+    public void flyingRollUpdate(float dt, Vector2 lastDirection, SaveData saveData) {
+        if (flyingTime < 0.25f) {
+            setPosition(getX() + flyingDirection.x, getY() + flyingDirection.y);
+            setRotation(getRotation() + flyingDirection.z);
+            if (currentTextureNumber == 1) {
+                setScale((4 - flyingTime) / 4);
+            }
+        } else if (flyingTime <= endAnimationTime){
+            setPosition(getX() + (lastDirection.x - getWidth() / 2 - getX()) * dt, getY() + (lastDirection.y - getHeight() / 4 - getY()) * dt);
+            setRotation(getRotation() + flyingDirection.z * 2);
+            if (currentTextureNumber == 1) {
+                setScale((4 - flyingTime) / 4);
+            }
+        } else {
+            toRemove = true;
+        }
+        flyingTime += dt;
+    }
+
+    public void startFlying() {
+        Random random = new Random();
+        flyingDirection = new Vector3(random.nextFloat() / 1.5f - 0.3333f, random.nextFloat() / 1.5f - 0.3333f, (random.nextFloat() * 12 - 6));
+        endAnimationTime = random.nextFloat() + 1.5f;
     }
 
     public boolean isWinOneArmedBanditScaleUp() {
@@ -37,4 +73,9 @@ public class OnePartRoll extends Sprite {
     public int getCurrentTextureNumber() {
         return currentTextureNumber;
     }
+
+    public boolean isToRemove() {
+        return toRemove;
+    }
+
 }

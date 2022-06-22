@@ -3,6 +3,9 @@ package com.ledzinygamedevelopment.fallingman.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -14,8 +17,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
@@ -24,6 +29,9 @@ import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.SpinsBackgroun
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 public class OneArmedBanditScreen implements GameScreen {
@@ -60,6 +68,22 @@ public class OneArmedBanditScreen implements GameScreen {
     private boolean loseOneArmedBandit;
     private Array<SpinsBackground> spinsBackgrounds;
     private Array<SpinsAmountLine> spinsAmountLines;
+    private Array<OnePartRoll> flyingRolls;
+
+    private BitmapFont font;
+    private Date date;
+    private GregorianCalendar calendarG;
+    private boolean startCountingDateAgain;
+    private int startCountingMinute;
+    private int startCountingHour;
+    private long minutesTillNextSpins;
+    private Calendar minutesTillNextSpinsCallendar;
+
+    private GoldAndHighScoresIcons goldAndHighScoresIcons;
+    private GoldAndHighScoresBackground goldAndHighScoresBackground;
+    private float goldAndHighScoresTextSize;
+    private Array<BigChest> bigChests;
+
 
     public OneArmedBanditScreen(FallingMan game) {
         atlas = new TextureAtlas("player.pack");
@@ -92,6 +116,26 @@ public class OneArmedBanditScreen implements GameScreen {
 
         spinsBackgrounds = new Array<>();
         spinsAmountLines = new Array<>();
+
+        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
+        font.getData().setScale(0.0045f);
+
+        GregorianCalendar prefsCallendar = new GregorianCalendar();
+        if (saveData.getMillis() == 0) {
+            prefsCallendar.setTime(new Date());
+            saveData.setMillis(prefsCallendar.getTimeInMillis());
+        } else {
+            prefsCallendar.setTimeInMillis(saveData.getMillis());
+        }
+        minutesTillNextSpinsCallendar = prefsCallendar;
+        startCountingDateAgain = false;
+        generateWindows();
+        flyingRolls = new Array<>();
+        goldAndHighScoresTextSize = 1;
+        bigChests = new Array<>();
     }
 
 
@@ -125,6 +169,7 @@ public class OneArmedBanditScreen implements GameScreen {
                 if (button.isClicked() && !button.isLocked()) {
                     if (button.getClass().equals(SpinButton.class)) {
                         setStartRolling(true);
+                        saveData.removeSpin();
                         for (Roll roll : rolls) {
                             roll.setRollingCurrently(true);
                         }
@@ -156,7 +201,64 @@ public class OneArmedBanditScreen implements GameScreen {
             }
         }
 
+        date = new Date();
+        calendarG = new GregorianCalendar();
+        calendarG.setTime(date);
+        /*if (calendarG.get(Calendar.MINUTE) + calendarG.get(Calendar.HOUR) * 60 > startCountingHour * 60 + startCountingMinute) {
 
+        } else if (calendarG.get(Calendar.MONTH) == startCountingMinute && calendarG.get(Calendar.HOUR) == startCountingHour) {
+
+        } else if (startCountingHour * 60 +startCountingMinute >= 1380) {
+            int minutesAfterMidNight = 1440 + calendarG.compareTo()
+        }*/
+        minutesTillNextSpins = (calendarG.getTimeInMillis() - minutesTillNextSpinsCallendar.getTimeInMillis()) / 1000 / 60;
+        if (minutesTillNextSpins >= 60) {
+            for (int i = 0; i <= minutesTillNextSpins - 60; i += 60) {
+                if (saveData.getNumberOfSpins() < 50) {
+                    if (saveData.getNumberOfSpins() <= 45) {
+                        saveData.addSpins(5);
+                    } else {
+                        saveData.addSpins(50 - saveData.getNumberOfSpins());
+                    }
+                }
+                saveData.setMillis(saveData.getMillis() + 60 * 60 * 1000);
+            }
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            gregorianCalendar.setTimeInMillis(saveData.getMillis());
+            minutesTillNextSpinsCallendar = gregorianCalendar;
+        }
+
+        for (BigChest bigChest : bigChests) {
+            bigChest.update(dt);
+        }
+
+        goldAndHighScoresBackground.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
+        goldAndHighScoresIcons.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
+        Array<OnePartRoll> flytingRollsToRemove = new Array<>();
+        for (OnePartRoll flyingRoll : flyingRolls) {
+            if (flyingRoll.getCurrentTextureNumber() == 0) {
+                flyingRoll.flyingRollUpdate(dt, new Vector2(FallingMan.MIN_WORLD_WIDTH / 2f / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM), saveData);
+            } else if (flyingRoll.getCurrentTextureNumber() == 1) {
+                flyingRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4 * 3), saveData);
+            }
+            if (flyingRoll.isToRemove()) {
+                if (flyingRoll.getCurrentTextureNumber() == 0) {
+                    saveData.addSpins(1);
+                    flytingRollsToRemove.add(flyingRoll);
+                } else if (flyingRoll.getCurrentTextureNumber() == 1) {
+                    goldAndHighScoresIcons.setGoldTextScale(1.5f);
+                    saveData.addGold(3000);
+                    goldAndHighScoresIcons.setGold(saveData.getGold());
+                    flytingRollsToRemove.add(flyingRoll);
+                } else {
+                    flytingRollsToRemove.add(flyingRoll);
+                }
+            }
+        }
+        flyingRolls.removeAll(flytingRollsToRemove, false);
+        for (SpinsAmountLine spinsAmountLine : spinsAmountLines) {
+            spinsAmountLine.setScale((float) (Math.min(saveData.getNumberOfSpins(), 50)) * 1.0057f, 1);
+        }
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         gameCam.update();
         renderer.setView(gameCam);
@@ -196,10 +298,50 @@ public class OneArmedBanditScreen implements GameScreen {
         for (OneArmBandit oneArmBandit : oneArmBandits) {
             oneArmBandit.draw(game.batch);
         }
+        if (saveData.getNumberOfSpins() > 50) {
+            int numberOfSpins = saveData.getNumberOfSpins();
+            GlyphLayout glyphLayout = new GlyphLayout(font, "+" + (numberOfSpins - 50) + " spins");
+            font.draw(game.batch, "+" + (numberOfSpins - 50) + " spins", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+            startCountingDateAgain = true;
+        } else if (saveData.getNumberOfSpins() == 50) {
+            GlyphLayout glyphLayout = new GlyphLayout(font, "FULL");
+            font.draw(game.batch, "FULL", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+            startCountingDateAgain = true;
+        } else {
+
+            if (startCountingDateAgain) {
+                date = new Date();
+                minutesTillNextSpinsCallendar = new GregorianCalendar();
+                minutesTillNextSpinsCallendar.setTime(date);
+                startCountingDateAgain = false;
+            }
+            GlyphLayout glyphLayout = new GlyphLayout(font, "5 spins in: " + (60 - minutesTillNextSpins) + " min");
+            font.draw(game.batch, String.valueOf("5 spins in: " + (60 - minutesTillNextSpins) + " min"), 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+        }
+
+        int spinsInAmountLineNumber = saveData.getNumberOfSpins() < 50 ? saveData.getNumberOfSpins() : 50;
+        GlyphLayout glyphLayout1 = new GlyphLayout(font, spinsInAmountLineNumber + "/50");
+        float spinsYPos = (spinsBackgrounds.size > 0 ? spinsBackgrounds.get(0).getY() : 0) + glyphLayout1.height * 1.4f;
+        font.draw(game.batch, spinsInAmountLineNumber + "/50", 720 / FallingMan.PPM - glyphLayout1.width / 2, spinsYPos);
+
         for (Button button : buttons) {
             button.draw(game.batch);
+
         }
+
+        goldAndHighScoresBackground.draw(game.batch);
+        goldAndHighScoresIcons.draw(game.batch);
+
+
+        for (BigChest bigChest : bigChests) {
+            bigChest.draw(game.batch);
+        }
+        for (OnePartRoll flyingRoll : flyingRolls) {
+            flyingRoll.draw(game.batch);
+        }
+
         game.batch.end();
+
 
         switch (currentScreen) {
             case FallingMan.MENU_SCREEN:
@@ -248,7 +390,7 @@ public class OneArmedBanditScreen implements GameScreen {
             Roll roll = rolls.get(i);
             if (roll.isRollingCurrently()) {
                 int nextRollPosDiffY = (random.nextInt(20) + 40);
-                if (roll.getY() - nextRollPosDiffY / FallingMan.PPM > gamePort.getWorldHeight() / 2) {
+                if (roll.getY() - nextRollPosDiffY / FallingMan.PPM > gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM) {
 
                     roll.setPosition(roll.getX(), roll.getY() - nextRollPosDiffY / FallingMan.PPM);
                 } else {
@@ -271,23 +413,89 @@ public class OneArmedBanditScreen implements GameScreen {
                                     allFiguresTheSame = false;
                                 }
                             }
+                            //temp
+                            allFiguresTheSame = true;
+                            for (Roll rollFigureCheck : rolls) {
+                                rollFigureCheck.setCurrentTextureNumber(3);
+                            }
+                            //temp end
                             if (allFiguresTheSame) {
+                                if (rolls.get(0).getCurrentTextureNumber() == 0 || rolls.get(0).getCurrentTextureNumber() == 1) {
+                                    for (int j = 0; j < 3; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll.getCurrentTextureNumber());
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+                                    }
+                                    for (int j = 0; j < 4; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll.getCurrentTextureNumber());
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+
+                                    }
+                                    for (int j = 0; j < 3; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll.getCurrentTextureNumber());
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+
+                                    }
+                                } else if (rolls.get(0).getCurrentTextureNumber() == 2) {
+                                    for (int j = 0; j < 9; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+                                    }
+                                    for (int j = 0; j < 12; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+
+                                    }
+                                    for (int j = 0; j < 9; j++) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+
+                                    }
+                                } else if (rolls.get(0).getCurrentTextureNumber() == 3) {
+                                    bigChests.add(new BigChest(this, 720 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 120 / FallingMan.PPM));
+                                }
                                 spinButton.setLocked(true);
                                 winOneArmedBandit = true;
-                                smallRolls.add(new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
-                                smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
-                                smallRolls.add(new OnePartRoll(this, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                smallRolls.add(new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                smallRolls.add(new OnePartRoll(this, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                 rolls = new Array<>();
                             } else {
+                                for (Roll roll1 : rolls) {
+                                    if (roll1.getCurrentTextureNumber() == 0) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, roll1.getPosX(), gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll1.getCurrentTextureNumber());
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+                                    }
+                                }
+                                for (Roll roll1 : rolls) {
+                                    if (roll1.getCurrentTextureNumber() == 1) {
+                                        OnePartRoll tempRoll = new OnePartRoll(this, roll1.getPosX(), gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll1.getCurrentTextureNumber());
+                                        tempRoll.startFlying();
+                                        flyingRolls.add(tempRoll);
+                                    }
+                                }
+                                for (Roll roll1 : rolls) {
+                                    if (roll1.getCurrentTextureNumber() == 2) {
+                                        for (int j = 0; j < 3; j++) {
+                                            OnePartRoll tempRoll = new OnePartRoll(this, roll1.getPosX(), gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                            tempRoll.startFlying();
+                                            flyingRolls.add(tempRoll);
+                                        }
+                                    }
+                                }
                                 spinButton.setLocked(false);
-                                saveData.removeSpin();
                                 if (saveData.getNumberOfSpins() <= 0) {
                                     loseOneArmedBandit = true;
                                     //removeButton(spinButton);
                                     spinButton.setLocked(true);
                                 }
                             }
-                            spinsAmountLines.get(0).setScale((float) (Math.min(saveData.getNumberOfSpins(), 50)) * 1.0057f, 1);
                             rollingTime = 0;
                             startRolling = false;
 
@@ -325,10 +533,10 @@ public class OneArmedBanditScreen implements GameScreen {
             int sizeOfSmallRolls = smallRolls.size;
             for (int i = 0; i < sizeOfSmallRolls; i++) {
                 OnePartRoll smallRoll = smallRolls.get(0);
-                if (!(saveData.getNumberOfSpins() <= 0)) {
+                if (!(saveData.getNumberOfSpins() <= 0) && bigChests.size == 0) {
                     spinButton.setLocked(false);
                 }
-                rolls.add(new Roll(this, world, smallRoll.getX(), gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM, smallRoll.getCurrentTextureNumber()));
+                rolls.add(new Roll(this, world, smallRoll.getX(), gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM, smallRoll.getCurrentTextureNumber()));
                 smallRolls.removeValue(smallRoll, false);
             }
         } else {
@@ -346,19 +554,19 @@ public class OneArmedBanditScreen implements GameScreen {
     }
 
     public void createOneArmedBanditObjects() {
-        oneArmBandits.add(new OneArmBandit(this, world, gamePort.getWorldHeight() / 2));
+        oneArmBandits.add(new OneArmBandit(this, world, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM));
         spinsBackgrounds.add(new SpinsBackground(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM));
         spinsAmountLines.add(new SpinsAmountLine(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM));
         spinsAmountLines.get(0).setScale((float) (Math.min(saveData.getNumberOfSpins(), 50)) * 1.0057f, 1);
         buttons = new Array<>();
-        spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 760 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
+        spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 360 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
         buttons.add(spinButton);
         startRolling = false;
         rollingTime = 0;
         Gdx.app.log("world height", String.valueOf(gamePort.getScreenHeight()));
-        Roll roll1 = new Roll(this, world, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
-        Roll roll2 = new Roll(this, world, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
-        Roll roll3 = new Roll(this, world, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 424 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll1 = new Roll(this, world, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll2 = new Roll(this, world, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll3 = new Roll(this, world, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         rolls = new Array<>();
         rolls.add(roll1);
         rolls.add(roll2);
@@ -372,6 +580,11 @@ public class OneArmedBanditScreen implements GameScreen {
         if (saveData.getNumberOfSpins() <= 0) {
             spinButton.setLocked(true);
         }
+    }
+
+    public void generateWindows() {
+        goldAndHighScoresBackground = new GoldAndHighScoresBackground(this, world);
+        goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
     }
 
     @Override
@@ -401,7 +614,7 @@ public class OneArmedBanditScreen implements GameScreen {
 
     @Override
     public GoldAndHighScoresBackground getGoldAndHighScoresBackground() {
-        return null;
+        return goldAndHighScoresBackground;
     }
 
     public void setGameScreen(GameScreen gameScreen) {
@@ -429,6 +642,19 @@ public class OneArmedBanditScreen implements GameScreen {
 
     public void setNumberOfSpins(int numberOfSpins) {
         this.numberOfSpins = numberOfSpins;
+    }
+
+    public void addCoinsFromChest(int numberOfCoins) {
+        for (int i = 0; i < numberOfCoins; i++) {
+            OnePartRoll tempRoll = new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+            tempRoll.startFlying();
+            flyingRolls.add(tempRoll);
+            //bigChests = new Array<>();
+        }
+    }
+
+    public void removeChest(BigChest bigChest) {
+        bigChests.removeValue(bigChest, false);
     }
 
 }

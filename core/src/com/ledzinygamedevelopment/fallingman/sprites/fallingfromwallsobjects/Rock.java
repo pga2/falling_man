@@ -1,11 +1,16 @@
 package com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
@@ -18,6 +23,7 @@ public class Rock extends Sprite {
     private GameScreen gameScreen;
     private World world;
     private Body b2body;
+    private int radius;
 
     public Rock(GameScreen gameScreen, World world) {
         this.gameScreen = gameScreen;
@@ -50,7 +56,17 @@ public class Rock extends Sprite {
 
         setOrigin(getWidth() / 2, getHeight() / 2);
         defineRock(chosenSprite);
-        //setColor(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1);
+    }
+
+    public Rock(GameScreen gameScreen, World world, boolean bigRock) {
+        this.gameScreen = gameScreen;
+        this.world = world;
+        random = new Random();
+
+        setBounds(0, 0, 1056 / FallingMan.PPM, 1056 / FallingMan.PPM);
+        setRegion(gameScreen.getAtlas().findRegion("rock1056"), 0, 0, 1056, 1056);
+        setOrigin(getWidth() / 2, getHeight() / 2);
+        defineRock(11);
     }
 
     public void update(float dt, Vector2 playerPos, boolean stopRocks) {
@@ -60,12 +76,12 @@ public class Rock extends Sprite {
             } else if (b2body.getLinearVelocity().x < -5) {
                 b2body.setLinearVelocity(new Vector2(-5, b2body.getLinearVelocity().y));
             }
-            if (b2body.getPosition().y < playerPos.y + 800 / FallingMan.PPM) {
+            if (b2body.getPosition().y < playerPos.y + (800 + radius) / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y < 0) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 0));
                 }
                 b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, 10f), b2body.getWorldCenter(), true);
-            } else if (b2body.getPosition().y < playerPos.y + 1100 / FallingMan.PPM) {
+            } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y < -5) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -5));
                 }
@@ -82,15 +98,17 @@ public class Rock extends Sprite {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 5));
                 }
                 b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, -10f), b2body.getWorldCenter(), true);
-            } else if (b2body.getPosition().y < playerPos.y + 1100 / FallingMan.PPM) {
+            } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -2));
             }
         }
         if (b2body.getPosition().x < 96 / FallingMan.PPM) {
-            b2body.setTransform(144 / FallingMan.PPM, b2body.getPosition().y, b2body.getAngle());
+            b2body.setTransform(160 + random.nextInt(100) / FallingMan.PPM, b2body.getPosition().y, b2body.getAngle());
+            b2body.setLinearVelocity(0, 0);
         }
         if (b2body.getPosition().x > (1440 - 96) / FallingMan.PPM) {
-            b2body.setTransform((1440 - 144) / FallingMan.PPM, b2body.getPosition().y, b2body.getAngle());
+            b2body.setTransform((1440 - (160 + random.nextInt(100))) / FallingMan.PPM, b2body.getPosition().y, b2body.getAngle());
+            b2body.setLinearVelocity(0, 0);
         }
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRotation((float) Math.toDegrees(b2body.getAngle()));
@@ -98,23 +116,38 @@ public class Rock extends Sprite {
 
     public void defineRock(int chosenSprite) {
         BodyDef bdef = new BodyDef();
-        CircleShape shape = new CircleShape();
+        Shape shape = new CircleShape();
         FixtureDef fdef = new FixtureDef();
         switch (chosenSprite) {
             case 0:
                 bdef.position.set((random.nextInt(1440 - 96) + 48) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1100) / FallingMan.PPM);
                 shape.setRadius(24 / FallingMan.PPM);
                 fdef.density = 5f;
+                radius = 24;
                 break;
             case 1:
                 bdef.position.set((random.nextInt(1440 - 192) + 96) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1100) / FallingMan.PPM);
                 shape.setRadius(48 / FallingMan.PPM);
                 fdef.density = 10f;
+                radius = 48;
+                break;
+            case 11:
+                bdef.position.set(192 + 528 / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y +  1100 / FallingMan.PPM);
+                shape.setRadius(528 / FallingMan.PPM);
+                fdef.density = 100f;
+                radius = 528;
                 break;
             default:
-                bdef.position.set((random.nextInt(1440 - 320) + 160) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1100) / FallingMan.PPM);
+                /*bdef.position.set((random.nextInt(1440 - 320) + 160) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1100) / FallingMan.PPM);
                 shape.setRadius(80 / FallingMan.PPM);
                 fdef.density = 15f;
+                radius = 80;*/
+                shape = new PolygonShape();
+                bdef.position.set((random.nextInt(1440 - 320) + 160) / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y + (random.nextInt(800) + 1100) / FallingMan.PPM);
+
+                ((PolygonShape) shape).setAsBox(160  / FallingMan.PPM, 160  / FallingMan.PPM);
+                radius = 80;
+
                 break;
         }
 

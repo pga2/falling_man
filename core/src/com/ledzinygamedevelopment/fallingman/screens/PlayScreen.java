@@ -30,6 +30,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
@@ -136,9 +137,10 @@ public class PlayScreen implements GameScreen {
         loseOneArmedBandit = false;
         //Rocks falling from sky
         rocks = new Array<>();
-        for (int i = 0; i < 200; i++) {
+        /*for (int i = 0; i < 50; i++) {
             rocks.add(new Rock(this, world));
-        }
+        }*/
+        rocks.add(new Rock(this, world, true));
         allFPSData = new LinkedList<>();
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
         //gameCam.zoom = 5;
@@ -346,13 +348,13 @@ public class PlayScreen implements GameScreen {
                 game.setScreen(new MenuScreen(game));
                 break;
         }
-        /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
+        Gdx.app.log("FPS: ", String.valueOf(1 / delta));
         allFPSData.add(1 / delta);
         Long allFps = 0l;
         for(Float integer : allFPSData) {
             allFps += integer.longValue();
         }
-        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));*/
+        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));
     }
 
     @Override
@@ -557,6 +559,16 @@ public class PlayScreen implements GameScreen {
     @Override
     public void setCurrentScreen(byte currentScreen) {
         this.currentScreen = currentScreen;
+    }
+
+    @Override
+    public void addCoinsFromChest(int numberOfCoins) {
+
+    }
+
+    @Override
+    public void removeChest(BigChest bigChest) {
+
     }
 
     public HUD getHud() {
