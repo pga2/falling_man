@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -57,6 +58,7 @@ public class HUD {
 
         viewport = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, new OrthographicCamera());
+
         stage = new Stage(viewport, sb);
         Table table = new Table();
         table.top();
@@ -65,16 +67,16 @@ public class HUD {
         hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         hudFont.setUseIntegerPositions(false);
         hudFont.getData().setScale(0.01f);
-        goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, Color.GOLD));
+        goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceLabel = new Label("DIST", new Label.LabelStyle(hudFont, Color.BLACK));
-        goldIntLabel = new Label(String.valueOf(gold), new Label.LabelStyle(hudFont, Color.GOLD));
+        goldIntLabel = new Label(String.valueOf(gold), new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceIntLabel = new Label(String.valueOf(distance), new Label.LabelStyle(hudFont, Color.BLACK));
 
-        table.add(goldLabel).expandX().padTop(0.001f);
-        table.add(distanceLabel).expandX().padTop(0.001f);
+        table.add(goldLabel).expandX().padTop(-1f);
+        table.add(distanceLabel).expandX().padTop(-1f);
         table.row();
-        table.add(goldIntLabel).expandX();
-        table.add(distanceIntLabel).expandX();
+        table.add(goldIntLabel).expandX().padTop(-1);
+        table.add(distanceIntLabel).expandX().padTop(-1);
 
         stage.addActor(table);
 
@@ -87,7 +89,7 @@ public class HUD {
             distanceIntLabel.setText(wholeDistance);
 
             goldIntLabel.setText(gold);
-        } else {
+        }/* else {
             if(gameOverTimer < 2) {
                 goldIntLabelGameOver.setText((int) (gold * Math.sqrt(Math.sqrt(gameOverTimer / 2))));
                 goldIntLabelGameOver.setPosition(table.getWidth() / 2f - goldIntLabelGameOver.getWidth() / 2, goldIntLabelGameOver.getY());
@@ -110,7 +112,8 @@ public class HUD {
                 distanceIntLabelGameOver.setPosition(table.getWidth() / 2f - distanceIntLabelGameOver.getWidth() / 2, distanceIntLabelGameOver.getY());
                 goldIntLabelGameOver.setPosition(table.getWidth() / 2f - goldIntLabelGameOver.getWidth() / 2, goldIntLabelGameOver.getY());
             }
-        }
+        }*/
+        //Gdx.app.log("HUD height", String.valueOf());
 
     }
 
@@ -118,7 +121,7 @@ public class HUD {
         gameOverStage = true;
         stage = new Stage(viewport, sb);
 
-        goldLabelGameOver = new Label("GOLD", new Label.LabelStyle(hudFont, Color.GOLD));
+        /*goldLabelGameOver = new Label("GOLD", new Label.LabelStyle(hudFont, Color.GOLD));
         goldLabelGameOver.setAlignment(Align.center);
         distanceLabelGameOver = new Label("DISTANCE", new Label.LabelStyle(hudFont, Color.BLACK));
         distanceLabelGameOver.setAlignment(Align.center);
@@ -137,7 +140,7 @@ public class HUD {
         //table.debugAll();
         table.setPosition(FallingMan.MIN_WORLD_WIDTH / 2f / FallingMan.PPM - table.getWidth() / 2,
                 (viewport.getWorldHeight() / 2f - table.getHeight() / 2) + 500 / FallingMan.PPM);
-        stage.addActor(table);
+        stage.addActor(table);*/
     }
 
     public Stage getStage() {
@@ -170,5 +173,9 @@ public class HUD {
 
     public Integer getWholeDistance() {
         return wholeDistance;
+    }
+
+    public boolean isGameOverStage() {
+        return gameOverStage;
     }
 }

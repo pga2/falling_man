@@ -20,7 +20,7 @@ public class Spark extends Sprite {
         //super(playScreen.getAtlas().findRegion("spark"));
         this.playScreen = playScreen;
 
-        sparkTexture = new TextureRegion(playScreen.getAtlas().findRegion("spark"), 0, 0, 32, 32);
+        sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
         //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
         setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
         setRegion(sparkTexture);

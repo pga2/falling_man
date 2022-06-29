@@ -9,6 +9,7 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObjectInterface;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 
@@ -33,9 +34,9 @@ public class WorldContactListener implements ContactListener {
         switch (cDef) {
             case FallingMan.PLAYER_HEAD_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_HEAD_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_HEAD_BIT | FallingMan.DEAD_MACHINE_BIT:
@@ -47,51 +48,51 @@ public class WorldContactListener implements ContactListener {
                 break;
             case FallingMan.PLAYER_BELLY_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_BELLY_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_ARM_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_ARM_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_FORE_ARM_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_HAND_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_HAND_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_THIGH_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_THIGH_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_SHIN_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_SHIN_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_FOOT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_FOOT_BIT) {
-                    ((InteractiveTileObject) fixB.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixB.getUserData()).setTouched(true);
                 } else {
-                    ((InteractiveTileObject) fixA.getUserData()).setTouched(true);
+                    ((InteractiveTileObjectInterface) fixA.getUserData()).setTouched(true);
                 }
                 break;
             case FallingMan.PLAYER_HEAD_BIT | FallingMan.ROCK_BIT:

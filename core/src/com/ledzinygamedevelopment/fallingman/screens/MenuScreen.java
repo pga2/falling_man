@@ -3,8 +3,12 @@ package com.ledzinygamedevelopment.fallingman.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -17,18 +21,20 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresIcons;
+import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.HighScoresButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
+import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
@@ -37,6 +43,7 @@ import java.util.Random;
 
 public class MenuScreen implements GameScreen {
 
+    private final GameAssetManager assetManager;
     private byte currentScreen;
     private Array<Rock> rocks;
     private OrthographicCamera gameCam;
@@ -47,7 +54,8 @@ public class MenuScreen implements GameScreen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private Player player;
-    private TextureAtlas atlas;
+    private TextureAtlas defaultAtlas;
+    private final TextureAtlas bigRockAtlas;
     private FallingMan game;
     private Array<Body> worldBodies;
     private Array<Button> buttons;
@@ -56,11 +64,29 @@ public class MenuScreen implements GameScreen {
     private GoldAndHighScoresBackground goldAndHighScoresBackground;
     private SaveData saveData;
     private boolean noButtonTouched;
+    private Array<Cloud> clouds;
+    private boolean changeScreen;
+    private boolean firstTouch;
+    private Vector2 lastTouchPos;
+    private Vector2 previousTouchPos;
+    private Array<Vector2> cloudsPositionForNextScreen;
+    private Integer mapHeight;
+    private float cloudSlowingDown;
+    private float playerYBeforeLoop;
+    private boolean newScreenJustOpened;
+    private float firstOpenTimer;
+    private BitmapFont font;
+    private boolean fontScaleUp;
 
-    public MenuScreen(FallingMan game) {
+    public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
-        atlas = new TextureAtlas("player.pack");
+
+        assetManager = new GameAssetManager();
+        assetManager.loadMenuScreen();
+        assetManager.getManager().finishLoading();
+        defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
+        bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
@@ -80,16 +106,46 @@ public class MenuScreen implements GameScreen {
         world.setContactListener(new WorldContactListener(player, this));
 
         rocks = new Array<>();
-        for (int i = 0; i < 100; i++) {
+        /*for (int i = 0; i < 100; i++) {
             rocks.add(new Rock(this, world));
+        }*/
+
+        Array<Texture> rockTextures = new Array<>();
+        for (String path : assetManager.getRockTexturesPaths()) {
+            rockTextures.add((Texture) assetManager.getManager().get(path));
         }
-        rocks.add(new Rock(this, world, true));
+        rocks.add(new Rock(this, world, true, rockTextures));
         generateWindows();
         buttons = new Array<>();
         //buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
-        buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
+        //buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //player.b2body.applyLinearImpulse(new Vector2(3, 0), player.b2body.getWorldCenter(), true);
-        noButtonTouched = true;
+        noButtonTouched = false;
+        cloudSlowingDown = 0;
+        clouds = new Array<>();
+
+        MapProperties mapProp = map.getProperties();
+        mapHeight = mapProp.get("height", Integer.class);
+        for (Vector2 pos : cloudsPositionForNextScreen) {
+            Cloud cloud = new Cloud(this, 0, 0, true);
+            cloud.setPosition(pos.x, pos.y + mapHeight * 32 / FallingMan.PPM - screenHeight);
+            clouds.add(cloud);
+        }
+        changeScreen = false;
+        firstTouch = true;
+        this.cloudsPositionForNextScreen = new Array<>();
+        playerYBeforeLoop = 0;
+        newScreenJustOpened = true;
+
+        firstOpenTimer = 0;
+        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
+        font.getData().setScale(0.0060f);
+        fontScaleUp = true;
+
+        //gameCam.zoom = 5;
     }
 
     @Override
@@ -99,21 +155,51 @@ public class MenuScreen implements GameScreen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isTouched()) {
-            noButtonTouched = true;
+            if (!newScreenJustOpened) {
+                if (!changeScreen) {
+                    if (firstTouch) {
+                        previousTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                        firstTouch = false;
+                    }
+                    noButtonTouched = true;
 
-            // check if buttons click
-            Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            for (Button button : buttons) {
-                if (button.mouseOver(mouseVector) && !button.isLocked()) {
-                    button.touched();
-                    button.setClicked(true);
-                    noButtonTouched = false;
+                    // check if buttons click
+                    Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                    for (Button button : buttons) {
+                        if (button.mouseOver(mouseVector) && !button.isLocked()) {
+                            button.touched();
+                            button.setClicked(true);
+                            noButtonTouched = false;
+                        }
+                    }
+                    //previousTouchPos.x = previousTouchPos.x + player.b2body.getLinearVelocity().x / FallingMan.PPM;
+                    if (playerYBeforeLoop == 0) {
+                        playerYBeforeLoop = player.getY();
+                    }
+                    float playerYAfterLoop = player.getY();
+                    previousTouchPos.y = previousTouchPos.y + playerYAfterLoop - playerYBeforeLoop;
+                    playerYBeforeLoop = player.getY();
+                    lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                }
+
+                if (lastTouchPos.y - previousTouchPos.y < -200 / FallingMan.PPM) {
+                    if (!changeScreen) {
+                        Random random = new Random();
+                        //currentScreen = FallingMan.MENU_SCREEN;
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 26; j++) {
+                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(200)) / FallingMan.PPM, (player.getY() + gamePort.getWorldHeight() / 2) + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false));
+                            }
+                        }
+                        changeScreen = true;
+                    }
                 }
             }
-            if (noButtonTouched) {
+        } else {
+            newScreenJustOpened = false;
+            if (noButtonTouched && !changeScreen) {
                 currentScreen = FallingMan.PLAY_SCREEN;
             }
-        } else {
             for (Button button : buttons) {
                 if (button.isClicked() && !button.isLocked()) {
                     button.notTouched();
@@ -148,11 +234,35 @@ public class MenuScreen implements GameScreen {
             button.update(dt, new Vector2((FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + button.getyPosPlayerDiff() / FallingMan.PPM));
         }
 
+        Array<Cloud> cloudsToRemove = new Array<>();
+        outerloop:
+        for (Cloud cloud : clouds) {
+            if (!cloud.isSecondScreen()) {
+                if (cloud.getY() < player.getY() - gamePort.getWorldHeight() / 2) {
+                    float firstCloudYPos = cloud.getY();
+                    for (Cloud cloudGetPos : clouds) {
+                        if (!cloudGetPos.isSecondScreen()) {
+                            cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY() - firstCloudYPos));
+                        }
+                    }
+                    currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                    break outerloop;
+                }
+                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM);
+            } else if (cloud.getY() > player.getY() + gamePort.getWorldHeight() * 2) {
+                cloudsToRemove.add(cloud);
+            } else {
+                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM);
+            }
+        }
+        clouds.removeAll(cloudsToRemove, false);
 
         //checking if should generate new map
         if (player.b2body.getPosition().y < FallingMan.MAX_WORLD_HEIGHT * 0.6f / FallingMan.PPM) {
             generateNewMap();
         }
+
+        firstOpenTimer +=dt;
     }
 
     @Override
@@ -183,13 +293,38 @@ public class MenuScreen implements GameScreen {
         for (Button button : buttons) {
             button.draw(game.batch);
         }
+
+        if (fontScaleUp) {
+            if (font.getData().scaleX < 0.0066f) {
+                font.getData().setScale(font.getData().scaleX + 0.00004f);
+            } else {
+                fontScaleUp = false;
+            }
+        } else {
+            if (font.getData().scaleX > 0.0058f) {
+                font.getData().setScale(font.getData().scaleX - 0.00004f);
+            } else {
+                fontScaleUp = true;
+            }
+        }
+        GlyphLayout glyphLayout = new GlyphLayout(font, "SWIPE UP\nOR\nTOUCH THE SCREEN");
+        font.draw(game.batch, "SWIPE UP\nOR\nTOUCH THE SCREEN", 720 / FallingMan.PPM - glyphLayout.width / 2, player.getY() + glyphLayout.height * 2, glyphLayout.width, Align.center, false);
+
+        for (Cloud cloud : clouds) {
+            cloud.draw(game.batch);
+        }
+
+
+
+
+
         game.batch.end();
 
 
         switch (currentScreen) {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
-                game.setScreen(new OneArmedBanditScreen(game));
+                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY()));
                 break;
             case FallingMan.PLAY_SCREEN:
                 PlayerVectors playerVectors = new PlayerVectors(player, true);
@@ -226,11 +361,17 @@ public class MenuScreen implements GameScreen {
         renderer.dispose();
         world.dispose();
         b2dr.dispose();
+        assetManager.getManager().dispose();
     }
 
     @Override
-    public TextureAtlas getAtlas() {
-        return atlas;
+    public TextureAtlas getDefaultAtlas() {
+        return defaultAtlas;
+    }
+
+    @Override
+    public TextureAtlas getBigRockAtlas() {
+        return bigRockAtlas;
     }
 
     @Override
@@ -284,6 +425,11 @@ public class MenuScreen implements GameScreen {
 
     }
 
+    @Override
+    public SpinButton getSpinButton() {
+        return null;
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
@@ -293,6 +439,11 @@ public class MenuScreen implements GameScreen {
         //transforming rocks position to new map
         for (Rock rock : rocks) {
             rock.generateMapRockUpdate(playerPosPrevious);
+        }
+
+        for (Cloud cloud : clouds) {
+            float posYDiff = cloud.getY() - playerPosPrevious.y;
+            cloud.setPosition(cloud.getX(), player.b2body.getPosition().y + posYDiff);
         }
 
     }

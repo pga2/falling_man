@@ -1,0 +1,124 @@
+
+default.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+one_armed_bandit
+  rotate: false
+  xy: 1, 967
+  size: 1056, 1040
+  orig: 1056, 1040
+  offset: 0, 0
+  index: -1
+bigChest
+  rotate: false
+  xy: 1, 5
+  size: 960, 960
+  orig: 960, 960
+  offset: 0, 0
+  index: -1
+cloud
+  rotate: false
+  xy: 1059, 1623
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+one_armed_bandit_spins_amount_background
+  rotate: false
+  xy: 1059, 1501
+  size: 956, 120
+  orig: 956, 120
+  offset: 0, 0
+  index: -1
+gold_and_high_score_background
+  rotate: false
+  xy: 1059, 1275
+  size: 640, 224
+  orig: 640, 224
+  offset: 0, 0
+  index: -1
+spin
+  rotate: false
+  xy: 1059, 1081
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+roll0
+  rotate: false
+  xy: 963, 389
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll1
+  rotate: false
+  xy: 1157, 503
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll2
+  rotate: false
+  xy: 1351, 503
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+roll3
+  rotate: false
+  xy: 1545, 503
+  size: 192, 576
+  orig: 192, 576
+  offset: 0, 0
+  index: -1
+spin_clicked
+  rotate: false
+  xy: 1157, 309
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+smallRoll0
+  rotate: false
+  xy: 963, 195
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll1
+  rotate: false
+  xy: 1605, 1081
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+gold_and_high_score_icons
+  rotate: false
+  xy: 1701, 1275
+  size: 112, 224
+  orig: 112, 224
+  offset: 0, 0
+  index: -1
+smallRoll2
+  rotate: false
+  xy: 1815, 1307
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll3
+  rotate: false
+  xy: 963, 1
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+spins_amount_line
+  rotate: false
+  xy: 2021, 1887
+  size: 19, 120
+  orig: 19, 120
+  offset: 0, 0
+  index: -1

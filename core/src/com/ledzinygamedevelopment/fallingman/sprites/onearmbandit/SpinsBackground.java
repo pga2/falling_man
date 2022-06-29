@@ -20,7 +20,7 @@ public class SpinsBackground extends Sprite {
     public SpinsBackground(GameScreen gameScreen, World world, float posX, float posY) {
         this.gameScreen = gameScreen;
         this.world = world;
-        oneArmedBanditTexture = new TextureRegion(gameScreen.getAtlas().findRegion("one_armed_bandit_spins_amount_background"), 0, 0, 956, 120);
+        oneArmedBanditTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("one_armed_bandit_spins_amount_background"), 0, 0, 956, 120);
         setBounds(0, 0, 956 / FallingMan.PPM, 120 / FallingMan.PPM);
         setRegion(oneArmedBanditTexture);
         setPosition(posX, posY);

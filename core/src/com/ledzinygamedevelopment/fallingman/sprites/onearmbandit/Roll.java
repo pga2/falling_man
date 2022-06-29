@@ -17,6 +17,7 @@ public class Roll extends Sprite {
     private float height;
     private boolean rollingCurrently;
     private int currentTextureNumber;
+    private boolean canBeSpin;
 
     public Roll(GameScreen gameScreen, World world, float posX, float posY, float width, float height) {
         this.gameScreen = gameScreen;
@@ -29,9 +30,10 @@ public class Roll extends Sprite {
 
         setBounds(0, 0, width, height);
         currentTextureNumber = new Random().nextInt(4);
-        setRegion(gameScreen.getAtlas().findRegion("roll" + currentTextureNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("roll" + currentTextureNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX, posY);
         rollingCurrently = false;
+        canBeSpin = new Random().nextBoolean();
     }
 
     public Roll(GameScreen gameScreen, World world, float posX, float posY, float width, float height, int textureNumber) {
@@ -45,13 +47,13 @@ public class Roll extends Sprite {
 
         setBounds(0, 0, width, height);
         currentTextureNumber = textureNumber;
-        setRegion(gameScreen.getAtlas().findRegion("roll" + currentTextureNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("roll" + currentTextureNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX, posY);
         rollingCurrently = false;
     }
 
     public void setNewRegion(int regionNumber) {
-        setRegion(gameScreen.getAtlas().findRegion("roll" + regionNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("roll" + regionNumber), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
     }
 
     public int getCurrentTextureNumber() {
@@ -76,5 +78,9 @@ public class Roll extends Sprite {
 
     public void setRollingCurrently(boolean rollingCurrently) {
         this.rollingCurrently = rollingCurrently;
+    }
+
+    public boolean isCanBeSpin() {
+        return canBeSpin;
     }
 }

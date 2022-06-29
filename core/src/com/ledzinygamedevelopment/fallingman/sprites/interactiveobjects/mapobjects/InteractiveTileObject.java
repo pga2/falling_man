@@ -17,7 +17,7 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 
 import java.util.LinkedList;
 
-public abstract class InteractiveTileObject {
+public abstract class InteractiveTileObject implements InteractiveTileObjectInterface {
     protected World world;
     protected TiledMap map;
     protected TiledMapTile tile;

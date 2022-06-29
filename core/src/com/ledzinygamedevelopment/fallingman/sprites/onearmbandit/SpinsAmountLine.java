@@ -21,7 +21,7 @@ public class SpinsAmountLine extends Sprite {
     public SpinsAmountLine(GameScreen gameScreen, World world, float posX, float posY) {
         this.gameScreen = gameScreen;
         this.world = world;
-        oneArmedBanditTexture = new TextureRegion(gameScreen.getAtlas().findRegion("spins_amount_line"), 0, 0, 19, 120);
+        oneArmedBanditTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spins_amount_line"), 0, 0, 19, 120);
         setBounds(0, 0, 19 / FallingMan.PPM, 120 / FallingMan.PPM);
         setRegion(oneArmedBanditTexture);
         setPosition(posX, posY);

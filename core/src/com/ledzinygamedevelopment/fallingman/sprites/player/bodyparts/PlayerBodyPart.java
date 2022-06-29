@@ -40,7 +40,7 @@ public abstract class PlayerBodyPart extends Sprite {
         touchWall = false;
         defineBodyPart();
 
-        bodyPartTexture = new TextureRegion(gameScreen.getAtlas().findRegion("player"), 0 + 160 * texturePos, 0, 160, 160);
+        bodyPartTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("player"), 0 + 160 * texturePos, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);

@@ -9,18 +9,18 @@ public class MenuButton extends Button{
         super(gameScreen, world, posX, posY, width, height);
 
         setBounds(0, 0, width, height);
-        setRegion(gameScreen.getAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX, posY);
     }
 
     @Override
     public void touched() {
-        setRegion(gameScreen.getAtlas().findRegion("menu_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
     }
 
     @Override
     public void notTouched() {
-        setRegion(gameScreen.getAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         if(clicked) {
             gameScreen.setCurrentScreen(FallingMan.MENU_SCREEN);
         }

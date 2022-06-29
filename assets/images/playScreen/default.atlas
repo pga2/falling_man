@@ -1,0 +1,96 @@
+
+default.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+teleportation_effect
+  rotate: false
+  xy: 1, 681
+  size: 1280, 1280
+  orig: 1280, 1280
+  offset: 0, 0
+  index: -1
+cloud
+  rotate: false
+  xy: 1, 295
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 1, 133
+  size: 800, 160
+  orig: 800, 160
+  offset: 0, 0
+  index: -1
+blank160
+  rotate: false
+  xy: 1283, 1801
+  size: 160, 160
+  orig: 160, 160
+  offset: 0, 0
+  index: -1
+coin1
+  rotate: false
+  xy: 963, 615
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin2
+  rotate: false
+  xy: 1, 67
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin3
+  rotate: false
+  xy: 803, 229
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin4
+  rotate: false
+  xy: 1283, 1735
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin5
+  rotate: false
+  xy: 1445, 1897
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin6
+  rotate: false
+  xy: 963, 549
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin7
+  rotate: false
+  xy: 1029, 615
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin8
+  rotate: false
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spark
+  rotate: false
+  xy: 67, 99
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

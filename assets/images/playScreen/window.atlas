@@ -1,0 +1,12 @@
+
+window.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+window
+  rotate: false
+  xy: 1, 1
+  size: 1312, 2046
+  orig: 1312, 2046
+  offset: 0, 0
+  index: -1

@@ -22,11 +22,15 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjec
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
 
+import java.util.Calendar;
+
 public class B2WorldCreator {
+
 
     private SpinButton button;
     private Array<Body> b2bodies;
     private Array<InteractiveTileObject> interactiveTileObjects;
+    private Array<Coin> coins;
     private Array<TeleportTarget> teleportsTarget;
 
     public B2WorldCreator(PlayScreen playScreen, World world, TiledMap map) {
@@ -66,6 +70,7 @@ public class B2WorldCreator {
             b2bodies.add(body);
         }
         //coins
+        coins = new Array<>();
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             if (object.getProperties().get("tp") != null) {
@@ -79,9 +84,9 @@ public class B2WorldCreator {
                 interactiveTileObjects.add(teleportTarget);
                 teleportsTarget.add((TeleportTarget) teleportTarget);
             } else {
-                InteractiveTileObject coin = new Coin(world, map, rect, 2, playScreen);
+                Coin coin = new Coin(world, map, rect, 2, playScreen);
                 b2bodies.add(coin.getBody());
-                interactiveTileObjects.add(coin);
+                coins.add(coin);
             }
         }
 
@@ -126,6 +131,10 @@ public class B2WorldCreator {
 
     public Array<InteractiveTileObject> getInteractiveTileObjects() {
         return interactiveTileObjects;
+    }
+
+    public Array<Coin> getCoins() {
+        return coins;
     }
 
     public Array<TeleportTarget> getTeleportsTarget() {

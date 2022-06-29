@@ -1,7 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.onearmbandit;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -24,7 +23,7 @@ public class OneArmBandit extends Sprite {
         //oneArmedBanditTexture = new TextureRegion(getTexture(), 1315, 3033, 1056, 1040);
         setBounds(0, 0, 1056 / FallingMan.PPM, 1040 / FallingMan.PPM);
 
-        setRegion(gameScreen.getAtlas().findRegion("one_armed_bandit"), 0, 0, 1056, 1040);
+        setRegion(gameScreen.getDefaultAtlas().findRegion("one_armed_bandit"), 0, 0, 1056, 1040);
         setPosition(192 / FallingMan.PPM, posY);
         //setOrigin(getWidth() / 2, getHeight() / 2);
         //defineBody();

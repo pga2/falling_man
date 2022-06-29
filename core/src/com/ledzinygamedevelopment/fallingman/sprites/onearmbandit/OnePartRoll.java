@@ -29,7 +29,7 @@ public class OnePartRoll extends Sprite {
 
         setBounds(0, 0, width, height);
         currentTextureNumber = rollTexture;
-        setRegion(gameScreen.getAtlas().findRegion("smallRoll" + rollTexture), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("smallRoll" + rollTexture), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX, posY);
         setOrigin(getWidth() / 2, getHeight() / 2);
         winOneArmedBanditScaleUp = true;

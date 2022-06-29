@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,10 +26,9 @@ import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBa
 import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.MenuButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PlayAgainButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
@@ -37,6 +37,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
+import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
@@ -52,7 +53,10 @@ public class PlayScreen implements GameScreen {
     private BitmapFont font;
     private HUD hud;
     private FallingMan game;
-    private TextureAtlas atlas;
+    private TextureAtlas defaultAtlas;
+    private TextureAtlas windowAtlas;
+    private TextureAtlas bigRockAtlas;
+    private GameAssetManager assetManager;
 
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -101,7 +105,13 @@ public class PlayScreen implements GameScreen {
     private Array<Spark> sparks;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors) {
-        atlas = new TextureAtlas("player.pack");
+        assetManager = new GameAssetManager();
+        assetManager.loadPlayScreen();
+        assetManager.getManager().finishLoading();
+        defaultAtlas = assetManager.getManager().get(assetManager.getPlayScreenDefault());
+        windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
+        bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRock());
+        //atlas = new TextureAtlas("player.pack");
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
         font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
@@ -140,7 +150,11 @@ public class PlayScreen implements GameScreen {
         /*for (int i = 0; i < 50; i++) {
             rocks.add(new Rock(this, world));
         }*/
-        rocks.add(new Rock(this, world, true));
+        Array<Texture> rockTextures = new Array<>();
+        for (String path : assetManager.getRockTexturesPaths()) {
+            rockTextures.add((Texture) assetManager.getManager().get(path));
+        }
+        rocks.add(new Rock(this, world, true, rockTextures));
         allFPSData = new LinkedList<>();
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
         //gameCam.zoom = 5;
@@ -158,8 +172,8 @@ public class PlayScreen implements GameScreen {
         //player.b2body.applyLinearImpulse(new Vector2(100f, 0f), player.b2body.getWorldCenter(), true);
     }
 
-    public TextureAtlas getAtlas() {
-        return atlas;
+    public TextureAtlas getDefaultAtlas() {
+        return defaultAtlas;
     }
 
     @Override
@@ -168,52 +182,60 @@ public class PlayScreen implements GameScreen {
     }
 
     public void handleInput(float dt) {
-        //pc
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
-            player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
-            player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f, 0.05f), player.getBelly().getB2body().getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                //player.restoreBodyParts();
-        }
-
-        //mobile
-        if (Gdx.input.isTouched()) {
-
-            // check if buttons click
-            Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            for (Button button : buttons) {
-                if (button.mouseOver(mouseVector) && !button.isLocked()) {
-                    button.touched();
-                    button.setClicked(true);
-                }
-            }
-
-
-            //moving player
-            if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2f) {
+        if (!hud.isGameOverStage()) {
+            //pc
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
-            } else {
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             }
-        } else {
-            for (Button button : buttons) {
-                if (button.isClicked() && !button.isLocked()) {
-                    //player.setRemoveHeadJointsAndButton(true);
-                    if(button.getClass().equals(SpinButton.class)) {
-                        setStartRolling(true);
-                        for (Roll roll : rolls) {
-                            roll.setRollingCurrently(true);
-                        }
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f, 0.05f), player.getBelly().getB2body().getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                //player.restoreBodyParts();
+            }
+
+            //mobile
+            if (Gdx.input.isTouched()) {
+
+                // check if buttons click
+                Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                for (Button button : buttons) {
+                    if (button.mouseOver(mouseVector) && !button.isLocked()) {
+                        button.touched();
+                        button.setClicked(true);
                     }
-                    button.notTouched();
-                    //removeButton(button);
-                    button.setClicked(false);
+                }
+
+
+                //moving player
+                if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2f) {
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                } else {
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                }
+            } else {
+                for (Button button : buttons) {
+                    if (button.isClicked() && !button.isLocked()) {
+                        //player.setRemoveHeadJointsAndButton(true);
+                        if (button.getClass().equals(SpinButton.class)) {
+                            setStartRolling(true);
+                            for (Roll roll : rolls) {
+                                roll.setRollingCurrently(true);
+                            }
+                        }
+                        button.notTouched();
+                        //removeButton(button);
+                        button.setClicked(false);
+                    }
+                }
+            }
+        } else {
+            for (DefaultWindow defaultWindow : defaultWindows) {
+                if (defaultWindow.getTypeOfWindowText() == FallingMan.GAME_OVER_WINDOW && Gdx.input.isTouched() && defaultWindow.isTapExist()) {
+                    currentScreen = FallingMan.MENU_SCREEN;
                 }
             }
         }
@@ -232,6 +254,15 @@ public class PlayScreen implements GameScreen {
                 interactiveTileObject.setTouched(false);
             }
         }
+        Array<Coin> coinsToRemove = new Array<>();
+        for (Coin coin : b2WorldCreator.getCoins()) {
+            coin.update(dt);
+            if (coin.isTouched()) {
+                coin.touched();
+                coinsToRemove.add(coin);
+            }
+        }
+        b2WorldCreator.getCoins().removeAll(coinsToRemove, false);
         if (startRolling) {
             spinButton.setLocked(true);
             startRolling(dt);
@@ -261,6 +292,10 @@ public class PlayScreen implements GameScreen {
             rock.update(dt, playerPos, stopRock);
         }
 
+        for (DefaultWindow defaultWindow : defaultWindows) {
+            defaultWindow.update(dt, hud, player.b2body.getPosition());
+        }
+
         //oneArmBandit.update(dt);
         gameCam.position.y = player.b2body.getPosition().y;
 
@@ -271,11 +306,11 @@ public class PlayScreen implements GameScreen {
             if (defaultWindows.size == 0) {
                 saveData.addGold(hud.getGold());
                 saveData.setHighScore(hud.getWholeDistance());
-                defaultWindows.add(new DefaultWindow(this, world));
+                defaultWindows.add(new DefaultWindow(this, world, FallingMan.GAME_OVER_WINDOW));
                 player.createHeadJoint();
                 hud.newStageGameOver();
-                buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
-                buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
+                //buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
+                //buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
             }
             gameOver = false;
             //dispose();
@@ -295,13 +330,14 @@ public class PlayScreen implements GameScreen {
         //render map
         renderer.render();
 
-        //render box2d debug renderer
-        //b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         for (Spark spark : sparks) {
             spark.draw(game.batch);
+        }
+        for (Coin coin : b2WorldCreator.getCoins()) {
+            coin.draw(game.batch);
         }
         player.draw(game.batch);
         for (Rock rock : rocks) {
@@ -312,17 +348,8 @@ public class PlayScreen implements GameScreen {
         }
         for (FontMapObject fontMapObject : fontMapObjects) {
             GlyphLayout glyphLayout = new GlyphLayout(font, fontMapObject.getText());
+            font.setColor(new Color(174/255f, 132/255f, 26/255f, 1));
             font.draw(game.batch, fontMapObject.getText(), fontMapObject.getPosX() - glyphLayout.width / 2, fontMapObject.getPosY() + glyphLayout.height * 1.6f);
-        }
-        for (Roll roll : rolls) {
-
-            roll.draw(game.batch);
-        }
-        for (OnePartRoll smallRoll : smallRolls) {
-            smallRoll.draw(game.batch);
-        }
-        for (OneArmBandit oneArmBandit : oneArmBandits) {
-            oneArmBandit.draw(game.batch);
         }
         for (DefaultWindow window : defaultWindows) {
             window.draw(game.batch);
@@ -335,6 +362,10 @@ public class PlayScreen implements GameScreen {
 //        font.draw(game.batch, "2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 ", 0, 8100 / FallingMan.PPM);
 
         game.batch.end();
+
+        //render box2d debug renderer
+        b2dr.render(world, gameCam.combined);
+
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
 
@@ -345,7 +376,7 @@ public class PlayScreen implements GameScreen {
                 break;
             case FallingMan.MENU_SCREEN:
                 dispose();
-                game.setScreen(new MenuScreen(game));
+                game.setScreen(new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight()));
                 break;
         }
         Gdx.app.log("FPS: ", String.valueOf(1 / delta));
@@ -355,6 +386,7 @@ public class PlayScreen implements GameScreen {
             allFps += integer.longValue();
         }
         Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));
+
     }
 
     @Override
@@ -385,6 +417,7 @@ public class PlayScreen implements GameScreen {
         renderer.dispose();
         world.dispose();
         b2dr.dispose();
+        assetManager.getManager().dispose();
     }
 
     public void generateNewMap() {
@@ -571,6 +604,11 @@ public class PlayScreen implements GameScreen {
 
     }
 
+    @Override
+    public SpinButton getSpinButton() {
+        return null;
+    }
+
     public HUD getHud() {
         return hud;
     }
@@ -617,5 +655,13 @@ public class PlayScreen implements GameScreen {
 
     public SaveData getSaveData() {
         return saveData;
+    }
+
+    public TextureAtlas getWindowAtlas() {
+        return windowAtlas;
+    }
+
+    public TextureAtlas getBigRockAtlas() {
+        return bigRockAtlas;
     }
 }

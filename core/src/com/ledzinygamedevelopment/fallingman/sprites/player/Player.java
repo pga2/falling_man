@@ -80,7 +80,7 @@ public class Player extends Sprite {
         this.gameScreen = gameScreen;
         bodyPartsAll = new Array<>();
         definePlayer();
-        playerHeadTexture = new TextureRegion(gameScreen.getAtlas().findRegion("player"), 0, 0, 160, 160);
+        playerHeadTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("player"), 0, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(playerHeadTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -484,12 +484,12 @@ public class Player extends Sprite {
 
     public void setCurrentStateToTeleport(TeleportTarget teleportTarget, Teleport teleport) {
 
-        setRegion(gameScreen.getAtlas().findRegion("teleportation_effect"), 0, 0, 1280, 1280);
+        setRegion(gameScreen.getDefaultAtlas().findRegion("teleportation_effect"), 0, 0, 1280, 1280);
         setPosition(teleport.getBody().getPosition().x - getWidth() / 2, teleport.getBody().getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
         setScale(8);
         for (PlayerBodyPart playerBodyPart : bodyParts) {
-            playerBodyPart.setRegion(gameScreen.getAtlas().findRegion("blank160"), 0, 0, 160, 160);
+            playerBodyPart.setRegion(gameScreen.getDefaultAtlas().findRegion("blank160"), 0, 0, 160, 160);
         }
         createHeadJoint();
         currentState = CurrentState.TELEPORTING;

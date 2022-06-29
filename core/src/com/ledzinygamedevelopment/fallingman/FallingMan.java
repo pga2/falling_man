@@ -1,12 +1,10 @@
 package com.ledzinygamedevelopment.fallingman;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class FallingMan extends Game {
 	public SpriteBatch batch;
@@ -40,11 +38,13 @@ public class FallingMan extends Game {
 	public static final byte PLAY_SCREEN = 2;
 	public static final byte ONE_ARMED_BANDIT_SCREEN = 3;
 
+	public static final byte GAME_OVER_WINDOW = 0;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		//setScreen(new PlayScreen(this));
-		setScreen(new MenuScreen(this));
+		setScreen(new MenuScreen(this, new Array<Vector2>(), 0));
 	}
 
 	@Override
