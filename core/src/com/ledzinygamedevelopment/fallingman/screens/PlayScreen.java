@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -111,14 +113,11 @@ public class PlayScreen implements GameScreen {
         defaultAtlas = assetManager.getManager().get(assetManager.getPlayScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
         bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRock());
+        font = assetManager.getManager().get(assetManager.getFont());
+
         //atlas = new TextureAtlas("player.pack");
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        font.setUseIntegerPositions(false);
-        font.setColor(238/256f, 188/256f, 29/256f, 1);
-        font.getData().setScale(0.007f);
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
@@ -132,7 +131,8 @@ public class PlayScreen implements GameScreen {
 
         b2WorldCreator = new B2WorldCreator(this, world, map);
         //creating player
-        player = new Player(world, this);
+        MapProperties mapProp = map.getProperties();
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32);
         playerVectors.setNewPlayerVectorsFromPreviusMap(player);
         gameOver = false;
         world.setContactListener(new WorldContactListener(player, this));
@@ -157,7 +157,7 @@ public class PlayScreen implements GameScreen {
         rocks.add(new Rock(this, world, true, rockTextures));
         allFPSData = new LinkedList<>();
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
-        //gameCam.zoom = 5;
+        //gameCam.zoom = 1.1f;
         hud = new HUD(game.batch, this);
 
         defaultWindows = new Array<>();
@@ -245,7 +245,7 @@ public class PlayScreen implements GameScreen {
         handleInput(dt);
         world.step(1 / 60f, 8, 5);
 
-        if (player.b2body.getPosition().y < FallingMan.MAX_WORLD_HEIGHT * 0.6f / FallingMan.PPM) {
+        if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
             generateNewMap();
         }
         for (InteractiveTileObject interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
@@ -286,7 +286,8 @@ public class PlayScreen implements GameScreen {
         }
         player.update(dt);
 
-        hud.update(dt, player.b2body.getPosition().y);
+        MapProperties mapProp = map.getProperties();
+        hud.update(dt, player.b2body.getPosition().y, mapProp.get("height", Integer.class) * 32);
         Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
         for (Rock rock : rocks) {
             rock.update(dt, playerPos, stopRock);
@@ -308,6 +309,17 @@ public class PlayScreen implements GameScreen {
                 saveData.setHighScore(hud.getWholeDistance());
                 defaultWindows.add(new DefaultWindow(this, world, FallingMan.GAME_OVER_WINDOW));
                 player.createHeadJoint();
+                /*for (Body bodyPart : player.getBodyPartsAll()) {
+                    //world.destroyBody(player.b2body);
+                    world.destroyBody(bodyPart);
+                }*/
+                for (Rock rock : rocks) {
+                    Filter filter = new Filter();
+
+                    filter.categoryBits = FallingMan.ROCK_BIT;
+                    filter.maskBits = FallingMan.ROCK_BIT | FallingMan.DEFAULT_BIT;
+                    rock.getFixture().setFilterData(filter);
+                }
                 hud.newStageGameOver();
                 //buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
                 //buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
@@ -346,6 +358,11 @@ public class PlayScreen implements GameScreen {
         for (PlayerBodyPart bodyPart : player.getBodyParts()) {
             bodyPart.draw(game.batch);
         }
+
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(238/256f, 188/256f, 29/256f, 1);
+        font.getData().setScale(0.007f);
         for (FontMapObject fontMapObject : fontMapObjects) {
             GlyphLayout glyphLayout = new GlyphLayout(font, fontMapObject.getText());
             font.setColor(new Color(174/255f, 132/255f, 26/255f, 1));
@@ -367,7 +384,7 @@ public class PlayScreen implements GameScreen {
         b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
-        hud.getStage().draw();
+        hud.draw();
 
         switch (currentScreen) {
             case FallingMan.PLAY_SCREEN:
@@ -433,7 +450,9 @@ public class PlayScreen implements GameScreen {
 
         //transforming player position to new map
         Vector2 playerPosPrevious = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
-        player.updateBodyParts();
+        MapProperties mapProp = map.getProperties();
+
+        player.updateBodyParts(mapProp.get("height", Integer.class) * 32);
 
         for (Rock rock : rocks) {
             rock.generateMapRockUpdate(playerPosPrevious);
@@ -609,6 +628,11 @@ public class PlayScreen implements GameScreen {
         return null;
     }
 
+    @Override
+    public GameAssetManager getAssetManager() {
+        return assetManager;
+    }
+
     public HUD getHud() {
         return hud;
     }
@@ -663,5 +687,10 @@ public class PlayScreen implements GameScreen {
 
     public TextureAtlas getBigRockAtlas() {
         return bigRockAtlas;
+    }
+
+    public int getMapHeight() {
+        MapProperties mapProp = map.getProperties();
+        return mapProp.get("height", Integer.class) * 32;
     }
 }

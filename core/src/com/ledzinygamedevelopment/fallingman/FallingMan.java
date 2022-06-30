@@ -15,7 +15,6 @@ public class FallingMan extends Game {
 	public static final float PPM = 100;
 	public static final int CELL_SIZE = 32;
 	public static final int PLAYER_STARTING_X_POINT = 720;
-	public static final int PLAYER_STARTING_Y_POINT = 8640;
 
 	public static final short DEFAULT_BIT = 1;
 	public static final short INTERACTIVE_TILE_OBJECT_BIT = 2;

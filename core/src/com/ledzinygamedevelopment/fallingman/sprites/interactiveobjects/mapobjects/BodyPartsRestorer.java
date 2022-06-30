@@ -22,7 +22,7 @@ public class BodyPartsRestorer extends InteractiveTileObject{
 
     @Override
     public void touched() {
-        playScreen.getPlayer().restoreBodyParts();
+        playScreen.getPlayer().restoreBodyParts(playScreen.getMapHeight());
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         for(TiledMapTileLayer.Cell cell : getCells()) {
             cell.setTile(null);

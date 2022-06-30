@@ -33,14 +33,14 @@ one_armed_bandit_spins_amount_background
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 1059, 1275
-  size: 640, 224
-  orig: 640, 224
+  xy: 1059, 1255
+  size: 660, 244
+  orig: 660, 244
   offset: 0, 0
   index: -1
 spin
   rotate: false
-  xy: 1059, 1081
+  xy: 1059, 1061
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
@@ -54,28 +54,28 @@ roll0
   index: -1
 roll1
   rotate: false
-  xy: 1157, 503
+  xy: 1157, 483
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 roll2
   rotate: false
-  xy: 1351, 503
+  xy: 1351, 483
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 roll3
   rotate: false
-  xy: 1545, 503
+  xy: 1545, 483
   size: 192, 576
   orig: 192, 576
   offset: 0, 0
   index: -1
 spin_clicked
   rotate: false
-  xy: 1157, 309
+  xy: 1157, 289
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
@@ -89,21 +89,14 @@ smallRoll0
   index: -1
 smallRoll1
   rotate: false
-  xy: 1605, 1081
+  xy: 1605, 1061
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-gold_and_high_score_icons
-  rotate: false
-  xy: 1701, 1275
-  size: 112, 224
-  orig: 112, 224
-  offset: 0, 0
-  index: -1
 smallRoll2
   rotate: false
-  xy: 1815, 1307
+  xy: 1721, 1307
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
@@ -113,6 +106,13 @@ smallRoll3
   xy: 963, 1
   size: 192, 192
   orig: 192, 192
+  offset: 0, 0
+  index: -1
+gold_and_high_score_icons
+  rotate: false
+  xy: 1157, 63
+  size: 112, 224
+  orig: 112, 224
   offset: 0, 0
   index: -1
 spins_amount_line

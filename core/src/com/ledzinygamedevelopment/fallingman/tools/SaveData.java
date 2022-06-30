@@ -11,24 +11,24 @@ public class SaveData {
         prefs = Gdx.app.getPreferences("StickManFallingPreferences");
     }
 
-    public void setHighScore(int highScore) {
-        if (prefs.getInteger("highscore") < highScore) {
-            prefs.putInteger("highscore", highScore);
+    public void setHighScore(long highScore) {
+        if (prefs.getLong("highscore") < highScore) {
+            prefs.putLong("highscore", highScore);
             prefs.flush();
         }
     }
 
-    public void addGold(int gold) {
-        prefs.putInteger("gold", prefs.getInteger("gold") + gold);
+    public void addGold(long gold) {
+        prefs.putLong("gold", prefs.getLong("gold") + gold);
         prefs.flush();
     }
 
-    public int getGold() {
-        return prefs.getInteger("gold");
+    public long getGold() {
+        return prefs.getLong("gold");
     }
 
-    public int getHighScore() {
-        return prefs.getInteger("highscore");
+    public long getHighScore() {
+        return prefs.getLong("highscore");
     }
 
     public void addSpins(int numberOfSpins) {

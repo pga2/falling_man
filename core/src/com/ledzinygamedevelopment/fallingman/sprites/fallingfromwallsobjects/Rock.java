@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
@@ -26,6 +27,7 @@ public class Rock extends Sprite {
     private int radius;
     private Animation animation;
     private float animationTimer;
+    private Fixture fixture;
 
     public Rock(GameScreen gameScreen, World world) {
         this.gameScreen = gameScreen;
@@ -171,7 +173,8 @@ public class Rock extends Sprite {
         fdef.filter.maskBits = FallingMan.ROCK_BIT | FallingMan.DEFAULT_BIT
                 | FallingMan.PLAYER_HEAD_BIT | FallingMan.PLAYER_BELLY_BIT | FallingMan.PLAYER_ARM_BIT | FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.PLAYER_HAND_BIT
                 | FallingMan.PLAYER_THIGH_BIT | FallingMan.PLAYER_SHIN_BIT | FallingMan.PLAYER_FOOT_BIT;
-        b2body.createFixture(fdef).setUserData(this);
+        fixture = b2body.createFixture(fdef);
+        fixture.setUserData(this);
     }
 
     public void generateMapRockUpdate(Vector2 playerPosPrevious) {
@@ -188,5 +191,9 @@ public class Rock extends Sprite {
 
         //Teleporting body part
         b2body.setTransform(b2body.getPosition().x, 8640 / FallingMan.PPM + yDiff, previosBodyAngle);
+    }
+
+    public Fixture getFixture() {
+        return fixture;
     }
 }

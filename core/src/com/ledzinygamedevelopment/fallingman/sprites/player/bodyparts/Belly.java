@@ -16,15 +16,15 @@ import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 public class Belly extends PlayerBodyPart {
 
 
-    public Belly(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart) {
-        super(world, gameScreen, texturePos, sideOfBodyPart);
+    public Belly(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
+        super(world, gameScreen, texturePos, sideOfBodyPart, mapHeight);
     }
 
     @Override
     public void defineBodyPart() {
 
         BodyDef bdef = new BodyDef();
-        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM);
+        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -54,7 +54,7 @@ public class Belly extends PlayerBodyPart {
 
 
         bdef = new BodyDef();
-        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM);
+        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2bodyInvisible = world.createBody(bdef);
 

@@ -22,13 +22,13 @@ public class PlayerVectors {
         this.setVectorFromPreviusScreen = setVectorFromPreviusScreen;
     }
 
-    public void calculatePlayerVectors() {
+    public void calculatePlayerVectors(int mapHeight) {
 
         //transforming player position to new map (unvisible body parts)
         float playerHeadPreviusY = playerB2body.getPosition().y;
-        playerB2body.setTransform(playerB2body.getPosition().x, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM, playerB2body.getAngle());
+        playerB2body.setTransform(playerB2body.getPosition().x, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM, playerB2body.getAngle());
         bodyPartsCords = new HashMap<>();
-        bodyPartsCords.put("head", new Vector3(playerB2body.getPosition().x, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM, playerB2body.getAngle()));
+        bodyPartsCords.put("head", new Vector3(playerB2body.getPosition().x, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM, playerB2body.getAngle()));
         for (Body body : player.getBodyPartsAll()) {
             String bodyPart;
             //calculating distance between body part and player
@@ -47,7 +47,7 @@ public class PlayerVectors {
 
             for (PlayerBodyPart bodyPart1 : player.getBodyParts()) {
                 if (bodyPart1.getBodyPartNameFromBody(body) != "unknown") {
-                    bodyPartsCords.put(bodyPart1.getBodyPartNameFromBody(body), new Vector3(body.getPosition().x, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM + yDiff, body.getAngle()));
+                    bodyPartsCords.put(bodyPart1.getBodyPartNameFromBody(body), new Vector3(body.getPosition().x, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + yDiff, body.getAngle()));
                 }
             }
         }

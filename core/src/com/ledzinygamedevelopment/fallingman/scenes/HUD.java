@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -62,29 +63,33 @@ public class HUD {
         stage = new Stage(viewport, sb);
         Table table = new Table();
         table.top();
+        table.setPosition(table.getX(), table.getY() - 0.2f);
         table.setFillParent(true);
-        hudFont = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+
+        hudFont = playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getFont());
         hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         hudFont.setUseIntegerPositions(false);
         hudFont.getData().setScale(0.01f);
+        //hudFont = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceLabel = new Label("DIST", new Label.LabelStyle(hudFont, Color.BLACK));
         goldIntLabel = new Label(String.valueOf(gold), new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceIntLabel = new Label(String.valueOf(distance), new Label.LabelStyle(hudFont, Color.BLACK));
 
-        table.add(goldLabel).expandX().padTop(-1f);
-        table.add(distanceLabel).expandX().padTop(-1f);
+        table.add(goldLabel).expandX();
+        table.add(distanceLabel).expandX();
         table.row();
         table.add(goldIntLabel).expandX().padTop(-1);
         table.add(distanceIntLabel).expandX().padTop(-1);
 
         stage.addActor(table);
+        //stage.setDebugAll(true);
 
     }
 
-    public void update(float dt, float playerYPos) {
+    public void update(float dt, float playerYPos, int mapHeight) {
         if(!gameOverStage) {
-            distance = (int) (FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM - playerYPos) > distance ? (int) (FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM - playerYPos) : distance;
+            distance = (int) ((mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM - playerYPos) > distance ? (int) ((mapHeight - FallingMan.MAX_WORLD_HEIGHT) / FallingMan.PPM - playerYPos) : distance;
             wholeDistance = distance + previousDist;
             distanceIntLabel.setText(wholeDistance);
 
@@ -115,6 +120,14 @@ public class HUD {
         }*/
         //Gdx.app.log("HUD height", String.valueOf());
 
+    }
+
+    public void draw() {
+        hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        hudFont.setUseIntegerPositions(false);
+        hudFont.getData().setScale(0.01f);
+
+        stage.draw();
     }
 
     public void newStageGameOver() {

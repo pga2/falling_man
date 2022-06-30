@@ -2,7 +2,7 @@ package com.ledzinygamedevelopment.fallingman.tools;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
@@ -22,6 +22,9 @@ public class GameAssetManager {
     private final String playScreenWindow = "images/playScreen/window.atlas";
     private final String playScreenBigRock = "images/playScreen/big_rock.atlas";
 
+    //all screens
+    private final String font = "test_font/FSM.fnt";
+
     public void loadPlayScreen() {
         manager.load(playScreenDefault, TextureAtlas.class);
         manager.load(playScreenWindow, TextureAtlas.class);
@@ -39,11 +42,14 @@ public class GameAssetManager {
         for (String path : rockTexturesPaths) {
             manager.load(path, Texture.class);
         }
+
+        manager.load(font, BitmapFont.class);
     }
 
     public void loadMenuScreen() {
         manager.load(menuScreenDefault, TextureAtlas.class);
         manager.load(menuScreenBigRock, TextureAtlas.class);
+
         rockTexturesPaths.add("images/menuScreen/rock1.png");
         rockTexturesPaths.add("images/menuScreen/rock2.png");
         rockTexturesPaths.add("images/menuScreen/rock3.png");
@@ -57,10 +63,14 @@ public class GameAssetManager {
         for (String path : rockTexturesPaths) {
             manager.load(path, Texture.class);
         }
+
+        manager.load(font, BitmapFont.class);
     }
 
     public void loadOneArmedBandit() {
         manager.load(oneArmedBanditScreenDefault, TextureAtlas.class);
+
+        manager.load(font, BitmapFont.class);
     }
 
     public AssetManager getManager() {
@@ -93,5 +103,9 @@ public class GameAssetManager {
 
     public Array<String> getRockTexturesPaths() {
         return rockTexturesPaths;
+    }
+
+    public String getFont() {
+        return font;
     }
 }

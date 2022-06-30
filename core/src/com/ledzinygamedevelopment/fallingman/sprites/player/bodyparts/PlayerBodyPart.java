@@ -28,13 +28,15 @@ public abstract class PlayerBodyPart extends Sprite {
     protected Fixture fixture;
     protected boolean touchWall;
     protected String bodyPartName;
+    protected int mapHeight;
 
-    public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart) {
+    public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
         //super(gameScreen.getAtlas().findRegion("player"));
         this.world = world;
         this.gameScreen = gameScreen;
         this.texturePos = texturePos;
         this.sideOfBodyPart = sideOfBodyPart;
+        this.mapHeight = mapHeight;
         b2bodies = new Array<>();
         joints = new Array<>();
         touchWall = false;

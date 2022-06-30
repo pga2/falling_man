@@ -77,6 +77,7 @@ public class MenuScreen implements GameScreen {
     private float firstOpenTimer;
     private BitmapFont font;
     private boolean fontScaleUp;
+    private float fontScale;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
         this.game = game;
@@ -87,6 +88,7 @@ public class MenuScreen implements GameScreen {
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
+        font = assetManager.getManager().get(assetManager.getFont());
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
@@ -102,7 +104,8 @@ public class MenuScreen implements GameScreen {
         worldBodies = new Array<>();
         generateMapObjects();
 
-        player = new Player(world, this);
+        MapProperties mapProp = map.getProperties();
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32);
         world.setContactListener(new WorldContactListener(player, this));
 
         rocks = new Array<>();
@@ -124,7 +127,6 @@ public class MenuScreen implements GameScreen {
         cloudSlowingDown = 0;
         clouds = new Array<>();
 
-        MapProperties mapProp = map.getProperties();
         mapHeight = mapProp.get("height", Integer.class);
         for (Vector2 pos : cloudsPositionForNextScreen) {
             Cloud cloud = new Cloud(this, 0, 0, true);
@@ -138,11 +140,8 @@ public class MenuScreen implements GameScreen {
         newScreenJustOpened = true;
 
         firstOpenTimer = 0;
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        font.setUseIntegerPositions(false);
-        font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
-        font.getData().setScale(0.0060f);
+        //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        fontScale = 0.006f;
         fontScaleUp = true;
 
         //gameCam.zoom = 5;
@@ -258,7 +257,7 @@ public class MenuScreen implements GameScreen {
         clouds.removeAll(cloudsToRemove, false);
 
         //checking if should generate new map
-        if (player.b2body.getPosition().y < FallingMan.MAX_WORLD_HEIGHT * 0.6f / FallingMan.PPM) {
+        if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
             generateNewMap();
         }
 
@@ -294,16 +293,28 @@ public class MenuScreen implements GameScreen {
             button.draw(game.batch);
         }
 
+
+
+        //preparing font
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
         if (fontScaleUp) {
-            if (font.getData().scaleX < 0.0066f) {
-                font.getData().setScale(font.getData().scaleX + 0.00004f);
+            if (fontScale < 0.0066f) {
+                fontScale += 0.00004f;
+                font.getData().setScale(fontScale);
             } else {
+                font.getData().setScale(fontScale);
+                //fontScale += 0.00004f;
                 fontScaleUp = false;
             }
         } else {
-            if (font.getData().scaleX > 0.0058f) {
-                font.getData().setScale(font.getData().scaleX - 0.00004f);
+            if (fontScale > 0.0058f) {
+                fontScale -= 0.00004f;
+                font.getData().setScale(fontScale);
             } else {
+                fontScale -= 0.00004f;
+                font.getData().setScale(fontScale);
                 fontScaleUp = true;
             }
         }
@@ -328,7 +339,9 @@ public class MenuScreen implements GameScreen {
                 break;
             case FallingMan.PLAY_SCREEN:
                 PlayerVectors playerVectors = new PlayerVectors(player, true);
-                playerVectors.calculatePlayerVectors();
+
+                MapProperties mapProp = map.getProperties();
+                playerVectors.calculatePlayerVectors(mapProp.get("height", Integer.class) * 32);
                 dispose();
                 game.setScreen(new PlayScreen(game, playerVectors));
                 break;
@@ -430,11 +443,18 @@ public class MenuScreen implements GameScreen {
         return null;
     }
 
+    @Override
+    public GameAssetManager getAssetManager() {
+        return assetManager;
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
         Vector2 playerPosPrevious = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
-        player.updateBodyParts();
+
+        MapProperties mapProp = map.getProperties();
+        player.updateBodyParts(mapProp.get("height", Integer.class) * 32);
 
         //transforming rocks position to new map
         for (Rock rock : rocks) {

@@ -10,14 +10,14 @@ import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Foot extends PlayerBodyPart {
 
-    public Foot(World world, GameScreen playScreen, int texturePos, int sideOfBodyPart) {
-        super(world, playScreen, texturePos, sideOfBodyPart);
+    public Foot(World world, GameScreen playScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
+        super(world, playScreen, texturePos, sideOfBodyPart, mapHeight);
     }
 
     @Override
     public void defineBodyPart() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, FallingMan.PLAYER_STARTING_Y_POINT / FallingMan.PPM);
+        bdef.position.set(FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 

@@ -1,6 +1,5 @@
 package com.ledzinygamedevelopment.fallingman.screens.windows;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -18,18 +17,18 @@ public class GoldAndHighScoresIcons extends Sprite {
     private GameScreen gameScreen;
     private World world;
     private long gold;
-    private int highScore;
+    private long highScore;
     private float width;
     private float height;
     private float goldTextScale;
 
-    public GoldAndHighScoresIcons(GameScreen gameScreen, World world, int gold, int highScore) {
+    public GoldAndHighScoresIcons(GameScreen gameScreen, World world, long gold, long highScore) {
         this.gameScreen = gameScreen;
         this.world = world;
         this.gold = gold;
         this.highScore = highScore;
 
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.007f);
@@ -45,7 +44,12 @@ public class GoldAndHighScoresIcons extends Sprite {
     }
 
     public void update(float dt, Vector2 playerPos, float screenHeight) {
-        setPosition(106 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 260 / FallingMan.PPM);
+        setPosition(116 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 350 / FallingMan.PPM);
+
+        font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(0.007f);
         GlyphLayout glyphLayout = new GlyphLayout(font, String.valueOf(gold));
         if (glyphLayout.width + 150 / FallingMan.PPM > gameScreen.getGoldAndHighScoresBackground().getScaleX() * (640 / FallingMan.PPM)) {
             gameScreen.getGoldAndHighScoresBackground().setScale((glyphLayout.width * FallingMan.PPM + 150) / 640, 1);
@@ -59,6 +63,13 @@ public class GoldAndHighScoresIcons extends Sprite {
 
     public void draw (Batch batch) {
         super.draw(batch);
+
+
+        font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(0.007f);
+
         font.setColor(238/256f, 188/256f, 29/256f, 1);
         GlyphLayout glyphLayoutBeforeScaling = new GlyphLayout(font, String.valueOf(gold));
         float beforeWidth = glyphLayoutBeforeScaling.width;

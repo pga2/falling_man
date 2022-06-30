@@ -100,6 +100,7 @@ public class OneArmedBanditScreen implements GameScreen {
         assetManager.loadOneArmedBandit();
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenDefault());
+        font = assetManager.getManager().get(assetManager.getFont());
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
         gameCam = new OrthographicCamera();
@@ -129,7 +130,6 @@ public class OneArmedBanditScreen implements GameScreen {
         spinsBackgrounds = new Array<>();
         spinsAmountLines = new Array<>();
 
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
@@ -361,6 +361,11 @@ public class OneArmedBanditScreen implements GameScreen {
         for (OneArmBandit oneArmBandit : oneArmBandits) {
             oneArmBandit.draw(game.batch);
         }
+
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
+        font.getData().setScale(0.0045f);
         if (saveData.getNumberOfSpins() > 50) {
             int numberOfSpins = saveData.getNumberOfSpins();
             GlyphLayout glyphLayout = new GlyphLayout(font, "+" + (numberOfSpins - 50) + " spins");
@@ -488,10 +493,10 @@ public class OneArmedBanditScreen implements GameScreen {
                                     }
                                 }
                                 //temp
-                                /*allFiguresTheSame = true;
+                                allFiguresTheSame = true;
                                 for (Roll rollFigureCheck : rolls) {
-                                    rollFigureCheck.setCurrentTextureNumber(2);
-                                }*/
+                                    rollFigureCheck.setCurrentTextureNumber(3);
+                                }
                                 //temp end
                                 if (allFiguresTheSame) {
                                     if (rolls.get(0).getCurrentTextureNumber() == 0 || rolls.get(0).getCurrentTextureNumber() == 1) {
@@ -749,5 +754,10 @@ public class OneArmedBanditScreen implements GameScreen {
 
     public SpinButton getSpinButton() {
         return spinButton;
+    }
+
+    @Override
+    public GameAssetManager getAssetManager() {
+        return assetManager;
     }
 }

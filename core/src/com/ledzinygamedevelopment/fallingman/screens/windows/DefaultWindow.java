@@ -46,7 +46,8 @@ public class DefaultWindow extends Sprite {
         setRegion(playScreen.getWindowAtlas().findRegion("window"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, playScreen.getPlayer().b2body.getPosition().y - height / 2);
 
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font = playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getFont());
+        //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         font.setColor(Color.GOLD);

@@ -25,4 +25,5 @@ public interface GameScreen extends Screen {
     public void addCoinsFromChest(int numberOfCoins);
     public void removeChest(BigChest bigChest);
     public SpinButton getSpinButton();
+    public GameAssetManager getAssetManager();
 }

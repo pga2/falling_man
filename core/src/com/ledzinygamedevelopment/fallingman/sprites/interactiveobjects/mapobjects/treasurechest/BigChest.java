@@ -29,6 +29,7 @@ public class BigChest extends Sprite {
     private float thirdStageTimer;
     private boolean drawFont;
     private boolean fontScaleUp;
+    private float fontScale;
 
 
 
@@ -42,7 +43,7 @@ public class BigChest extends Sprite {
         setPosition(posX - getWidth() / 2, posY - getHeight() / 2);
         setScale(0.20f);
 
-        font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
+        font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
@@ -58,6 +59,7 @@ public class BigChest extends Sprite {
         drawFont = false;
         fontScaleUp = true;
         touchedTimer = 0;
+        fontScale = 0.015f;
     }
 
     public void update(float dt) {
@@ -134,22 +136,32 @@ public class BigChest extends Sprite {
     @Override
     public void draw(Batch batch, float worldHeight) {
         super.draw(batch);
+
+        font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
+        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        font.setUseIntegerPositions(false);
+        font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
+        font.getData().setScale(0.015f);
         if (drawFont) {
-            GlyphLayout glyphLayout = new GlyphLayout(font, "TOUCH!");
-            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, worldHeight / 2 + 700 / FallingMan.PPM + glyphLayout.height);
             if (fontScaleUp) {
-                if (font.getData().scaleX < 0.018f) {
-                    font.getData().setScale(font.getData().scaleX + 0.0005f);
+                if (fontScale < 0.018f) {
+                    fontScale += 0.0005f;
+                    font.getData().setScale(fontScale);
                 } else {
+                    font.getData().setScale(fontScale);
                     fontScaleUp = false;
                 }
             } else {
-                if (font.getData().scaleX > 0.013f) {
-                    font.getData().setScale(font.getData().scaleX - 0.0005f);
+                if (fontScale > 0.013f) {
+                    fontScale -= 0.0005f;
+                    font.getData().setScale(fontScale);
                 } else {
+                    font.getData().setScale(fontScale);
                     fontScaleUp = true;
                 }
             }
+            GlyphLayout glyphLayout = new GlyphLayout(font, "TOUCH!");
+            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, worldHeight / 2 - 900 / FallingMan.PPM + glyphLayout.height);
         }
     }
 }
