@@ -14,6 +14,7 @@ public class PlayerVectors {
     private boolean setVectorFromPreviusScreen;
     private Body playerB2body;
     private HashMap<String, Vector3> bodyPartsCords;
+    private int oldMapHeight;
 
     public PlayerVectors(Player player, boolean setVectorFromPreviusScreen) {
 
@@ -23,6 +24,7 @@ public class PlayerVectors {
     }
 
     public void calculatePlayerVectors(int mapHeight) {
+        oldMapHeight = mapHeight;
 
         //transforming player position to new map (unvisible body parts)
         float playerHeadPreviusY = playerB2body.getPosition().y;
@@ -53,16 +55,20 @@ public class PlayerVectors {
         }
     }
 
-    public void setNewPlayerVectorsFromPreviusMap(Player newPlayer) {
+    public void setNewPlayerVectorsFromPreviusMap(Player newPlayer, int mapHeight) {
+        int mapHeightDiff = 0;
+        if (mapHeight != oldMapHeight) {
+            mapHeightDiff = mapHeight - oldMapHeight;
+        }
         if (setVectorFromPreviusScreen) {
-            newPlayer.b2body.setTransform(bodyPartsCords.get("head").x, bodyPartsCords.get("head").y, bodyPartsCords.get("head").z);
+            newPlayer.b2body.setTransform(bodyPartsCords.get("head").x, bodyPartsCords.get("head").y + mapHeightDiff / FallingMan.PPM, bodyPartsCords.get("head").z);
 
             for (Body body : newPlayer.getBodyPartsAll()) {
                 PlayerBodyPart bodyPart = ((PlayerBodyPart) body.getUserData());
                 for (String key : bodyPartsCords.keySet()) {
                     if (bodyPart != null) {
                         if (key.equals(bodyPart.getBodyPartName())) {
-                            body.setTransform(bodyPartsCords.get(key).x, bodyPartsCords.get(key).y, bodyPartsCords.get(key).z);
+                            body.setTransform(bodyPartsCords.get(key).x, bodyPartsCords.get(key).y + mapHeightDiff / FallingMan.PPM, bodyPartsCords.get(key).z);
                         }
                     }
                 }

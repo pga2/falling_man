@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -42,4 +43,20 @@ public class Spins extends InteractiveTileObject{
         //playScreen.setStopRock(true);
         touched = false;
     }
+
+    @Override
+    public void draw(Batch batch) {
+
+    }
+
+    @Override
+    public void update(float dt) {
+
+    }
+
+    @Override
+    public boolean isToRemove() {
+        return false;
+    }
+
 }

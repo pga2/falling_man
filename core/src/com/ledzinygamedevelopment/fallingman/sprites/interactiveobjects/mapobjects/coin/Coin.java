@@ -1,13 +1,10 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -20,12 +17,11 @@ import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObjectInterface;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 
 import java.util.Random;
 
-public class Coin extends Sprite implements InteractiveTileObjectInterface {
+public class Coin extends Sprite implements InteractiveObjectInterface {
     private World world;
     private TiledMap map;
     private TiledMapTile tile;
@@ -39,6 +35,7 @@ public class Coin extends Sprite implements InteractiveTileObjectInterface {
     private float animationTimer;
 
     private PlayScreen playScreen;
+    private boolean toRemove;
 
     public Coin(World world, TiledMap map, Rectangle bounds, int mapLayer, PlayScreen playScreen) {
         this.world = world;
@@ -47,7 +44,7 @@ public class Coin extends Sprite implements InteractiveTileObjectInterface {
         this.mapLayer = mapLayer;
 
 
-
+        toRemove = false;
 
         Array<TextureRegion> textureRegions = new Array<>();
         for (int i = 1; i < 9; i++) {
@@ -81,6 +78,11 @@ public class Coin extends Sprite implements InteractiveTileObjectInterface {
 
     public void update(float dt) {
         setRegion(getFrame(dt));
+    }
+
+    @Override
+    public boolean isToRemove() {
+        return toRemove;
     }
 
     private TextureRegion getFrame(float dt) {
@@ -126,5 +128,8 @@ public class Coin extends Sprite implements InteractiveTileObjectInterface {
 
     public void setTouched(boolean touched) {
         this.touched = touched;
+        if (touched) {
+            toRemove = true;
+        }
     }
 }

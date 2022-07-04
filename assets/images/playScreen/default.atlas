@@ -31,65 +31,72 @@ blank160
   orig: 160, 160
   offset: 0, 0
   index: -1
-coin1
+spider
   rotate: false
-  xy: 963, 615
-  size: 64, 64
-  orig: 64, 64
+  xy: 963, 551
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
-coin2
+coin1
   rotate: false
   xy: 1, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin3
+coin2
   rotate: false
   xy: 803, 229
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin4
+coin3
   rotate: false
   xy: 1283, 1735
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin5
+coin4
   rotate: false
   xy: 1445, 1897
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+coin5
+  rotate: false
+  xy: 963, 485
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 coin6
   rotate: false
-  xy: 963, 549
+  xy: 1093, 615
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin7
   rotate: false
-  xy: 1029, 615
+  xy: 1, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin8
   rotate: false
-  xy: 1, 1
+  xy: 67, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark
   rotate: false
-  xy: 67, 99
+  xy: 803, 195
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

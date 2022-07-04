@@ -1,6 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -15,9 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 
-import java.util.LinkedList;
-
-public abstract class InteractiveTileObject implements InteractiveTileObjectInterface {
+public abstract class InteractiveTileObject implements InteractiveObjectInterface {
     protected World world;
     protected TiledMap map;
     protected TiledMapTile tile;
@@ -90,4 +88,5 @@ public abstract class InteractiveTileObject implements InteractiveTileObjectInte
 
         this.touched = touched;
     }
+
 }

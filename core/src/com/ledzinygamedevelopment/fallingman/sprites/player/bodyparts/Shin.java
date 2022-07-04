@@ -10,8 +10,8 @@ import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Shin extends PlayerBodyPart {
-    public Shin(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
-        super(world, gameScreen, texturePos, sideOfBodyPart, mapHeight);
+    public Shin(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
+        super(world, gameScreen, texturePos, sideOfBodyPart, mapHeight, spriteNumber);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
@@ -23,6 +24,21 @@ public class TeleportTarget extends InteractiveTileObject {
     @Override
     public void touched() {
         Gdx.app.log("teleport target", "");
+    }
+
+    @Override
+    public void draw(Batch batch) {
+
+    }
+
+    @Override
+    public void update(float dt) {
+
+    }
+
+    @Override
+    public boolean isToRemove() {
+        return false;
     }
 
     public int getId() {

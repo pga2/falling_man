@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,10 +26,12 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.windows.DefaultWindow;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
-import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
+import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
@@ -43,6 +46,8 @@ import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
+import com.ledzinygamedevelopment.fallingman.tools.entities.B2SteeringEntityContainer;
+import com.ledzinygamedevelopment.fallingman.tools.entities.B2dSteeringEntity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -59,6 +64,7 @@ public class PlayScreen implements GameScreen {
     private TextureAtlas windowAtlas;
     private TextureAtlas bigRockAtlas;
     private GameAssetManager assetManager;
+    private TextureAtlas playerAtlas;
 
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -106,6 +112,9 @@ public class PlayScreen implements GameScreen {
     private ArrayList<FontMapObject> fontMapObjects;
     private Array<Spark> sparks;
 
+    private Array<HuntingSpider> huntingSpiders;
+    private Array<B2SteeringEntityContainer> b2SteeringEntityContainers;
+
     public PlayScreen(FallingMan game, PlayerVectors playerVectors) {
         assetManager = new GameAssetManager();
         assetManager.loadPlayScreen();
@@ -113,6 +122,7 @@ public class PlayScreen implements GameScreen {
         defaultAtlas = assetManager.getManager().get(assetManager.getPlayScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
         bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRock());
+        playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
 
         //atlas = new TextureAtlas("player.pack");
@@ -122,18 +132,18 @@ public class PlayScreen implements GameScreen {
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("untitled1.tmx");
+        map = mapLoader.load("untitled2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2) / FallingMan.PPM, 0);
 
-        world = new World(new Vector2(0, -4f), true);
+        world = new World(new Vector2(0, -3f), true);
         b2dr = new Box2DDebugRenderer();
 
         b2WorldCreator = new B2WorldCreator(this, world, map);
         //creating player
         MapProperties mapProp = map.getProperties();
-        player = new Player(world, this, mapProp.get("height", Integer.class) * 32);
-        playerVectors.setNewPlayerVectorsFromPreviusMap(player);
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySprites());
+        playerVectors.setNewPlayerVectorsFromPreviusMap(player, mapProp.get("height", Integer.class) * 32);
         gameOver = false;
         world.setContactListener(new WorldContactListener(player, this));
 
@@ -166,6 +176,8 @@ public class PlayScreen implements GameScreen {
         fontMapObjects = new ArrayList<>();
         sparks = new Array<>();
         saveData = new SaveData();
+        huntingSpiders = new Array<>();
+        b2SteeringEntityContainers = new Array<>();
         //gameCam.zoom = 0.3f;
 
         //player.createHeadJoint();
@@ -195,6 +207,12 @@ public class PlayScreen implements GameScreen {
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 //player.restoreBodyParts();
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.M)) {
+                gameCam.zoom += 0.01f;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.N)) {
+                gameCam.zoom -= 0.01f;
             }
 
             //mobile
@@ -248,21 +266,19 @@ public class PlayScreen implements GameScreen {
         if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
             generateNewMap();
         }
-        for (InteractiveTileObject interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
+
+        Array<InteractiveObjectInterface> drawableInteractiveObjectToRemove = new Array<>();
+        for (InteractiveObjectInterface interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
+            interactiveTileObject.update(dt);
             if (interactiveTileObject.isTouched()) {
                 interactiveTileObject.touched();
                 interactiveTileObject.setTouched(false);
+                if (interactiveTileObject.isToRemove()) {
+                    drawableInteractiveObjectToRemove.add(interactiveTileObject);
+                }
             }
         }
-        Array<Coin> coinsToRemove = new Array<>();
-        for (Coin coin : b2WorldCreator.getCoins()) {
-            coin.update(dt);
-            if (coin.isTouched()) {
-                coin.touched();
-                coinsToRemove.add(coin);
-            }
-        }
-        b2WorldCreator.getCoins().removeAll(coinsToRemove, false);
+        b2WorldCreator.getInteractiveTileObjects().removeAll(drawableInteractiveObjectToRemove, false);
         if (startRolling) {
             spinButton.setLocked(true);
             startRolling(dt);
@@ -289,6 +305,7 @@ public class PlayScreen implements GameScreen {
         MapProperties mapProp = map.getProperties();
         hud.update(dt, player.b2body.getPosition().y, mapProp.get("height", Integer.class) * 32);
         Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
+
         for (Rock rock : rocks) {
             rock.update(dt, playerPos, stopRock);
         }
@@ -296,6 +313,31 @@ public class PlayScreen implements GameScreen {
         for (DefaultWindow defaultWindow : defaultWindows) {
             defaultWindow.update(dt, hud, player.b2body.getPosition());
         }
+
+        for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
+            if (player.isHunted()) {
+                b2SteeringEntityContainer.getEntity().update(dt);
+                //b2SteeringEntityContainer.getEntity().getBody().setGravityScale(0);
+            } else {
+                b2SteeringEntityContainer.getEntity().getBody().setLinearVelocity(0, 0);
+            }
+        }
+        Array<HuntingSpider> huntingSpidersToRemove = new Array<>();
+        Array<B2SteeringEntityContainer> b2SteeringEntityContainersToRemove = new Array<>();
+        for (HuntingSpider huntingSpider : huntingSpiders) {
+            huntingSpider.update(dt);
+            if (huntingSpider.isToRemove()) {
+                huntingSpidersToRemove.add(huntingSpider);
+                for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
+                    if (b2SteeringEntityContainer.getEntity().getBody().equals(huntingSpider.getBody())) {
+                        b2SteeringEntityContainersToRemove.add(b2SteeringEntityContainer);
+                    }
+                }
+                world.destroyBody(huntingSpider.getBody());
+            }
+        }
+        b2SteeringEntityContainers.removeAll(b2SteeringEntityContainersToRemove, false);
+        huntingSpiders.removeAll(huntingSpidersToRemove, false);
 
         //oneArmBandit.update(dt);
         gameCam.position.y = player.b2body.getPosition().y;
@@ -348,15 +390,20 @@ public class PlayScreen implements GameScreen {
         for (Spark spark : sparks) {
             spark.draw(game.batch);
         }
-        for (Coin coin : b2WorldCreator.getCoins()) {
-            coin.draw(game.batch);
+        for (InteractiveObjectInterface drawableInteractiveObject : b2WorldCreator.getInteractiveTileObjects()) {
+            drawableInteractiveObject.draw(game.batch);
         }
         player.draw(game.batch);
-        for (Rock rock : rocks) {
-            rock.draw(game.batch);
-        }
         for (PlayerBodyPart bodyPart : player.getBodyParts()) {
             bodyPart.draw(game.batch);
+        }
+
+        for (HuntingSpider huntingSpider : huntingSpiders) {
+            huntingSpider.draw(game.batch);
+        }
+
+        for (Rock rock : rocks) {
+            rock.draw(game.batch);
         }
 
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -381,7 +428,7 @@ public class PlayScreen implements GameScreen {
         game.batch.end();
 
         //render box2d debug renderer
-        b2dr.render(world, gameCam.combined);
+        //b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.draw();
@@ -396,13 +443,13 @@ public class PlayScreen implements GameScreen {
                 game.setScreen(new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight()));
                 break;
         }
-        Gdx.app.log("FPS: ", String.valueOf(1 / delta));
+        /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
         allFPSData.add(1 / delta);
         Long allFps = 0l;
         for(Float integer : allFPSData) {
             allFps += integer.longValue();
         }
-        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));
+        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));*/
 
     }
 
@@ -440,7 +487,8 @@ public class PlayScreen implements GameScreen {
     public void generateNewMap() {
 
         //generating new map
-        String mapName = "untitled" + new Random().nextInt(2) + ".tmx";
+        String mapName = "untitled" + new Random().nextInt(3) + ".tmx";
+        //String mapName = "untitled2.tmx";
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
         }
@@ -455,10 +503,12 @@ public class PlayScreen implements GameScreen {
         player.updateBodyParts(mapProp.get("height", Integer.class) * 32);
 
         for (Rock rock : rocks) {
-            rock.generateMapRockUpdate(playerPosPrevious);
+            rock.generateMapRockUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
         }
-        hud.setPreviousDist(hud.getPreviousDist() + hud.getDistance());
-        hud.setDistance(0);
+        for (HuntingSpider huntingSpider : huntingSpiders) {
+            huntingSpider.generateMapSpiderUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
+        }
+        hud.setWholeDistance(hud.getWholeDistance() + 1);
         fontMapObjects = new ArrayList<>();
     }
 
@@ -497,7 +547,7 @@ public class PlayScreen implements GameScreen {
                                 smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, player.b2body.getPosition().y - 1040 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                 smallRolls.add(new OnePartRoll(this, 950 / FallingMan.PPM, player.b2body.getPosition().y - 1040 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                 rolls = new Array<>();
-                                hud.setGold(hud.getGold() + new Random().nextInt(4000) + 8000);
+                                hud.setGold(hud.getGold() + (long) new Random().nextInt(4000) + 8000);
                             } else {
                                 spinButton.setLocked(false);
                                 if (--numberOfSpins <= 0) {
@@ -633,6 +683,11 @@ public class PlayScreen implements GameScreen {
         return assetManager;
     }
 
+    @Override
+    public TextureAtlas getPlayerAtlas() {
+        return playerAtlas;
+    }
+
     public HUD getHud() {
         return hud;
     }
@@ -692,5 +747,26 @@ public class PlayScreen implements GameScreen {
     public int getMapHeight() {
         MapProperties mapProp = map.getProperties();
         return mapProp.get("height", Integer.class) * 32;
+    }
+
+    public Array<HuntingSpider> getHuntingSpiders() {
+        return huntingSpiders;
+    }
+
+    public void addHuntingSpiderAI(Vector2 bodyPos) {
+        HuntingSpider huntingSpider = new HuntingSpider(world, this, bodyPos.x, bodyPos.y);
+        huntingSpiders.add(huntingSpider);
+
+
+        B2dSteeringEntity entity = new B2dSteeringEntity(huntingSpider.getBody(), 0.1f);
+
+        B2dSteeringEntity target = new B2dSteeringEntity(player.b2body, 0.1f);
+
+        b2SteeringEntityContainers.add(new B2SteeringEntityContainer(entity, target));
+
+        Arrive<Vector2> arriveSB = new Arrive<Vector2>(entity, target)
+                .setArrivalTolerance(1f)
+                .setDecelerationRadius(1);
+        entity.setBehavior(arriveSB);
     }
 }

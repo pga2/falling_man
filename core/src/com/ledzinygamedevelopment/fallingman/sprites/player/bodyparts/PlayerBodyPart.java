@@ -29,20 +29,22 @@ public abstract class PlayerBodyPart extends Sprite {
     protected boolean touchWall;
     protected String bodyPartName;
     protected int mapHeight;
+    protected int spriteNumber;
 
-    public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
+    public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
         //super(gameScreen.getAtlas().findRegion("player"));
         this.world = world;
         this.gameScreen = gameScreen;
         this.texturePos = texturePos;
         this.sideOfBodyPart = sideOfBodyPart;
         this.mapHeight = mapHeight;
+        this.spriteNumber = spriteNumber;
         b2bodies = new Array<>();
         joints = new Array<>();
         touchWall = false;
         defineBodyPart();
 
-        bodyPartTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("player"), 0 + 160 * texturePos, 0, 160, 160);
+        bodyPartTexture = new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + spriteNumber), 0 + 160 * texturePos, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -55,7 +57,7 @@ public abstract class PlayerBodyPart extends Sprite {
         if (!this.getClass().equals(Belly.class)) {
             for (int i = 0; i < joints.size; i++) {
                 Joint joint = joints.get(i);
-                if (Float.parseFloat(df.format(Math.sqrt(Math.pow((joint.getAnchorB().x - joint.getAnchorA().x), 2) + Math.pow((joint.getAnchorB().y - joint.getAnchorA().y), 2)))) > 0.4f) {
+                if (Float.parseFloat(df.format(Math.sqrt(Math.pow((joint.getAnchorB().x - joint.getAnchorA().x), 2) + Math.pow((joint.getAnchorB().y - joint.getAnchorA().y), 2)))) > 0.31f) {
                     if (touchWall && ((PlayerBodyPart) joint.getBodyB().getUserData()).isTouchWall()) {
                         Body bodyB = joint.getBodyB();
                         for (Joint joint1 : joints) {

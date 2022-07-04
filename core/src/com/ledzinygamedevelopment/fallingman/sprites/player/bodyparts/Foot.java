@@ -10,8 +10,8 @@ import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Foot extends PlayerBodyPart {
 
-    public Foot(World world, GameScreen playScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
-        super(world, playScreen, texturePos, sideOfBodyPart, mapHeight);
+    public Foot(World world, GameScreen playScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
+        super(world, playScreen, texturePos, sideOfBodyPart, mapHeight, spriteNumber);
     }
 
     @Override

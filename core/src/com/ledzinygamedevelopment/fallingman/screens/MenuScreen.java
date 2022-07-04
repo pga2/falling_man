@@ -28,7 +28,7 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
-import com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
@@ -44,6 +44,7 @@ import java.util.Random;
 public class MenuScreen implements GameScreen {
 
     private final GameAssetManager assetManager;
+    private TextureAtlas playerAtlas;
     private byte currentScreen;
     private Array<Rock> rocks;
     private OrthographicCamera gameCam;
@@ -88,6 +89,7 @@ public class MenuScreen implements GameScreen {
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
+        playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
@@ -98,14 +100,15 @@ public class MenuScreen implements GameScreen {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2) / FallingMan.PPM, 0);
 
-        world = new World(new Vector2(0, -4f), true);
+        world = new World(new Vector2(0, -3f), true);
         b2dr = new Box2DDebugRenderer();
 
         worldBodies = new Array<>();
         generateMapObjects();
 
         MapProperties mapProp = map.getProperties();
-        player = new Player(world, this, mapProp.get("height", Integer.class) * 32);
+        saveData = new SaveData();
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySprites());
         world.setContactListener(new WorldContactListener(player, this));
 
         rocks = new Array<>();
@@ -448,6 +451,11 @@ public class MenuScreen implements GameScreen {
         return assetManager;
     }
 
+    @Override
+    public TextureAtlas getPlayerAtlas() {
+        return playerAtlas;
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
@@ -458,7 +466,7 @@ public class MenuScreen implements GameScreen {
 
         //transforming rocks position to new map
         for (Rock rock : rocks) {
-            rock.generateMapRockUpdate(playerPosPrevious);
+            rock.generateMapRockUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
         }
 
         for (Cloud cloud : clouds) {
@@ -491,7 +499,6 @@ public class MenuScreen implements GameScreen {
     }
 
     public void generateWindows() {
-        saveData = new SaveData();
         goldAndHighScoresBackground = new GoldAndHighScoresBackground(this, world);
         goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
     }

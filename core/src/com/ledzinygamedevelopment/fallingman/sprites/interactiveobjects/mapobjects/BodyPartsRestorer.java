@@ -1,6 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,7 +26,27 @@ public class BodyPartsRestorer extends InteractiveTileObject{
         playScreen.getPlayer().restoreBodyParts(playScreen.getMapHeight());
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         for(TiledMapTileLayer.Cell cell : getCells()) {
-            cell.setTile(null);
+            try {
+                cell.setTile(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
+    @Override
+    public void draw(Batch batch) {
+
+    }
+
+    @Override
+    public void update(float dt) {
+
+    }
+
+    @Override
+    public boolean isToRemove() {
+        return false;
+    }
+
 }

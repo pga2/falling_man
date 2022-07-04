@@ -23,10 +23,9 @@ public class HUD {
     private Stage stage;
     private Viewport viewport;
 
-    private Integer gold;
-    private Integer distance;
-    private Integer previousDist;
-    private Integer wholeDistance;
+    private long gold;
+    private long previousDist;
+    private long wholeDistance;
 
     private Label goldLabel;
     private Label distanceLabel;
@@ -49,8 +48,6 @@ public class HUD {
         this.sb = sb;
         this.playScreen = playScreen;
         gold = 0;
-        distance = 0;
-        previousDist = 0;
         wholeDistance = 0;
         gameOverTimer = 0;
         gameOverStage = false;
@@ -74,7 +71,7 @@ public class HUD {
         goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceLabel = new Label("DIST", new Label.LabelStyle(hudFont, Color.BLACK));
         goldIntLabel = new Label(String.valueOf(gold), new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
-        distanceIntLabel = new Label(String.valueOf(distance), new Label.LabelStyle(hudFont, Color.BLACK));
+        distanceIntLabel = new Label(String.valueOf(wholeDistance), new Label.LabelStyle(hudFont, Color.BLACK));
 
         table.add(goldLabel).expandX();
         table.add(distanceLabel).expandX();
@@ -89,11 +86,9 @@ public class HUD {
 
     public void update(float dt, float playerYPos, int mapHeight) {
         if(!gameOverStage) {
-            distance = (int) ((mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM - playerYPos) > distance ? (int) ((mapHeight - FallingMan.MAX_WORLD_HEIGHT) / FallingMan.PPM - playerYPos) : distance;
-            wholeDistance = distance + previousDist;
-            distanceIntLabel.setText(wholeDistance);
+            distanceIntLabel.setText(String.valueOf(wholeDistance));
 
-            goldIntLabel.setText(gold);
+            goldIntLabel.setText(String.valueOf(gold));
         }/* else {
             if(gameOverTimer < 2) {
                 goldIntLabelGameOver.setText((int) (gold * Math.sqrt(Math.sqrt(gameOverTimer / 2))));
@@ -160,35 +155,33 @@ public class HUD {
         return stage;
     }
 
-    public Integer getPreviousDist() {
+    public long getPreviousDist() {
         return previousDist;
     }
 
-    public void setPreviousDist(Integer previousDist) {
+    public void setPreviousDist(long previousDist) {
         this.previousDist = previousDist;
     }
 
-    public void setDistance(Integer distance) {
-        this.distance = distance;
-    }
-
-    public Integer getGold() {
+    public long getGold() {
         return gold;
     }
 
-    public void setGold(Integer gold) {
+    public void setGold(long gold) {
         this.gold = gold;
     }
 
-    public Integer getDistance() {
-        return distance;
-    }
-
-    public Integer getWholeDistance() {
+    public long getWholeDistance() {
         return wholeDistance;
     }
 
     public boolean isGameOverStage() {
         return gameOverStage;
     }
+
+    public void setWholeDistance(long wholeDistance) {
+        this.wholeDistance = wholeDistance;
+    }
+
+
 }

@@ -14,8 +14,8 @@ import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Arm extends PlayerBodyPart {
 
-    public Arm(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight) {
-        super(world, gameScreen, texturePos, sideOfBodyPart, mapHeight);
+    public Arm(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
+        super(world, gameScreen, texturePos, sideOfBodyPart, mapHeight, spriteNumber);
     }
 
     @Override

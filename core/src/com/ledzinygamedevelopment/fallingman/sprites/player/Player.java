@@ -25,6 +25,8 @@ import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBody
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Shin;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Thigh;
 
+import java.util.HashMap;
+
 public class Player extends Sprite {
 
     public static final int LEFT_BODY_PART = 0;
@@ -39,6 +41,7 @@ public class Player extends Sprite {
     private Body b2bodyNeck;
     private TextureRegion playerHeadTexture;
     private GameScreen gameScreen;
+    private HashMap<String, Integer> bodyPartsSpriteNumber;
 
     //Body parts
     private Array<PlayerBodyPart> bodyParts;
@@ -74,13 +77,46 @@ public class Player extends Sprite {
     private float yDist;
     private Vector2 teleportTargetPos;
 
-    public Player(World world, GameScreen gameScreen, int mapHeight) {
+    public Player(World world, GameScreen gameScreen, int mapHeight, HashMap<String, Integer> bodyPartsSpriteNumber) {
         //super(gameScreen.getAtlas().findRegion("player"));
         this.world = world;
         this.gameScreen = gameScreen;
+        this.bodyPartsSpriteNumber = bodyPartsSpriteNumber;
         bodyPartsAll = new Array<>();
         definePlayer(mapHeight);
-        playerHeadTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("player"), 0, 0, 160, 160);
+        playerHeadTexture = new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + bodyPartsSpriteNumber.get("head")), 0, 0, 160, 160);
+        setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
+        setRegion(playerHeadTexture);
+        setOrigin(getWidth() / 2, getHeight() / 2);
+        temp = false;
+        createBodyParts(new Vector2(b2body.getPosition().x, b2body.getPosition().y), mapHeight);
+
+        for (PlayerBodyPart sprite : bodyParts) {
+            bodyPartsAll.addAll(sprite.getB2bodies());
+        }
+        headJointsExist = false;
+        removeHeadJoint = false;
+        //createHeadJoint();
+
+        leftArmOutOfBody = false;
+        rightArmOutOfBody = false;
+        leftThighOutOfBody = false;
+        rightThighOutOfBody = false;
+        currentState = CurrentState.NORMAL;
+        changeTexturesToTeleportationEffect = false;
+        beforeTeleportation = false;
+        createSecondStateHeadJoint = false;
+        headJointsExist = false;
+    }
+
+    public Player(World world, GameScreen gameScreen, int mapHeight, HashMap<String, Integer> bodyPartsSpriteNumber, float posX, float posY) {
+        //super(gameScreen.getAtlas().findRegion("player"));
+        this.world = world;
+        this.gameScreen = gameScreen;
+        this.bodyPartsSpriteNumber = bodyPartsSpriteNumber;
+        bodyPartsAll = new Array<>();
+        definePlayerWithPositions(mapHeight, posX, posY);
+        playerHeadTexture = new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + bodyPartsSpriteNumber.get("head")), 0, 0, 160, 160);
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(playerHeadTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -178,6 +214,7 @@ public class Player extends Sprite {
                     teleportationTimer += dt;
                 } else if (beforeTeleportation) {
                     world.destroyJoint(headJoint);
+                    world.destroyBody(headHolderBody);
                     headJointsExist = false;
                     removeHeadJoint = false;
                     teleportationTimer = 0;
@@ -201,6 +238,7 @@ public class Player extends Sprite {
                     }
                     setScale(1);
                     world.destroyJoint(headJoint);
+                    world.destroyBody(headHolderBody);
                     headJointsExist = false;
                     removeHeadJoint = false;
                     currentState = CurrentState.NORMAL;
@@ -222,6 +260,26 @@ public class Player extends Sprite {
 
         fdef.shape = shape;
         fdef.density = 0.035f;
+        fdef.friction = 0.001f;
+        fdef.restitution = 0.03f;
+        fdef.filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+                | FallingMan.PLAYER_BELLY_BIT;
+        b2body.createFixture(fdef).setUserData(this);
+    }
+
+    public void definePlayerWithPositions(int mapHeight, float posX, float posY) {
+        BodyDef bdef = new BodyDef();
+        bdef.position.set(posX, posY);
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        b2body = world.createBody(bdef);
+
+        FixtureDef fdef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(50 / FallingMan.PPM);
+
+        fdef.shape = shape;
+        fdef.density = 100f;
         fdef.friction = 0.001f;
         fdef.restitution = 0.03f;
         fdef.filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
@@ -290,7 +348,7 @@ public class Player extends Sprite {
 
         //Creating Body
         bodyParts = new Array<>();
-        belly = new Belly(world, gameScreen, 1, 0, mapHeight);
+        belly = new Belly(world, gameScreen, 1, 0, mapHeight, bodyPartsSpriteNumber.get("belly"));
         bodyParts.add(belly);
         createBodyJoints(b2body, belly.getB2body(), 0, -54f / FallingMan.PPM, 0, 60 / FallingMan.PPM, belly);
         for (Body body : belly.getB2bodies()) {
@@ -298,7 +356,7 @@ public class Player extends Sprite {
         }
         belly.setBodyPartName("belly");
 
-        thighLeft = new Thigh(world, gameScreen, 2, LEFT_BODY_PART, mapHeight);
+        thighLeft = new Thigh(world, gameScreen, 2, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("thighL"));
         bodyParts.add(thighLeft);
         createBodyJoints(belly.getB2body(), thighLeft.getB2body(), belly.getWidth() / 5f / 1.6666f, (-belly.getHeight() - 24 / FallingMan.PPM) / 1.5f + 60 / FallingMan.PPM,
                 0, 50 / FallingMan.PPM, thighLeft);
@@ -307,7 +365,7 @@ public class Player extends Sprite {
         }
         thighLeft.setBodyPartName("thighLeft");
 
-        thighRight = new Thigh(world, gameScreen, 2, RIGHT_BODY_PART, mapHeight);
+        thighRight = new Thigh(world, gameScreen, 2, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("thighR"));
         bodyParts.add(thighRight);
         createBodyJoints(belly.getB2body(), thighRight.getB2body(), -belly.getWidth() / 5f / 1.6666f, (-belly.getHeight() - 24 / FallingMan.PPM) / 1.5f + 60 / FallingMan.PPM,
                 0, 50 / FallingMan.PPM, thighRight);
@@ -316,7 +374,7 @@ public class Player extends Sprite {
         }
         thighRight.setBodyPartName("thighRight");
 
-        shinLeft = new Shin(world, gameScreen, 3, LEFT_BODY_PART, mapHeight);
+        shinLeft = new Shin(world, gameScreen, 3, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("shinL"));
         bodyParts.add(shinLeft);
         createBodyJoints(thighLeft.getB2body(), shinLeft.getB2body(), 0, -50 / FallingMan.PPM,
                 0, 35 / FallingMan.PPM, shinLeft);
@@ -325,7 +383,7 @@ public class Player extends Sprite {
         }
         shinLeft.setBodyPartName("shinLeft");
 
-        shinRight = new Shin(world, gameScreen, 3, RIGHT_BODY_PART, mapHeight);
+        shinRight = new Shin(world, gameScreen, 3, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("shinR"));
         bodyParts.add(shinRight);
         createBodyJoints(thighRight.getB2body(), shinRight.getB2body(), 0, -50 / FallingMan.PPM,
                 0, 35 / FallingMan.PPM, shinRight);
@@ -334,7 +392,7 @@ public class Player extends Sprite {
         }
         shinRight.setBodyPartName("shinRight");
 
-        footLeft = new Foot(world, gameScreen, 4, LEFT_BODY_PART, mapHeight);
+        footLeft = new Foot(world, gameScreen, 4, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("footL"));
         bodyParts.add(footLeft);
         createBodyJoints(shinLeft.getB2body(), footLeft.getB2body(), 0, -35 / FallingMan.PPM,
                 0, 7.5f / FallingMan.PPM, footLeft);
@@ -343,7 +401,7 @@ public class Player extends Sprite {
         }
         footLeft.setBodyPartName("footLeft");
 
-        footRight = new Foot(world, gameScreen, 4, RIGHT_BODY_PART, mapHeight);
+        footRight = new Foot(world, gameScreen, 4, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("footR"));
         bodyParts.add(footRight);
         createBodyJoints(shinRight.getB2body(), footRight.getB2body(), 0, -35 / FallingMan.PPM,
                 0, 7.5f / FallingMan.PPM, footRight);
@@ -355,7 +413,7 @@ public class Player extends Sprite {
         //footLeft.getB2body().applyLinearImpulse(new Vector2(-10, 0), footLeft.getB2body().getWorldCenter(), true);
         //footRight.getB2body().applyLinearImpulse(new Vector2(10, 0), footLeft.getB2body().getWorldCenter(), true);
 
-        armLeft = new Arm(world, gameScreen, 2, LEFT_BODY_PART, mapHeight);
+        armLeft = new Arm(world, gameScreen, 2, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("armL"));
         bodyParts.add(armLeft);
         createBodyJoints(belly.getB2body(), armLeft.getB2body(), belly.getWidth() / 2.8f / 1.6666f, belly.getWidth() / 3.05f,
                 0, 45 / FallingMan.PPM, armLeft);
@@ -364,7 +422,7 @@ public class Player extends Sprite {
         }
         armLeft.setBodyPartName("armLeft");
 
-        armRight = new Arm(world, gameScreen, 2, RIGHT_BODY_PART, mapHeight);
+        armRight = new Arm(world, gameScreen, 2, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("armR"));
         bodyParts.add(armRight);
         createBodyJoints(belly.getB2body(), armRight.getB2body(), -belly.getWidth() / 2.8f / 1.6666f, belly.getHeight() / 3.05f,
                 0, 45 / FallingMan.PPM, armRight);
@@ -373,7 +431,7 @@ public class Player extends Sprite {
         }
         armRight.setBodyPartName("armRight");
 
-        foreArmLeft = new ForeArm(world, gameScreen, 3, LEFT_BODY_PART, mapHeight);
+        foreArmLeft = new ForeArm(world, gameScreen, 3, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("foreArmL"));
         bodyParts.add(foreArmLeft);
         createBodyJoints(armLeft.getB2body(), foreArmLeft.getB2body(), 0, -(45 / FallingMan.PPM),
                 0, 40 / FallingMan.PPM, foreArmLeft);
@@ -382,7 +440,7 @@ public class Player extends Sprite {
         }
         foreArmLeft.setBodyPartName("foreArmLeft");
 
-        foreArmRight = new ForeArm(world, gameScreen, 3, RIGHT_BODY_PART, mapHeight);
+        foreArmRight = new ForeArm(world, gameScreen, 3, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("foreArmR"));
         bodyParts.add(foreArmRight);
         createBodyJoints(armRight.getB2body(), foreArmRight.getB2body(), 0, -(45 / FallingMan.PPM),
                 0, 40 / FallingMan.PPM, foreArmRight);
@@ -391,7 +449,7 @@ public class Player extends Sprite {
         }
         foreArmRight.setBodyPartName("foreArmRight");
 
-        handLeft = new Hand(world, gameScreen, 4, LEFT_BODY_PART, mapHeight);
+        handLeft = new Hand(world, gameScreen, 4, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("handL"));
         bodyParts.add(handLeft);
         createBodyJoints(foreArmLeft.getB2body(), handLeft.getB2body(), 0, -40 / FallingMan.PPM,
                 0, 7 / FallingMan.PPM, handLeft);
@@ -400,7 +458,7 @@ public class Player extends Sprite {
         }
         handLeft.setBodyPartName("handLeft");
 
-        handRight = new Hand(world, gameScreen, 4, RIGHT_BODY_PART, mapHeight);
+        handRight = new Hand(world, gameScreen, 4, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("handR"));
         bodyParts.add(handRight);
         createBodyJoints(foreArmRight.getB2body(), handRight.getB2body(), 0, -40 / FallingMan.PPM,
                 0, 7 / FallingMan.PPM, handRight);
@@ -510,5 +568,16 @@ public class Player extends Sprite {
         gameScreen.setStopRock(true);
     }
 
+    public boolean isHunted() {
+        if (currentState.equals(CurrentState.NORMAL)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getHeadSpriteNumber() {
+        return bodyPartsSpriteNumber.get("head");
+    }
 }
 

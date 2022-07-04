@@ -24,8 +24,8 @@ public class DefaultWindow extends Sprite {
     private float height;
     private float timer;
     private boolean drawText;
-    private int gold;
-    private int wholeDistance;
+    private long gold;
+    private long wholeDistance;
     private boolean tapGrow;
     private float scale;
     private boolean tapExist;

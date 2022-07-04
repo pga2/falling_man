@@ -1,9 +1,12 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.Array;
 
 public class GameAssetManager {
@@ -21,14 +24,21 @@ public class GameAssetManager {
     private final String playScreenDefault = "images/playScreen/default.atlas";
     private final String playScreenWindow = "images/playScreen/window.atlas";
     private final String playScreenBigRock = "images/playScreen/big_rock.atlas";
+    private final String playScreenDragon = "images/playScreen/dragon.png";
+    private final String playScreenDragonFire = "images/playScreen/dragon_fire.png";
+
+    //ShopScreen
+    private final String shopScreenMap = "shop_maps/basic_shop_map.tmx";
 
     //all screens
     private final String font = "test_font/FSM.fnt";
+    private final String playerSprite = "images/playerSprites/player.atlas";
 
     public void loadPlayScreen() {
         manager.load(playScreenDefault, TextureAtlas.class);
         manager.load(playScreenWindow, TextureAtlas.class);
         manager.load(playScreenBigRock, TextureAtlas.class);
+        manager.load(playerSprite, TextureAtlas.class);
         rockTexturesPaths.add("images/menuScreen/rock1.png");
         rockTexturesPaths.add("images/menuScreen/rock2.png");
         rockTexturesPaths.add("images/menuScreen/rock3.png");
@@ -43,12 +53,16 @@ public class GameAssetManager {
             manager.load(path, Texture.class);
         }
 
+        manager.load(playScreenDragon, Texture.class);
+        manager.load(playScreenDragonFire, Texture.class);
+
         manager.load(font, BitmapFont.class);
     }
 
     public void loadMenuScreen() {
         manager.load(menuScreenDefault, TextureAtlas.class);
         manager.load(menuScreenBigRock, TextureAtlas.class);
+        manager.load(playerSprite, TextureAtlas.class);
 
         rockTexturesPaths.add("images/menuScreen/rock1.png");
         rockTexturesPaths.add("images/menuScreen/rock2.png");
@@ -69,8 +83,16 @@ public class GameAssetManager {
 
     public void loadOneArmedBandit() {
         manager.load(oneArmedBanditScreenDefault, TextureAtlas.class);
+        manager.load(playerSprite, TextureAtlas.class);
 
         manager.load(font, BitmapFont.class);
+    }
+
+    public void loadShopScreen() {
+        manager.load(font, BitmapFont.class);
+        manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        manager.load(shopScreenMap, TiledMap.class);
+        manager.load(playerSprite, TextureAtlas.class);
     }
 
     public AssetManager getManager() {
@@ -107,5 +129,21 @@ public class GameAssetManager {
 
     public String getFont() {
         return font;
+    }
+
+    public String getPlayScreenDragon() {
+        return playScreenDragon;
+    }
+
+    public String getPlayScreenDragonFire() {
+        return playScreenDragonFire;
+    }
+
+    public String getShopScreenMap() {
+        return shopScreenMap;
+    }
+
+    public String getPlayerSprite() {
+        return playerSprite;
     }
 }

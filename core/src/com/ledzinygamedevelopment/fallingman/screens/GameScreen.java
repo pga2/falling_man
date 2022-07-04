@@ -26,4 +26,5 @@ public interface GameScreen extends Screen {
     public void removeChest(BigChest bigChest);
     public SpinButton getSpinButton();
     public GameAssetManager getAssetManager();
+    public TextureAtlas getPlayerAtlas();
 }

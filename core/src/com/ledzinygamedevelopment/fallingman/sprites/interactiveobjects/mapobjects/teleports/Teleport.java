@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -41,5 +42,20 @@ public class Teleport extends InteractiveTileObject {
                 }
             }
         }*/
+    }
+
+    @Override
+    public void draw(Batch batch) {
+
+    }
+
+    @Override
+    public void update(float dt) {
+
+    }
+
+    @Override
+    public boolean isToRemove() {
+        return false;
     }
 }

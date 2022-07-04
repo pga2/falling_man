@@ -493,10 +493,10 @@ public class OneArmedBanditScreen implements GameScreen {
                                     }
                                 }
                                 //temp
-                                allFiguresTheSame = true;
+                                /*allFiguresTheSame = true;
                                 for (Roll rollFigureCheck : rolls) {
                                     rollFigureCheck.setCurrentTextureNumber(3);
-                                }
+                                }*/
                                 //temp end
                                 if (allFiguresTheSame) {
                                     if (rolls.get(0).getCurrentTextureNumber() == 0 || rolls.get(0).getCurrentTextureNumber() == 1) {
@@ -759,5 +759,10 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public GameAssetManager getAssetManager() {
         return assetManager;
+    }
+
+    @Override
+    public TextureAtlas getPlayerAtlas() {
+        return null;
     }
 }

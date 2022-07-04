@@ -13,23 +13,23 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.Dragon;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.BodyPartsRestorer;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.HuntingEnemyCreator;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Spins;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
-
-import java.util.Calendar;
 
 public class B2WorldCreator {
 
 
     private SpinButton button;
     private Array<Body> b2bodies;
-    private Array<InteractiveTileObject> interactiveTileObjects;
+    private Array<InteractiveObjectInterface> interactiveTileObjects;
     private Array<Coin> coins;
     private Array<TeleportTarget> teleportsTarget;
 
@@ -74,26 +74,25 @@ public class B2WorldCreator {
         for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             if (object.getProperties().get("tp") != null) {
-                Gdx.app.log("tp in b2world creator", String.valueOf(object.getProperties().get("tp")));
-                InteractiveTileObject teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
+                InteractiveObjectInterface teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
                 b2bodies.add(teleport.getBody());
                 interactiveTileObjects.add(teleport);
             } else if (object.getProperties().get("tp_target") != null) {
-                InteractiveTileObject teleportTarget = new TeleportTarget(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp_target"))));
+                InteractiveObjectInterface teleportTarget = new TeleportTarget(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp_target"))));
                 b2bodies.add(teleportTarget.getBody());
                 interactiveTileObjects.add(teleportTarget);
                 teleportsTarget.add((TeleportTarget) teleportTarget);
             } else {
-                Coin coin = new Coin(world, map, rect, 2, playScreen);
+                InteractiveObjectInterface coin = new Coin(world, map, rect, 2, playScreen);
                 b2bodies.add(coin.getBody());
-                coins.add(coin);
+                interactiveTileObjects.add(coin);
             }
         }
 
         //deadly things
         for(MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveTileObject deadMachine = new DeadMachine(world, map, rect, 3);
+            InteractiveObjectInterface deadMachine = new DeadMachine(playScreen, world, map, rect, 3);
             b2bodies.add(deadMachine.getBody());
             interactiveTileObjects.add(deadMachine);
         }
@@ -101,7 +100,7 @@ public class B2WorldCreator {
         //spins
         for(MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveTileObject spins = new Spins(playScreen, world, map, rect, 3);
+            InteractiveObjectInterface spins = new Spins(playScreen, world, map, rect, 3);
             b2bodies.add(spins.getBody());
             interactiveTileObjects.add(spins);
         }
@@ -109,9 +108,25 @@ public class B2WorldCreator {
         //restore body parts
         for(MapObject object : map.getLayers().get(12).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveTileObject bodyPartsRestorer = new BodyPartsRestorer(world, map, rect, 2, playScreen);
+            InteractiveObjectInterface bodyPartsRestorer = new BodyPartsRestorer(world, map, rect, 2, playScreen);
             b2bodies.add(bodyPartsRestorer.getBody());
             interactiveTileObjects.add(bodyPartsRestorer);
+        }
+
+        //dragons
+        for(MapObject object : map.getLayers().get(13).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveObjectInterface dragon = new Dragon(world, rect, playScreen, Boolean.parseBoolean(String.valueOf(object.getProperties().get("right_side_fire"))));
+            b2bodies.add(dragon.getBody());
+            interactiveTileObjects.add(dragon);
+        }
+
+        //hunter
+        for(MapObject object : map.getLayers().get(14).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveObjectInterface huntingEnemyCreator = new HuntingEnemyCreator(world, map, rect, 4, playScreen);
+            b2bodies.add(huntingEnemyCreator.getBody());
+            interactiveTileObjects.add(huntingEnemyCreator);
         }
 
         /*//one-armed bandit spin button
@@ -129,7 +144,7 @@ public class B2WorldCreator {
         return button;
     }
 
-    public Array<InteractiveTileObject> getInteractiveTileObjects() {
+    public Array<InteractiveObjectInterface> getInteractiveTileObjects() {
         return interactiveTileObjects;
     }
 

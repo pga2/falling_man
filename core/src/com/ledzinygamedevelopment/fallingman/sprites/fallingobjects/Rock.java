@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.sprites.fallingfromwallsobjects;
+package com.ledzinygamedevelopment.fallingman.sprites.fallingobjects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -177,7 +177,7 @@ public class Rock extends Sprite {
         fixture.setUserData(this);
     }
 
-    public void generateMapRockUpdate(Vector2 playerPosPrevious) {
+    public void generateMapRockUpdate(Vector2 playerPosPrevious, int mapHeight) {
         float xDiff;
         float yDiff;
         if (b2body.getPosition().y < playerPosPrevious.y) {
@@ -190,7 +190,7 @@ public class Rock extends Sprite {
         float previosBodyAngle = b2body.getAngle();
 
         //Teleporting body part
-        b2body.setTransform(b2body.getPosition().x, 8640 / FallingMan.PPM + yDiff, previosBodyAngle);
+        b2body.setTransform(b2body.getPosition().x, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + yDiff, previosBodyAngle);
     }
 
     public Fixture getFixture() {
