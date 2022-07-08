@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 
 import java.text.DecimalFormat;
 
@@ -48,6 +50,10 @@ public abstract class PlayerBodyPart extends Sprite {
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
+
+        if (sideOfBodyPart == Player.RIGHT_BODY_PART) {
+            flip(true, false);
+        }
     }
 
     public void update(float dt) {
@@ -144,5 +150,30 @@ public abstract class PlayerBodyPart extends Sprite {
 
     public void setTextureToBasic() {
         setRegion(bodyPartTexture);
+        if (sideOfBodyPart == Player.RIGHT_BODY_PART && ! isFlipX()) {
+            flip(true, false);
+        }
+    }
+
+    public void setTexture(int spriteNumber) {
+        this.spriteNumber = spriteNumber;
+        bodyPartTexture = new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + spriteNumber), 160 * texturePos, 0, 160, 160);
+        setRegion(bodyPartTexture);
+        if (sideOfBodyPart == Player.RIGHT_BODY_PART && ! isFlipX()) {
+            flip(true, false);
+        }
+    }
+
+    // checking if mouse position equals bodyPart position
+    public boolean mouseOver(Vector2 mousePosition) {
+        if(mousePosition.x > b2body.getPosition().x - 60 / FallingMan.PPM && mousePosition.x < b2body.getPosition().x + 60 / FallingMan.PPM
+                && mousePosition.y > b2body.getPosition().y - 70 / FallingMan.PPM && mousePosition.y < b2body.getPosition().y + 70 / FallingMan.PPM)
+            return true;
+        else
+            return false;
+    }
+
+    public int getSpriteNumber() {
+        return spriteNumber;
     }
 }

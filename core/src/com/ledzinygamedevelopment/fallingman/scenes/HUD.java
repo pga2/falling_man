@@ -127,6 +127,7 @@ public class HUD {
 
     public void newStageGameOver() {
         gameOverStage = true;
+        stage.dispose();
         stage = new Stage(viewport, sb);
 
         /*goldLabelGameOver = new Label("GOLD", new Label.LabelStyle(hudFont, Color.GOLD));

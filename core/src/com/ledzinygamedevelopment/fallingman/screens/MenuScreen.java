@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -25,8 +26,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
-import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresIcons;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
@@ -39,6 +40,7 @@ import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class MenuScreen implements GameScreen {
@@ -108,7 +110,8 @@ public class MenuScreen implements GameScreen {
 
         MapProperties mapProp = map.getProperties();
         saveData = new SaveData();
-        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySprites());
+        saveData.notFirstAppUse();
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySpritesCurrentlyWear());
         world.setContactListener(new WorldContactListener(player, this));
 
         rocks = new Array<>();
@@ -132,7 +135,7 @@ public class MenuScreen implements GameScreen {
 
         mapHeight = mapProp.get("height", Integer.class);
         for (Vector2 pos : cloudsPositionForNextScreen) {
-            Cloud cloud = new Cloud(this, 0, 0, true);
+            Cloud cloud = new Cloud(this, 0, 0, true, FallingMan.ONE_ARMED_BANDIT_SCREEN);
             cloud.setPosition(pos.x, pos.y + mapHeight * 32 / FallingMan.PPM - screenHeight);
             clouds.add(cloud);
         }
@@ -190,7 +193,7 @@ public class MenuScreen implements GameScreen {
                         //currentScreen = FallingMan.MENU_SCREEN;
                         for (int i = 0; i < 3; i++) {
                             for (int j = 0; j < 26; j++) {
-                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(200)) / FallingMan.PPM, (player.getY() + gamePort.getWorldHeight() / 2) + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false));
+                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(200)) / FallingMan.PPM, (player.getY() + gamePort.getWorldHeight() / 2) + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
                             }
                         }
                         changeScreen = true;
@@ -227,7 +230,7 @@ public class MenuScreen implements GameScreen {
         goldAndHighScoresIcons.update(dt, player.b2body.getPosition(), gamePort.getWorldHeight());
 
         for (Rock rock : rocks) {
-            rock.update(dt, player.b2body.getPosition(), false);
+            rock.update(dt, player.b2body.getPosition(), false, true);
         }
         if (player.b2body.getLinearVelocity().y < -20) {
             player.b2body.setLinearVelocity(new Vector2(player.b2body.getLinearVelocity().x, -20));
@@ -338,15 +341,17 @@ public class MenuScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
-                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY()));
+                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY(), false));
                 break;
             case FallingMan.PLAY_SCREEN:
                 PlayerVectors playerVectors = new PlayerVectors(player, true);
 
                 MapProperties mapProp = map.getProperties();
+                Vector3 rockPos = new Vector3(rocks.get(0).getB2body().getPosition().x, rocks.get(0).getB2body().getPosition().y - player.b2body.getPosition().y, rocks.get(0).getB2body().getAngle());
+                float rockAnimationTimer = rocks.get(0).getAnimationTimer();
                 playerVectors.calculatePlayerVectors(mapProp.get("height", Integer.class) * 32);
                 dispose();
-                game.setScreen(new PlayScreen(game, playerVectors));
+                game.setScreen(new PlayScreen(game, playerVectors, rockPos, rockAnimationTimer));
                 break;
         }
     }
@@ -454,6 +459,16 @@ public class MenuScreen implements GameScreen {
     @Override
     public TextureAtlas getPlayerAtlas() {
         return playerAtlas;
+    }
+
+    @Override
+    public GoldAndHighScoresIcons getGoldAndHighScoresIcons() {
+        return goldAndHighScoresIcons;
+    }
+
+    @Override
+    public HashMap<String, Boolean> getOwnedBodySprites() {
+        return null;
     }
 
     public void generateNewMap() {

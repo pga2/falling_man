@@ -16,6 +16,17 @@ public abstract class Button extends Sprite {
     protected float height;
     protected boolean clicked;
     protected boolean locked;
+    protected boolean toRemove;
+
+    public Button(GameScreen gameScreen, World world, float posX, float posY) {
+        this.gameScreen = gameScreen;
+        this.world = world;
+        this.posX = posX;
+        this.posY = posY;
+        clicked = false;
+        locked = false;
+        toRemove = false;
+    }
 
     public Button(GameScreen gameScreen, World world, float posX, float posY, float width, float height) {
         this.gameScreen = gameScreen;
@@ -26,6 +37,7 @@ public abstract class Button extends Sprite {
         this.height = height;
         clicked = false;
         locked = false;
+        toRemove = false;
     }
 
     public void update(float dt, Vector2 pos) {
@@ -65,5 +77,9 @@ public abstract class Button extends Sprite {
 
     public float getyPosPlayerDiff() {
         return yPosPlayerDiff;
+    }
+
+    public boolean isToRemove() {
+        return toRemove;
     }
 }

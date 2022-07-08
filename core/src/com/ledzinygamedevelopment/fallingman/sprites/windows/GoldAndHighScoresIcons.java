@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.screens.windows;
+package com.ledzinygamedevelopment.fallingman.sprites.windows;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

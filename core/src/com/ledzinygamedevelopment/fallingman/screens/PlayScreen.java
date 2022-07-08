@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -24,16 +25,15 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
-import com.ledzinygamedevelopment.fallingman.screens.windows.DefaultWindow;
-import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.DefaultWindow;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
 import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
@@ -50,6 +50,7 @@ import com.ledzinygamedevelopment.fallingman.tools.entities.B2SteeringEntityCont
 import com.ledzinygamedevelopment.fallingman.tools.entities.B2dSteeringEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -115,7 +116,7 @@ public class PlayScreen implements GameScreen {
     private Array<HuntingSpider> huntingSpiders;
     private Array<B2SteeringEntityContainer> b2SteeringEntityContainers;
 
-    public PlayScreen(FallingMan game, PlayerVectors playerVectors) {
+    public PlayScreen(FallingMan game, PlayerVectors playerVectors, Vector3 rockPos, float rockAnimationTimer) {
         assetManager = new GameAssetManager();
         assetManager.loadPlayScreen();
         assetManager.getManager().finishLoading();
@@ -140,9 +141,10 @@ public class PlayScreen implements GameScreen {
         b2dr = new Box2DDebugRenderer();
 
         b2WorldCreator = new B2WorldCreator(this, world, map);
+        saveData = new SaveData();
         //creating player
         MapProperties mapProp = map.getProperties();
-        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySprites());
+        player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySpritesCurrentlyWear());
         playerVectors.setNewPlayerVectorsFromPreviusMap(player, mapProp.get("height", Integer.class) * 32);
         gameOver = false;
         world.setContactListener(new WorldContactListener(player, this));
@@ -164,7 +166,11 @@ public class PlayScreen implements GameScreen {
         for (String path : assetManager.getRockTexturesPaths()) {
             rockTextures.add((Texture) assetManager.getManager().get(path));
         }
-        rocks.add(new Rock(this, world, true, rockTextures));
+        Rock rock = new Rock(this, world, true, rockTextures);
+        rock.getB2body().setTransform(rockPos.x, rockPos.y + player.b2body.getPosition().y, rockPos.z);
+        rock.setAnimationTimer(rockAnimationTimer);
+        rocks.add(rock);
+
         allFPSData = new LinkedList<>();
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
         //gameCam.zoom = 1.1f;
@@ -175,7 +181,6 @@ public class PlayScreen implements GameScreen {
         loadMenu = false;
         fontMapObjects = new ArrayList<>();
         sparks = new Array<>();
-        saveData = new SaveData();
         huntingSpiders = new Array<>();
         b2SteeringEntityContainers = new Array<>();
         //gameCam.zoom = 0.3f;
@@ -307,7 +312,7 @@ public class PlayScreen implements GameScreen {
         Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
 
         for (Rock rock : rocks) {
-            rock.update(dt, playerPos, stopRock);
+            rock.update(dt, playerPos, stopRock, false);
         }
 
         for (DefaultWindow defaultWindow : defaultWindows) {
@@ -434,10 +439,10 @@ public class PlayScreen implements GameScreen {
         hud.draw();
 
         switch (currentScreen) {
-            case FallingMan.PLAY_SCREEN:
+            /*case FallingMan.PLAY_SCREEN:
                 dispose();
-                game.setScreen(new PlayScreen(game, new PlayerVectors(player, false)));
-                break;
+                game.setScreen(new PlayScreen(game, new PlayerVectors(player, false), null, null));
+                break;*/
             case FallingMan.MENU_SCREEN:
                 dispose();
                 game.setScreen(new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight()));
@@ -476,7 +481,7 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void dispose() {
-        font.dispose();
+        hud.getStage().dispose();
         map.dispose();
         renderer.dispose();
         world.dispose();
@@ -492,8 +497,11 @@ public class PlayScreen implements GameScreen {
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
         }
+
+        map.dispose();
         map = mapLoader.load(mapName);
         b2WorldCreator = new B2WorldCreator(this, world, map);
+        renderer.dispose();
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
 
         //transforming player position to new map
@@ -688,6 +696,16 @@ public class PlayScreen implements GameScreen {
         return playerAtlas;
     }
 
+    @Override
+    public GoldAndHighScoresIcons getGoldAndHighScoresIcons() {
+        return getGoldAndHighScoresIcons();
+    }
+
+    @Override
+    public HashMap<String, Boolean> getOwnedBodySprites() {
+        return null;
+    }
+
     public HUD getHud() {
         return hud;
     }
@@ -697,7 +715,7 @@ public class PlayScreen implements GameScreen {
     }
 
     public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
+        /*this.gameOver = gameOver;*/
     }
 
     public Array<DefaultWindow> getDefaultWindows() {

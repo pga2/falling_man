@@ -29,6 +29,7 @@ public class GameAssetManager {
 
     //ShopScreen
     private final String shopScreenMap = "shop_maps/basic_shop_map.tmx";
+    private final String shopScreenDefault = "images/shopScreen/default.atlas";
 
     //all screens
     private final String font = "test_font/FSM.fnt";
@@ -40,7 +41,7 @@ public class GameAssetManager {
         manager.load(playScreenBigRock, TextureAtlas.class);
         manager.load(playerSprite, TextureAtlas.class);
         rockTexturesPaths.add("images/menuScreen/rock1.png");
-        rockTexturesPaths.add("images/menuScreen/rock2.png");
+        /*rockTexturesPaths.add("images/menuScreen/rock2.png");
         rockTexturesPaths.add("images/menuScreen/rock3.png");
         rockTexturesPaths.add("images/menuScreen/rock4.png");
         rockTexturesPaths.add("images/menuScreen/rock5.png");
@@ -48,7 +49,7 @@ public class GameAssetManager {
         rockTexturesPaths.add("images/menuScreen/rock7.png");
         rockTexturesPaths.add("images/menuScreen/rock8.png");
         rockTexturesPaths.add("images/menuScreen/rock9.png");
-        rockTexturesPaths.add("images/menuScreen/rock10.png");
+        rockTexturesPaths.add("images/menuScreen/rock10.png");*/
         for (String path : rockTexturesPaths) {
             manager.load(path, Texture.class);
         }
@@ -93,6 +94,7 @@ public class GameAssetManager {
         manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         manager.load(shopScreenMap, TiledMap.class);
         manager.load(playerSprite, TextureAtlas.class);
+        manager.load(shopScreenDefault, TextureAtlas.class);
     }
 
     public AssetManager getManager() {
@@ -145,5 +147,9 @@ public class GameAssetManager {
 
     public String getPlayerSprite() {
         return playerSprite;
+    }
+
+    public String getShopScreenDefault() {
+        return shopScreenDefault;
     }
 }

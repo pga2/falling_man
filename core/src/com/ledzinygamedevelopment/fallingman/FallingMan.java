@@ -37,15 +37,20 @@ public class FallingMan extends Game {
 	public static final byte MENU_SCREEN = 1;
 	public static final byte PLAY_SCREEN = 2;
 	public static final byte ONE_ARMED_BANDIT_SCREEN = 3;
+	public static final byte SHOP_SCREEN = 4;
 
 	public static final byte GAME_OVER_WINDOW = 0;
+
+	public static final int ALL_BODY_SPRITES_LENGHT = 9;
+
+
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		//setScreen(new PlayScreen(this));
-		//setScreen(new MenuScreen(this, new Array<Vector2>(), 0));
-		setScreen(new ShopScreen(this, null, 0));
+		setScreen(new MenuScreen(this, new Array<Vector2>(), 0));
+		//setScreen(new ShopScreen(this, null, 0));
 	}
 
 	@Override

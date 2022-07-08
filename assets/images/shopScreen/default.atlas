@@ -1,0 +1,68 @@
+
+default.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cloud
+  rotate: false
+  xy: 1, 635
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+gold_and_high_score_background
+  rotate: false
+  xy: 1, 389
+  size: 660, 244
+  orig: 660, 244
+  offset: 0, 0
+  index: -1
+buy_button
+  rotate: false
+  xy: 963, 827
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+buy_button_clicked
+  rotate: false
+  xy: 1, 195
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+set_sprite_button
+  rotate: false
+  xy: 1, 1
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+set_sprite_button_clicked
+  rotate: false
+  xy: 963, 633
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+price_background
+  rotate: false
+  xy: 1509, 887
+  size: 500, 132
+  orig: 500, 132
+  offset: 0, 0
+  index: -1
+body_part_backlight
+  rotate: false
+  xy: 1509, 629
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+gold_and_high_score_icons
+  rotate: false
+  xy: 547, 163
+  size: 112, 224
+  orig: 112, 224
+  offset: 0, 0
+  index: -1

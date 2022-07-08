@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.screens.windows;
+package com.ledzinygamedevelopment.fallingman.sprites.windows;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;

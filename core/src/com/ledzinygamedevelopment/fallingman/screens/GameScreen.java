@@ -1,14 +1,16 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+
+import java.util.HashMap;
 
 public interface GameScreen extends Screen {
 
@@ -27,4 +29,6 @@ public interface GameScreen extends Screen {
     public SpinButton getSpinButton();
     public GameAssetManager getAssetManager();
     public TextureAtlas getPlayerAtlas();
+    public GoldAndHighScoresIcons getGoldAndHighScoresIcons();
+    public HashMap<String, Boolean> getOwnedBodySprites();
 }

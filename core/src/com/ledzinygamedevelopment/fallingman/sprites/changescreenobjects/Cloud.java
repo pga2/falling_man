@@ -8,17 +8,17 @@ import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 public class Cloud extends Sprite {
     private TextureRegion cloudTexture;
     private boolean secondScreen;
-    private float posX;
-    private float posY;
+    private byte screen;
     private GameScreen gameScreen;
 
 
 
-    public Cloud(GameScreen gameScreen, float posX, float posY, boolean secondScreen) {
+    public Cloud(GameScreen gameScreen, float posX, float posY, boolean secondScreen, byte screen) {
         this.gameScreen = gameScreen;
 
         cloudTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("cloud"), 0, 0, 960, 384);
         this.secondScreen = secondScreen;
+        this.screen = screen;
         setBounds(0, 0, 960 / FallingMan.PPM, 384 / FallingMan.PPM);
         setRegion(cloudTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -31,5 +31,9 @@ public class Cloud extends Sprite {
 
     public boolean isSecondScreen() {
         return secondScreen;
+    }
+
+    public byte getScreen() {
+        return screen;
     }
 }
