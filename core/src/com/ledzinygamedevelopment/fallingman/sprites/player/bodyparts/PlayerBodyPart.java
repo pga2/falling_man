@@ -63,7 +63,7 @@ public abstract class PlayerBodyPart extends Sprite {
         if (!this.getClass().equals(Belly.class)) {
             for (int i = 0; i < joints.size; i++) {
                 Joint joint = joints.get(i);
-                if (Float.parseFloat(df.format(Math.sqrt(Math.pow((joint.getAnchorB().x - joint.getAnchorA().x), 2) + Math.pow((joint.getAnchorB().y - joint.getAnchorA().y), 2)))) > 0.31f) {
+                if (Float.parseFloat(df.format(Math.sqrt(Math.pow((joint.getAnchorB().x - joint.getAnchorA().x), 2) + Math.pow((joint.getAnchorB().y - joint.getAnchorA().y), 2))).replace(",", ".")) > 0.31f) {
                     if (touchWall && ((PlayerBodyPart) joint.getBodyB().getUserData()).isTouchWall()) {
                         Body bodyB = joint.getBodyB();
                         for (Joint joint1 : joints) {

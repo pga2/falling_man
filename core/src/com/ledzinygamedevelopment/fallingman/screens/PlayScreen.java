@@ -68,12 +68,18 @@ public class PlayScreen implements GameScreen {
     private TextureAtlas playerAtlas;
 
     private OrthographicCamera gameCam;
+    private OrthographicCamera gameCamBehind0;
+    private OrthographicCamera gameCamBehind1;
     private Viewport gamePort;
 
     //map variables
     private TmxMapLoader mapLoader;
     private TiledMap map;
+    private TiledMap mapBehind0;
+    private TiledMap mapBehind1;
     private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer rendererBehind0;
+    private OrthogonalTiledMapRenderer rendererBehind1;
 
     //Box2d variables
     private World world;
@@ -115,6 +121,7 @@ public class PlayScreen implements GameScreen {
 
     private Array<HuntingSpider> huntingSpiders;
     private Array<B2SteeringEntityContainer> b2SteeringEntityContainers;
+    private float gameCamBehindPosition;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, Vector3 rockPos, float rockAnimationTimer) {
         assetManager = new GameAssetManager();
@@ -130,12 +137,20 @@ public class PlayScreen implements GameScreen {
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
         gameCam = new OrthographicCamera();
+        gameCamBehind0 = new OrthographicCamera();
+        gameCamBehind1 = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("untitled2.tmx");
+        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
+        rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
+        rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2) / FallingMan.PPM, 0);
+        gameCamBehind0.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
+        gameCamBehind1.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
 
         world = new World(new Vector2(0, -3f), true);
         b2dr = new Box2DDebugRenderer();
@@ -183,6 +198,7 @@ public class PlayScreen implements GameScreen {
         sparks = new Array<>();
         huntingSpiders = new Array<>();
         b2SteeringEntityContainers = new Array<>();
+        gameCamBehindPosition = player.b2body.getPosition().y / 2;
         //gameCam.zoom = 0.3f;
 
         //player.createHeadJoint();
@@ -345,10 +361,7 @@ public class PlayScreen implements GameScreen {
         huntingSpiders.removeAll(huntingSpidersToRemove, false);
 
         //oneArmBandit.update(dt);
-        gameCam.position.y = player.b2body.getPosition().y;
 
-        gameCam.update();
-        renderer.setView(gameCam);
 
         if (gameOver) {
             if (defaultWindows.size == 0) {
@@ -387,6 +400,26 @@ public class PlayScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
+        gameCam.position.y = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{0, 1});
+        gameCamBehindPosition += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
+        if (gameCamBehindPosition < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPosition += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+        gameCam.position.y = gameCamBehindPosition;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{2});
+        gameCam.position.y = gameCamBehindPosition + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{2});
+
+        gameCam.position.y = player.b2body.getPosition().y;
+        gameCam.update();
+        renderer.setView(gameCam);
         renderer.render();
 
 
@@ -448,13 +481,13 @@ public class PlayScreen implements GameScreen {
                 game.setScreen(new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight()));
                 break;
         }
-        /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
+        Gdx.app.log("FPS: ", String.valueOf(1 / delta));
         allFPSData.add(1 / delta);
         Long allFps = 0l;
         for(Float integer : allFPSData) {
             allFps += integer.longValue();
         }
-        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));*/
+        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));
 
     }
 
@@ -483,7 +516,11 @@ public class PlayScreen implements GameScreen {
     public void dispose() {
         hud.getStage().dispose();
         map.dispose();
+        mapBehind0.dispose();
+        mapBehind1.dispose();
         renderer.dispose();
+        rendererBehind0.dispose();
+        rendererBehind1.dispose();
         world.dispose();
         b2dr.dispose();
         assetManager.getManager().dispose();
@@ -715,7 +752,7 @@ public class PlayScreen implements GameScreen {
     }
 
     public void setGameOver(boolean gameOver) {
-        /*this.gameOver = gameOver;*/
+        this.gameOver = gameOver;
     }
 
     public Array<DefaultWindow> getDefaultWindows() {

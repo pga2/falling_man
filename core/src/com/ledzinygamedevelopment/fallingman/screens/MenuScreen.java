@@ -50,10 +50,16 @@ public class MenuScreen implements GameScreen {
     private byte currentScreen;
     private Array<Rock> rocks;
     private OrthographicCamera gameCam;
+    private OrthographicCamera gameCamBehind0;
+    private OrthographicCamera gameCamBehind1;
     private ExtendViewport gamePort;
     private TmxMapLoader mapLoader;
     private TiledMap map;
+    private TiledMap mapBehind0;
+    private TiledMap mapBehind1;
     private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer rendererBehind0;
+    private OrthogonalTiledMapRenderer rendererBehind1;
     private World world;
     private Box2DDebugRenderer b2dr;
     private Player player;
@@ -81,6 +87,7 @@ public class MenuScreen implements GameScreen {
     private BitmapFont font;
     private boolean fontScaleUp;
     private float fontScale;
+    private float gameCamBehindPosition;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
         this.game = game;
@@ -94,13 +101,21 @@ public class MenuScreen implements GameScreen {
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
         gameCam = new OrthographicCamera();
+        gameCamBehind0 = new OrthographicCamera();
+        gameCamBehind1 = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("menu_map.tmx");
+        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
-        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2) / FallingMan.PPM, 0);
+        rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
+        rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
+        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
+        gameCamBehind0.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
+        gameCamBehind1.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
 
         world = new World(new Vector2(0, -3f), true);
         b2dr = new Box2DDebugRenderer();
@@ -149,8 +164,9 @@ public class MenuScreen implements GameScreen {
         //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         fontScale = 0.006f;
         fontScaleUp = true;
+        gameCamBehindPosition = player.b2body.getPosition().y / 2;
 
-        //gameCam.zoom = 5;
+        //gameCam.zoom = 2;
     }
 
     @Override
@@ -218,9 +234,16 @@ public class MenuScreen implements GameScreen {
         handleInput(dt);
         world.step(1 / 60f, 8, 5);
 
-        gameCam.position.y = player.b2body.getPosition().y;
-        gameCam.update();
-        renderer.setView(gameCam);
+        //checking if should generate new map
+        if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
+            generateNewMap();
+        }
+
+        /*gameCamBehind.position.y = player.b2body.getPosition().y;
+        gameCamBehind.update();
+        renderer.setView(gameCam);*/
+
+
 
         player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 100f, 0), player.b2body.getWorldCenter(), true);
 
@@ -262,10 +285,7 @@ public class MenuScreen implements GameScreen {
         }
         clouds.removeAll(cloudsToRemove, false);
 
-        //checking if should generate new map
-        if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
-            generateNewMap();
-        }
+
 
         firstOpenTimer +=dt;
     }
@@ -279,12 +299,31 @@ public class MenuScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
+        gameCam.position.y = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{0, 1});
+        gameCamBehindPosition += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
+        if (gameCamBehindPosition < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPosition += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+        gameCam.position.y = gameCamBehindPosition;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{2});
+        gameCam.position.y = gameCamBehindPosition + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{2});
+        gameCam.position.y = player.b2body.getPosition().y;
+        gameCam.update();
+        renderer.setView(gameCam);
         renderer.render();
 
         //render box2d debug renderer
         //b2dr.render(world, gameCam.combined);
-
         game.batch.setProjectionMatrix(gameCam.combined);
+        //game.batch.setProjectionMatrix(gameCamBehind.combined);
         game.batch.begin();
         player.draw(game.batch);
         for (PlayerBodyPart bodyPart : player.getBodyParts()) {
@@ -379,7 +418,11 @@ public class MenuScreen implements GameScreen {
     @Override
     public void dispose() {
         map.dispose();
+        mapBehind0.dispose();
+        mapBehind1.dispose();
         renderer.dispose();
+        rendererBehind0.dispose();
+        rendererBehind1.dispose();
         world.dispose();
         b2dr.dispose();
         assetManager.getManager().dispose();

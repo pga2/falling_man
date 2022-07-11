@@ -1,0 +1,13 @@
+{
+"version": "0.5.0",
+"type": "Render_Pipeline",
+"nodes": [
+	{ "id": "1966bde546764727bf71eb6fffd49abf", "type": "PipelineStart", "x": 64.0, "y": 476.0 },
+	{ "id": "end", "type": "PipelineEnd", "x": 50.0, "y": 50.0 }
+],
+"connections": [
+	{ "fromNode": "1966bde546764727bf71eb6fffd49abf", "fromField": "output", "toNode": "end", "toField": "input" }
+],
+"properties": [],
+"groups": []
+}

@@ -9,9 +9,14 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.pay.Offer;
+import com.badlogic.gdx.pay.OfferType;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
+import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling;
 
 public class AndroidLauncher extends AndroidApplication {
     Window window;
+    FallingMan fallingMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +32,12 @@ public class AndroidLauncher extends AndroidApplication {
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         }
 
-        ActivityManager am = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
-        int memoryClass = am.getMemoryClass();
-        Runtime rt= Runtime.getRuntime();
-        long maxMemory = rt.maxMemory();
-        long freeMemory = rt.freeMemory();
-        Log.d("Memory Available", "memoryClass:" + Integer.toString(memoryClass));
-        Log.d("Max Memory Available", "max memory:" + Long.toString(maxMemory));
-        Log.d("Free Memory", "Free Memory: " + Long.toString(freeMemory));
+        config.useImmersiveMode = true;
 
-        initialize(new FallingMan(), config);
+        fallingMan = new FallingMan();
+        fallingMan.purchaseManager = new PurchaseManagerGoogleBilling(this);
+
+        initialize(fallingMan, config);
     }
 
 }

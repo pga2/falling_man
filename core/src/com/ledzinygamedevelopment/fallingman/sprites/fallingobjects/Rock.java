@@ -20,6 +20,7 @@ import java.util.Random;
 
 public class Rock extends Sprite {
 
+    private Texture texture;
     private Random random;
     private GameScreen gameScreen;
     private World world;
@@ -28,6 +29,8 @@ public class Rock extends Sprite {
     private Animation animation;
     private float animationTimer;
     private Fixture fixture;
+    private float changeTextureTimer;
+    private int currentTextureNumber;
 
     public Rock(GameScreen gameScreen, World world) {
         this.gameScreen = gameScreen;
@@ -66,6 +69,7 @@ public class Rock extends Sprite {
         this.world = world;
         animation = new Animation(0.017f, textures);
         animationTimer = 0.0001f;
+        changeTextureTimer = 0;
 
         random = new Random();
         setBounds(0, 0, 1232 / FallingMan.PPM, 1232 / FallingMan.PPM);

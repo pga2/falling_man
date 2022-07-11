@@ -414,7 +414,7 @@ public class ShopScreen implements GameScreen {
         }
         clouds.removeAll(cloudsToRemove, false);
 
-        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
+        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         gameCam.update();
         renderer.setView(gameCam);
 

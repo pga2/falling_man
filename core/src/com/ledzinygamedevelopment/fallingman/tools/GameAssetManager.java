@@ -31,6 +31,10 @@ public class GameAssetManager {
     private final String shopScreenMap = "shop_maps/basic_shop_map.tmx";
     private final String shopScreenDefault = "images/shopScreen/default.atlas";
 
+    //InAppPurchasesScreen
+    private final String inAppPurchasesMap = "shop_maps/basic_shop_map.tmx";
+    private final String inAppPurchasesDefault = "images/inAppPurchasesScreen/default.atlas";
+
     //all screens
     private final String font = "test_font/FSM.fnt";
     private final String playerSprite = "images/playerSprites/player.atlas";
@@ -97,6 +101,14 @@ public class GameAssetManager {
         manager.load(shopScreenDefault, TextureAtlas.class);
     }
 
+    public void loadInAppPurchasesScreen() {
+        manager.load(font, BitmapFont.class);
+        manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        manager.load(inAppPurchasesMap, TiledMap.class);
+        manager.load(inAppPurchasesDefault, TextureAtlas.class);
+
+    }
+
     public AssetManager getManager() {
         return manager;
     }
@@ -151,5 +163,13 @@ public class GameAssetManager {
 
     public String getShopScreenDefault() {
         return shopScreenDefault;
+    }
+
+    public String getInAppPurchasesMap() {
+        return inAppPurchasesMap;
+    }
+
+    public String getInAppPurchasesDefault() {
+        return inAppPurchasesDefault;
     }
 }
