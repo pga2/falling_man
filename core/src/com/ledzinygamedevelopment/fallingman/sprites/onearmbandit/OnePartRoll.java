@@ -20,6 +20,7 @@ public class OnePartRoll extends Sprite {
     private Vector3 flyingDirection;
     private boolean toRemove;
     private float endAnimationTime;
+    private long Amount;
 
     public OnePartRoll(GameScreen gameScreen, float posX, float posY, float width, float height, int rollTexture) {
         this.gameScreen = gameScreen;
@@ -78,4 +79,11 @@ public class OnePartRoll extends Sprite {
         return toRemove;
     }
 
+    public long getAmount() {
+        return Amount;
+    }
+
+    public void setAmount(long amount) {
+        Amount = amount;
+    }
 }

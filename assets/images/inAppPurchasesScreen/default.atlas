@@ -3,17 +3,52 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+cloud
+  rotate: false
+  xy: 1, 441
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+gold_and_high_score_background
+  rotate: false
+  xy: 1, 195
+  size: 660, 244
+  orig: 660, 244
+  offset: 0, 0
+  index: -1
 buy_coins_button
   rotate: false
-  xy: 1, 1
+  xy: 963, 285
   size: 360, 540
   orig: 360, 540
   offset: 0, 0
   index: -1
 buy_coins_button_clicked
   rotate: false
-  xy: 363, 1
+  xy: 1325, 285
   size: 360, 540
   orig: 360, 540
+  offset: 0, 0
+  index: -1
+smallRoll0
+  rotate: false
+  xy: 1, 1
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll2
+  rotate: false
+  xy: 663, 247
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+gold_and_high_score_icons
+  rotate: false
+  xy: 1687, 601
+  size: 112, 224
+  orig: 112, 224
   offset: 0, 0
   index: -1

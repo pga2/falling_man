@@ -160,6 +160,12 @@ public class BuyButton extends Button{
         }
     }
 
+    @Override
+    public void restoreNotClickedTexture() {
+        setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
+
+    }
+
     public long getPrice() {
         return price;
     }

@@ -478,7 +478,9 @@ public class PlayScreen implements GameScreen {
                 break;*/
             case FallingMan.MENU_SCREEN:
                 dispose();
-                game.setScreen(new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight()));
+                FallingMan.gameScreen = new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight());
+                FallingMan.currentScreen = FallingMan.MENU_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
                 break;
         }
         Gdx.app.log("FPS: ", String.valueOf(1 / delta));
@@ -709,7 +711,12 @@ public class PlayScreen implements GameScreen {
     }
 
     @Override
-    public void addCoinsFromChest(int numberOfCoins) {
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll) {
+
+    }
+
+    @Override
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
 
     }
 

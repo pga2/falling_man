@@ -93,10 +93,10 @@ public class OneArmedBanditScreen implements GameScreen {
     private float goldAndHighScoresTextSize;
     private Array<BigChest> bigChests;
     private boolean newScreenJustOpened;
-    private boolean changeToOrFromShopScreen;
+    private boolean changeToShopScreen;
 
 
-    public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToOrFromShopScreen) {
+    public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopScreen) {
 
         assetManager = new GameAssetManager();
         assetManager.loadOneArmedBandit();
@@ -104,7 +104,7 @@ public class OneArmedBanditScreen implements GameScreen {
         defaultAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenDefault());
         font = assetManager.getManager().get(assetManager.getFont());
         this.game = game;
-        this.changeToOrFromShopScreen = changeToOrFromShopScreen;
+        this.changeToShopScreen = changeToShopScreen;
         currentScreen = FallingMan.CURRENT_SCREEN;
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
@@ -155,14 +155,14 @@ public class OneArmedBanditScreen implements GameScreen {
         MapProperties mapProp = map.getProperties();
         mapHeight = mapProp.get("height", Integer.class);
         for (Vector2 pos : cloudsPositionForNextScreen) {
-            Cloud cloud = new Cloud(this, 0, 0, true, changeToOrFromShopScreen ? FallingMan.SHOP_SCREEN : FallingMan.MENU_SCREEN);
+            Cloud cloud = new Cloud(this, 0, 0, true, changeToShopScreen ? FallingMan.SHOP_SCREEN : FallingMan.MENU_SCREEN);
             cloud.setPosition(pos.x, pos.y);
             clouds.add(cloud);
         }
         this.cloudsPositionForNextScreen = new Array<>();
         changeScreen = false;
         newScreenJustOpened = true;
-        changeToOrFromShopScreen = false;
+        changeToShopScreen = false;
         //gameCam.zoom = 5;
     }
 
@@ -204,7 +204,7 @@ public class OneArmedBanditScreen implements GameScreen {
                                 }
                             }
                             changeScreen = true;
-                            changeToOrFromShopScreen = false;
+                            changeToShopScreen = false;
                         }
                     }
 
@@ -219,7 +219,7 @@ public class OneArmedBanditScreen implements GameScreen {
                                 }
                             }
                             changeScreen = true;
-                            changeToOrFromShopScreen = true;
+                            changeToShopScreen = true;
                         }
                     }
                 }
@@ -457,11 +457,15 @@ public class OneArmedBanditScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.MENU_SCREEN:
                 dispose();
-                game.setScreen(new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight()));
+                FallingMan.gameScreen = new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight());
+                FallingMan.currentScreen = FallingMan.MENU_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
                 break;
             case FallingMan.SHOP_SCREEN:
                 dispose();
-                game.setScreen(new ShopScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight()));
+                FallingMan.gameScreen = new ShopScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false);
+                FallingMan.currentScreen = FallingMan.SHOP_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
                 break;
         }
 
@@ -782,13 +786,19 @@ public class OneArmedBanditScreen implements GameScreen {
         this.numberOfSpins = numberOfSpins;
     }
 
-    public void addCoinsFromChest(int numberOfCoins) {
-        for (int i = 0; i < numberOfCoins; i++) {
-            OnePartRoll tempRoll = new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+    @Override
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll) {
+        for (int i = 0; i < numberOfOnePartRolls; i++) {
+            OnePartRoll tempRoll = new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, typeOfRoll);
             tempRoll.startFlying();
             flyingRolls.add(tempRoll);
             //bigChests = new Array<>();
         }
+    }
+
+    @Override
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
+
     }
 
     public void removeChest(BigChest bigChest) {

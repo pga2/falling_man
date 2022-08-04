@@ -25,4 +25,10 @@ public class MenuButton extends Button{
             gameScreen.setCurrentScreen(FallingMan.MENU_SCREEN);
         }
     }
+
+    @Override
+    public void restoreNotClickedTexture() {
+        setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+
+    }
 }

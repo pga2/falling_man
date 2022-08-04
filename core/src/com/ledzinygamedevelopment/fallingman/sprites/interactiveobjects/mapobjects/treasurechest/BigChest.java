@@ -116,7 +116,7 @@ public class BigChest extends Sprite {
                 }
                 touchedTimer += dt;
             } else if (Gdx.input.isTouched() && touched) {
-                gameScreen.addCoinsFromChest(100);
+                gameScreen.addOnePartRolls(100, 1);
                 touched = false;
                 secondStage = false;
                 drawFont = false;

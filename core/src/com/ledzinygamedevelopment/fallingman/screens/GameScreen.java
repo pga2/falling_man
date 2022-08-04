@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
@@ -24,7 +25,8 @@ public interface GameScreen extends Screen {
     public void setGameScreen(GameScreen gameScreen);
     public FallingMan getFallingMan();
     public void setCurrentScreen(byte currentScreen);
-    public void addCoinsFromChest(int numberOfCoins);
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll);
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName);
     public void removeChest(BigChest bigChest);
     public SpinButton getSpinButton();
     public GameAssetManager getAssetManager();

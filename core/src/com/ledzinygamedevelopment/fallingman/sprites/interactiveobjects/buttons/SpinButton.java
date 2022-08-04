@@ -28,5 +28,11 @@ public class SpinButton extends Button{
         }
     }
 
+    @Override
+    public void restoreNotClickedTexture() {
+        setRegion(gameScreen.getDefaultAtlas().findRegion("spin"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+
+    }
+
 //, 448, 7936, 544, 192
 }

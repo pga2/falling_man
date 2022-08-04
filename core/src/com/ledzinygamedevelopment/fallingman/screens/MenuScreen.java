@@ -166,6 +166,8 @@ public class MenuScreen implements GameScreen {
         fontScaleUp = true;
         gameCamBehindPosition = player.b2body.getPosition().y / 2;
 
+
+
         //gameCam.zoom = 2;
     }
 
@@ -231,6 +233,9 @@ public class MenuScreen implements GameScreen {
     }
 
     public void update(float dt) {
+
+        game.getAdsController().showRewardedVideo();
+
         handleInput(dt);
         world.step(1 / 60f, 8, 5);
 
@@ -380,7 +385,9 @@ public class MenuScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
-                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY(), false));
+                FallingMan.gameScreen = new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY(), false);
+                FallingMan.currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
                 break;
             case FallingMan.PLAY_SCREEN:
                 PlayerVectors playerVectors = new PlayerVectors(player, true);
@@ -390,7 +397,9 @@ public class MenuScreen implements GameScreen {
                 float rockAnimationTimer = rocks.get(0).getAnimationTimer();
                 playerVectors.calculatePlayerVectors(mapProp.get("height", Integer.class) * 32);
                 dispose();
-                game.setScreen(new PlayScreen(game, playerVectors, rockPos, rockAnimationTimer));
+                FallingMan.gameScreen = new PlayScreen(game, playerVectors, rockPos, rockAnimationTimer);
+                FallingMan.currentScreen = FallingMan.PLAY_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
                 break;
         }
     }
@@ -480,7 +489,12 @@ public class MenuScreen implements GameScreen {
     }
 
     @Override
-    public void addCoinsFromChest(int numberOfCoins) {
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll) {
+
+    }
+
+    @Override
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
 
     }
 

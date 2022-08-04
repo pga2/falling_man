@@ -27,4 +27,10 @@ public class PlayAgainButton extends Button{
             gameScreen.setCurrentScreen(FallingMan.PLAY_SCREEN);
         }
     }
+
+    @Override
+    public void restoreNotClickedTexture() {
+        setRegion(gameScreen.getDefaultAtlas().findRegion("play_again"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+
+    }
 }

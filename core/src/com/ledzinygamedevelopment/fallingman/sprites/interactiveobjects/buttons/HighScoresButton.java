@@ -25,4 +25,10 @@ public class HighScoresButton extends Button{
         setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         gameScreen.setCurrentScreen(FallingMan.ONE_ARMED_BANDIT_SCREEN);
     }
+
+    @Override
+    public void restoreNotClickedTexture() {
+        setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+
+    }
 }

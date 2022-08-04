@@ -50,6 +50,8 @@ public abstract class Button extends Sprite {
 
     public abstract void notTouched();
 
+    public abstract void restoreNotClickedTexture();
+
     // checking if mouse position equals button position
     public boolean mouseOver(Vector2 mousePosition) {
         if(mousePosition.x > posX && mousePosition.x < posX + width

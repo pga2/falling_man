@@ -57,6 +57,7 @@ public class ShopScreen implements GameScreen {
     private TextureAtlas defaultAtlas;
     private TextureAtlas playerAtlas;
     private FallingMan game;
+    private boolean changeToShopInAppPurchasesScreen;
     private Array<Body> worldBodies;
     private Array<Player> players;
     private SaveData saveData;
@@ -81,8 +82,9 @@ public class ShopScreen implements GameScreen {
     private boolean changeScreen;
     private Array<BodyPartBacklight> bodyPartBacklights;
 
-    public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
+    public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopInAppPurchasesScreen) {
         this.game = game;
+        this.changeToShopInAppPurchasesScreen = changeToShopInAppPurchasesScreen;
         currentScreen = FallingMan.CURRENT_SCREEN;
 
         assetManager = new GameAssetManager();
@@ -137,7 +139,7 @@ public class ShopScreen implements GameScreen {
 
         clouds = new Array<>();
         for (Vector2 pos : cloudsPositionForNextScreen) {
-            Cloud cloud = new Cloud(this, 0, 0, true, FallingMan.ONE_ARMED_BANDIT_SCREEN);
+            Cloud cloud = new Cloud(this, 0, 0, true, changeToShopInAppPurchasesScreen ? FallingMan.IN_APP_PURCHASES_SCREEN : FallingMan.ONE_ARMED_BANDIT_SCREEN);
             cloud.setPosition(pos.x, pos.y);
             clouds.add(cloud);
         }
@@ -179,8 +181,20 @@ public class ShopScreen implements GameScreen {
             }
             lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-
-
+            //InAppPurchases
+            if (lastTouchPos.y - startTouchingPos.y < -200 / FallingMan.PPM) {
+                if (!changeScreen) {
+                    Random random = new Random();
+                    //currentScreen = FallingMan.MENU_SCREEN;
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 26; j++) {
+                            clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, gamePort.getWorldHeight() + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.IN_APP_PURCHASES_SCREEN));
+                        }
+                    }
+                    changeScreen = true;
+                    changeToShopInAppPurchasesScreen = true;
+                }
+            }
             //menuScreen
             if (lastTouchPos.y - startTouchingPos.y > 200 / FallingMan.PPM) {
                 if (!changeScreen) {
@@ -395,22 +409,38 @@ public class ShopScreen implements GameScreen {
         Array<Cloud> cloudsToRemove = new Array<>();
         outerloop:
         for (Cloud cloud : clouds) {
-                if (!cloud.isSecondScreen()) {
-                    if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM) {
-                        for (Cloud cloudGetPos : clouds) {
-                            if (!cloudGetPos.isSecondScreen()) {
-                                cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
-                            }
+            if (!cloud.isSecondScreen()) {
+                if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+                    for (Cloud cloudGetPos : clouds) {
+                        if (!cloudGetPos.isSecondScreen()) {
+                            cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
                         }
-                        currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
-                        break outerloop;
                     }
+                    currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                    break outerloop;
+                } else if (cloud.getY() < 0 && cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN) {
+                    for (Cloud cloudGetPos : clouds) {
+                        if (!cloudGetPos.isSecondScreen()) {
+                            cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
+                        }
+                    }
+                    currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                    break outerloop;
+                }
+                if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
                     cloud.update(dt, 0, 1.2f);
-                } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM) {
-                    cloudsToRemove.add(cloud);
-                } else {
+                } else if (cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN) {
                     cloud.update(dt, 0, -1.2f);
                 }
+            } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+                cloudsToRemove.add(cloud);
+            } else if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+                cloud.update(dt, 0, -1.2f);
+            } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
+                cloudsToRemove.add(cloud);
+            } else {
+                cloud.update(dt, 0, 1.2f);
+            }
         }
         clouds.removeAll(cloudsToRemove, false);
 
@@ -480,7 +510,14 @@ public class ShopScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
+                FallingMan.currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
                 game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), true));
+                break;
+            case FallingMan.IN_APP_PURCHASES_SCREEN:
+                dispose();
+                FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight());
+                game.setScreen(FallingMan.gameScreen);
                 break;
         }
 
@@ -712,7 +749,12 @@ public class ShopScreen implements GameScreen {
     }
 
     @Override
-    public void addCoinsFromChest(int numberOfCoins) {
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll) {
+
+    }
+
+    @Override
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
 
     }
 

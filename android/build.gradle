@@ -1,4 +1,18 @@
 android {
+    signingConfigs {
+        release {
+            storeFile file('F:\\my games\\key\\play store key.jks')
+            storePassword 'Pawel102.'
+            keyPassword 'Pawel102.'
+            keyAlias 'stickman_falling'
+        }
+        debug {
+            storeFile file('F:\\my games\\key\\play store key.jks')
+            storePassword 'Pawel102.'
+            keyPassword 'Pawel102.'
+            keyAlias 'stickman_falling'
+        }
+    }
     buildToolsVersion "31.0.0"
     compileSdkVersion 31
     sourceSets {
@@ -18,16 +32,28 @@ android {
     }
     defaultConfig {
         applicationId "com.ledzinygamedevelopment.fallingman"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+
+        versionCode 14
+        versionName "1.014"
+
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -47,10 +73,10 @@ task copyAndroidNatives {
             def outputDir = null
             if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
             if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-            if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if(outputDir != null) {
+            if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if (outputDir != null) {
                 copy {
                     from zipTree(jar)
                     into outputDir
