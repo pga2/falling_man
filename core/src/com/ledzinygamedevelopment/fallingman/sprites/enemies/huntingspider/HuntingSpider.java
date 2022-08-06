@@ -90,6 +90,7 @@ public class HuntingSpider extends Sprite implements InteractiveObjectInterface 
     @Override
     public void touched() {
         playScreen.setGameOver(true);
+        toRemove = true;
     }
 
     @Override

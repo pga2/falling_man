@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.Arm;
@@ -80,6 +81,7 @@ public class Player extends Sprite {
     private float xDist;
     private float yDist;
     private Vector2 teleportTargetPos;
+    private Array<Spark> sparks;
 
     public Player(World world, GameScreen gameScreen, int mapHeight, HashMap<String, Integer> bodyPartsSpriteNumber) {
         this.world = world;
@@ -110,6 +112,7 @@ public class Player extends Sprite {
         beforeTeleportation = false;
         createSecondStateHeadJoint = false;
         headJointsExist = false;
+        sparks = new Array<>();
     }
 
     public Player(World world, GameScreen gameScreen, int mapHeight, HashMap<String, Integer> bodyPartsSpriteNumber, float posX, float posY, boolean playerInScreenMiddle) {
@@ -921,6 +924,10 @@ public class Player extends Sprite {
             return true;
         else
             return false;
+    }
+
+    public Array<Spark> getSparks() {
+        return sparks;
     }
 }
 

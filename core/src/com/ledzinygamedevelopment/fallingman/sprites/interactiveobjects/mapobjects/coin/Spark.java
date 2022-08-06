@@ -16,15 +16,21 @@ public class Spark extends Sprite {
     private float existTime;
     private boolean removeSpark;
 
-    public Spark(PlayScreen playScreen, float posX, float posY) {
-        //super(playScreen.getAtlas().findRegion("spark"));
+    public Spark(PlayScreen playScreen, float posX, float posY, byte typeOfSpark) {
         this.playScreen = playScreen;
+        if (typeOfSpark == 1) { //1 for gold spark
+            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
+            //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
+            setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
+            setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);
 
-        sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
-        //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
-        setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
+        } else if (typeOfSpark == 2) { //2 for new life spark
+            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark_new_life"), 0, 0, 64, 64);
+            //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
+            setBounds(0, 0, 64 / FallingMan.PPM, 64 / FallingMan.PPM);
+            setPosition(posX - 32 / FallingMan.PPM, posY - 32 / FallingMan.PPM);
+        }
         setRegion(sparkTexture);
-        setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);
         setOrigin(getWidth() / 2, getHeight() / 2);
         Random random = new Random();
         setRotation(random.nextInt(91));

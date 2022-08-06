@@ -5,98 +5,133 @@ filter: Nearest,Nearest
 repeat: none
 teleportation_effect
   rotate: false
-  xy: 1, 681
+  xy: 1, 743
   size: 1280, 1280
   orig: 1280, 1280
   offset: 0, 0
   index: -1
 cloud
   rotate: false
-  xy: 1, 295
+  xy: 1, 357
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
-player
+watch_ad_button
   rotate: false
-  xy: 1, 133
-  size: 800, 160
-  orig: 800, 160
+  xy: 1, 99
+  size: 1024, 256
+  orig: 1024, 256
   offset: 0, 0
   index: -1
 blank160
   rotate: false
-  xy: 1283, 1801
+  xy: 1283, 1863
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 spider
   rotate: false
-  xy: 963, 551
+  xy: 963, 613
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+loading_animationLB
+  rotate: false
+  xy: 1, 1
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+loading_animationLT
+  rotate: false
+  xy: 1283, 1765
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+loading_animationRB
+  rotate: false
+  xy: 1445, 1927
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+loading_animationRT
+  rotate: false
+  xy: 963, 515
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
 coin1
   rotate: false
-  xy: 1, 67
+  xy: 1093, 677
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin2
   rotate: false
-  xy: 803, 229
+  xy: 99, 33
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin3
   rotate: false
-  xy: 1283, 1735
+  xy: 1283, 1699
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin4
   rotate: false
-  xy: 1445, 1897
+  xy: 1543, 1959
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin5
   rotate: false
-  xy: 963, 485
+  xy: 963, 449
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin6
   rotate: false
-  xy: 1093, 615
+  xy: 1159, 677
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin7
   rotate: false
-  xy: 1, 1
+  xy: 165, 33
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin8
   rotate: false
-  xy: 67, 67
+  xy: 1283, 1633
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spark_new_life
+  rotate: false
+  xy: 1609, 1959
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark
   rotate: false
-  xy: 803, 195
+  xy: 1381, 1829
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

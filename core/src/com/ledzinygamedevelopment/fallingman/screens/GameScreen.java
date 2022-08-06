@@ -3,12 +3,15 @@ package com.ledzinygamedevelopment.fallingman.screens;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
+import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 
 import java.util.HashMap;
@@ -33,4 +36,8 @@ public interface GameScreen extends Screen {
     public TextureAtlas getPlayerAtlas();
     public GoldAndHighScoresIcons getGoldAndHighScoresIcons();
     public HashMap<String, Boolean> getOwnedBodySprites();
+    public AdsController getAdsController();
+    public void watchAdButtonClicked();
+    public Array<Button> getButtons();
+    public void setNewLife(boolean newLife);
 }

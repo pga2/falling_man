@@ -19,11 +19,19 @@ import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
 import java.util.ArrayList;
 
-public class FallingMan extends Game {
+import de.golfgl.gdxgamesvcs.IGameServiceClient;
+import de.golfgl.gdxgamesvcs.IGameServiceListener;
+import de.golfgl.gdxgamesvcs.NoGameServiceClient;
+
+//import de.golfgl.gdxgamesvcs.IGameServiceClient;
+
+public class FallingMan extends Game implements IGameServiceListener {
 
     private final AdsController adsController;
 
     public SpriteBatch batch;
+
+    public IGameServiceClient gsClient;
 
     public static PurchaseManager purchaseManager;
     public static byte currentScreen;
@@ -84,6 +92,21 @@ public class FallingMan extends Game {
 
     @Override
     public void create() {
+        // ...awesome initialization code...
+
+        if (gsClient == null)
+            gsClient = new NoGameServiceClient();
+
+        // for getting callbacks from the client
+        gsClient.setListener(this);
+
+        // establish a connection to the game service without error messages or login screens
+        gsClient.resumeSession();
+
+        //gsClient.submitToLeaderboard("CgkI-N6Fv6wJEAIQAg", 2, "lol");
+
+        gsClient.unlockAchievement("CgkI-N6Fv6wJEAIQAQ");
+
         batch = new SpriteBatch();
         //setScreen(new PlayScreen(this));
         //setScreen(new MenuScreen(this, new Array<Vector2>(), 0));
@@ -222,5 +245,38 @@ public class FallingMan extends Game {
 
     public AdsController getAdsController() {
         return adsController;
+    }
+
+    public static GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+
+        gsClient.pauseSession();
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+
+        gsClient.resumeSession();
+    }
+
+    @Override
+    public void gsOnSessionActive() {
+
+    }
+
+    @Override
+    public void gsOnSessionInactive() {
+
+    }
+
+    @Override
+    public void gsShowErrorToUser(GsErrorType et, String msg, Throwable t) {
+        Gdx.app.log("\n\n\n\n\n\n\n\n\n----------------\n\n\n\n\n\n\nerror gamesvcs", msg + "\n\n\n\n\n\n\n\n\n\n\n");
     }
 }

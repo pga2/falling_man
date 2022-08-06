@@ -29,6 +29,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.SpinsAmountLine;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.SpinsBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
+import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
@@ -827,5 +828,25 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public HashMap<String, Boolean> getOwnedBodySprites() {
         return null;
+    }
+
+    @Override
+    public AdsController getAdsController() {
+        return game.getAdsController();
+    }
+
+    @Override
+    public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public Array<Button> getButtons() {
+        return buttons;
+    }
+
+    @Override
+    public void setNewLife(boolean newLife) {
+
     }
 }

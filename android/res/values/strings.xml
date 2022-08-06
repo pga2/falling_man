@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">Falling Man</string>
+    <string name="app_id">321181020024</string>
 
 </resources>

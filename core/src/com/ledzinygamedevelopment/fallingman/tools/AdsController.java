@@ -1,6 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
 public interface AdsController {
-    public void showRewardedVideo();
+    public boolean showRewardedVideo(boolean loadOnly);
     public void loadRewardedVideoAd();
 }

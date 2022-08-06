@@ -27,17 +27,22 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 
+import de.golfgl.gdxgamesvcs.GpgsClient;
+import de.golfgl.gdxgamesvcs.IGameServiceClient;
+
 public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener {
     //Window window;
     FallingMan fallingMan;
     private RewardedVideoAd rewardedVideoAd;
+    private boolean adLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fallingMan = new FallingMan(this);
 
-
+        fallingMan.gsClient = new GpgsClient().initialize(this, false);
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
@@ -52,7 +57,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
         config.useImmersiveMode = true;
 
-        fallingMan = new FallingMan(this);
+
         fallingMan.purchaseManager = new PurchaseManagerGoogleBilling(this);
 
 
@@ -62,7 +67,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         rewardedVideoAd.setRewardedVideoAdListener(this);
 
-        loadRewardedVideoAd();
+        //loadRewardedVideoAd();
 
         /*RelativeLayout layout = new RelativeLayout(this);
 
@@ -97,16 +102,22 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     }
 
     @Override
-    public void showRewardedVideo() {
+    public boolean showRewardedVideo(boolean loadOnly) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (rewardedVideoAd.isLoaded()) {
-                    rewardedVideoAd.show();
+                    if (!loadOnly) {
+                        rewardedVideoAd.show();
+                    }
+                    adLoaded = true;
+                } else {
+                    loadRewardedVideoAd();
+                    adLoaded = false;
                 }
-                else loadRewardedVideoAd();
             }
         });
+        return adLoaded;
     }
 
     @Override
@@ -133,12 +144,13 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     @Override
     public void onRewardedVideoAdClosed() {
         Gdx.app.log("ggggggggggggggggggggggggggggggggggggggggggg\n\n\nnagroda\n\n\n000000000000000000000", "dziala\n\n\n\n\n");
-        loadRewardedVideoAd();
+        //loadRewardedVideoAd();
     }
 
     @Override
     public void onRewarded(RewardItem rewardItem) {
         Toast.makeText(this, "Reward:", rewardItem.getAmount()).show();
+        FallingMan.getGameScreen().setNewLife(true);
     }
 
     @Override

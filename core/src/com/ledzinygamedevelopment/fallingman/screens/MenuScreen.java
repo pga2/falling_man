@@ -35,6 +35,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
+import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -87,7 +88,8 @@ public class MenuScreen implements GameScreen {
     private BitmapFont font;
     private boolean fontScaleUp;
     private float fontScale;
-    private float gameCamBehindPosition;
+    private float gameCamBehindPositionBack;
+    private float gameCamBehindPositionFront;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
         this.game = game;
@@ -164,7 +166,8 @@ public class MenuScreen implements GameScreen {
         //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         fontScale = 0.006f;
         fontScaleUp = true;
-        gameCamBehindPosition = player.b2body.getPosition().y / 2;
+        gameCamBehindPositionBack = player.b2body.getPosition().y / 2;
+        gameCamBehindPositionFront = player.b2body.getPosition().y / 2;
 
 
 
@@ -234,7 +237,7 @@ public class MenuScreen implements GameScreen {
 
     public void update(float dt) {
 
-        game.getAdsController().showRewardedVideo();
+        //game.getAdsController().showRewardedVideo();
 
         handleInput(dt);
         world.step(1 / 60f, 8, 5);
@@ -308,18 +311,32 @@ public class MenuScreen implements GameScreen {
         gameCam.update();
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{0, 1});
-        gameCamBehindPosition += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
-        if (gameCamBehindPosition < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
-            gameCamBehindPosition += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
+        if (gameCamBehindPositionBack < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionBack += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         }
-        gameCam.position.y = gameCamBehindPosition;
+        gameCam.position.y = gameCamBehindPositionBack;
         gameCam.update();
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{2});
-        gameCam.position.y = gameCamBehindPosition + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.position.y = gameCamBehindPositionBack + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         gameCam.update();
         rendererBehind1.setView(gameCam);
         rendererBehind1.render(new int[]{2});
+
+        gameCamBehindPositionFront += player.b2body.getLinearVelocity().y / 1.5f / FallingMan.PPM;
+        if (gameCamBehindPositionFront < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionFront += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+
+        gameCam.position.y = gameCamBehindPositionFront;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{3});
+        gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{3});
         gameCam.position.y = player.b2body.getPosition().y;
         gameCam.update();
         renderer.setView(gameCam);
@@ -526,6 +543,26 @@ public class MenuScreen implements GameScreen {
     @Override
     public HashMap<String, Boolean> getOwnedBodySprites() {
         return null;
+    }
+
+    @Override
+    public AdsController getAdsController() {
+        return game.getAdsController();
+    }
+
+    @Override
+    public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public Array<Button> getButtons() {
+        return buttons;
+    }
+
+    @Override
+    public void setNewLife(boolean newLife) {
+
     }
 
     public void generateNewMap() {

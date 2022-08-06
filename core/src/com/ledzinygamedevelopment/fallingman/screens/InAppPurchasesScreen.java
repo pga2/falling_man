@@ -26,6 +26,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
+import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
@@ -125,37 +126,42 @@ public class InAppPurchasesScreen implements GameScreen {
                 firstTouch = true;
                 lastTouchPos = null;
             }
-            for (Button button : buttons) {
-                if (button.mouseOver(gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY())))) {
-                    button.touched();
-                } else if (button.isClicked()) {
-                    button.setClicked(false);
-                    button.restoreNotClickedTexture();
+            if (clouds.size == 0) {
+                for (Button button : buttons) {
+                    if (button.mouseOver(gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY())))) {
+                        button.touched();
+                    } else if (button.isClicked()) {
+                        button.setClicked(false);
+                        button.restoreNotClickedTexture();
+                    }
                 }
             }
             lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
             //menuScreen
-            if (lastTouchPos.y - startTouchingPos.y > 200 / FallingMan.PPM) {
-                if (!changeScreen) {
-                    Random random = new Random();
-                    //currentScreen = FallingMan.MENU_SCREEN;
-                    for (int i = 0; i < 3; i++) {
-                        for (int j = 0; j < 26; j++) {
-                            clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, ((-150 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
+            if (flyingRolls.size == 0) {
+                if (lastTouchPos.y - startTouchingPos.y > 200 / FallingMan.PPM) {
+                    if (!changeScreen) {
+                        Random random = new Random();
+                        //currentScreen = FallingMan.MENU_SCREEN;
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 26; j++) {
+                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, ((-150 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
+                            }
                         }
+                        changeScreen = true;
                     }
-                    changeScreen = true;
                 }
             }
         } else {
             if (firstTouch) {
-                for (Button button : buttons) {
-                    if (button.mouseOver(gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY())))) {
-                        button.notTouched();
+                if (clouds.size == 0) {
+                    for (Button button : buttons) {
+                        if (button.mouseOver(gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY())))) {
+                            button.notTouched();
+                        }
                     }
                 }
-
                 firstTouch = false;
             }
         }
@@ -419,6 +425,26 @@ public class InAppPurchasesScreen implements GameScreen {
     @Override
     public HashMap<String, Boolean> getOwnedBodySprites() {
         return null;
+    }
+
+    @Override
+    public AdsController getAdsController() {
+        return game.getAdsController();
+    }
+
+    @Override
+    public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public Array<Button> getButtons() {
+        return buttons;
+    }
+
+    @Override
+    public void setNewLife(boolean newLife) {
+
     }
 
 }

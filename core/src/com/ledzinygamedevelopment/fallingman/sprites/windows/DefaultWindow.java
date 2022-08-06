@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Align;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.tools.loadinganimation.LoadingAnimation;
 
 public class DefaultWindow extends Sprite {
 
@@ -28,6 +30,9 @@ public class DefaultWindow extends Sprite {
     private boolean tapGrow;
     private float scale;
     private boolean tapExist;
+    private LoadingAnimation adLoadingAnimation;
+    private boolean isRewardedVideoAdLoaded;
+    private boolean watchAdToGetSecondLifeReady;
     /*private boolean clicked;
     private boolean locked;*/
 
@@ -56,12 +61,15 @@ public class DefaultWindow extends Sprite {
         drawText = false;
         tapGrow = true;
         tapExist = false;
+        adLoadingAnimation = new LoadingAnimation(playScreen, getX() + getWidth() / 2, getY() + getHeight() / 4.3f);
+        isRewardedVideoAdLoaded = false;
+        watchAdToGetSecondLifeReady = false;
     }
 
     public void update(float dt, HUD hud, Vector2 playerPos){
         setPosition(getX(), playerPos.y - getHeight() / 2);
         if (typeOfWindowText == FallingMan.GAME_OVER_WINDOW) {
-            if (timer < 2) {
+            if (timer < 5) {
                 gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / 2)));
                 wholeDistance = (int) (hud.getWholeDistance() * Math.sqrt(Math.sqrt(timer / 2)));
             } else {
@@ -70,13 +78,24 @@ public class DefaultWindow extends Sprite {
                 wholeDistance = hud.getWholeDistance();
             }
         }
-
+        if (!playScreen.isNewLife() && !playScreen.getAdsController().showRewardedVideo(true)) {
+            adLoadingAnimation.update(dt);
+        } else {
+            if (!isRewardedVideoAdLoaded) {
+                playScreen.getButtons().add(new WatchAdButton(playScreen, world, getX() + getWidth() / 2, getY() + getHeight() / 4.3f));
+            }
+            watchAdToGetSecondLifeReady = true;
+            isRewardedVideoAdLoaded = true;
+        }
         timer += dt;
     }
 
     @Override
     public void draw(Batch batch) {
         super.draw(batch);
+        if (!isRewardedVideoAdLoaded) {
+            adLoadingAnimation.draw(batch);
+        }
         font.getData().setScale(0.006f);
         font.setColor(Color.GOLD);
         font.draw(batch, "Gold:", getX() + 120 / FallingMan.PPM, getY() + 1900 / FallingMan.PPM);
@@ -106,6 +125,12 @@ public class DefaultWindow extends Sprite {
             font.setColor(Color.CHARTREUSE);
             GlyphLayout glyphLayoutTap = new GlyphLayout(font, "TAP!");
             font.draw(batch, "TAP!", getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
+        } else {
+            scale = 0.01f;
+            font.getData().setScale(scale);
+            font.setColor(Color.CHARTREUSE);
+            GlyphLayout glyphLayoutTap = new GlyphLayout(font, String.valueOf(Math.round(5-timer)));
+            font.draw(batch, String.valueOf(Math.round(5-timer)), getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
         }
     }
 
@@ -115,5 +140,9 @@ public class DefaultWindow extends Sprite {
 
     public boolean isTapExist() {
         return tapExist;
+    }
+
+    public boolean isWatchAdToGetSecondLifeReady() {
+        return watchAdToGetSecondLifeReady;
     }
 }

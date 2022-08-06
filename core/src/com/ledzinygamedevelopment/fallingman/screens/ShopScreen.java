@@ -33,6 +33,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
+import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.Prices;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -796,5 +797,25 @@ public class ShopScreen implements GameScreen {
 
     public HashMap<String, Boolean> getOwnedBodySprites() {
         return ownedBodySprites;
+    }
+
+    @Override
+    public AdsController getAdsController() {
+        return game.getAdsController();
+    }
+
+    @Override
+    public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public Array<Button> getButtons() {
+        return buttons;
+    }
+
+    @Override
+    public void setNewLife(boolean newLife) {
+
     }
 }
