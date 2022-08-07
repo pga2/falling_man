@@ -91,6 +91,10 @@ public class GoldAndHighScoresIcons extends Sprite {
         this.gold = gold;
     }
 
+    public void setHighScore(long highScore) {
+        this.highScore = highScore;
+    }
+
     public void setGoldTextScale(float goldTextScale) {
         this.goldTextScale = goldTextScale;
     }

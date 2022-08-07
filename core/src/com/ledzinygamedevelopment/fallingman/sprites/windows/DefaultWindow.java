@@ -69,9 +69,10 @@ public class DefaultWindow extends Sprite {
     public void update(float dt, HUD hud, Vector2 playerPos){
         setPosition(getX(), playerPos.y - getHeight() / 2);
         if (typeOfWindowText == FallingMan.GAME_OVER_WINDOW) {
-            if (timer < 5) {
-                gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / 2)));
-                wholeDistance = (int) (hud.getWholeDistance() * Math.sqrt(Math.sqrt(timer / 2)));
+            int loadingTapTime = 5;
+            if (timer < loadingTapTime) {
+                gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
+                wholeDistance = (int) (hud.getWholeDistance() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
             } else {
                 tapExist = true;
                 gold = hud.getGold();

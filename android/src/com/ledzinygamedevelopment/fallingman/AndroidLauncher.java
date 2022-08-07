@@ -42,7 +42,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
         fallingMan = new FallingMan(this);
 
-        fallingMan.gsClient = new GpgsClient().initialize(this, false);
+        fallingMan.gsClient = new GpgsClient().initialize(this, true);
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 

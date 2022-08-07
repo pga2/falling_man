@@ -1,6 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
@@ -169,8 +171,13 @@ public class MenuScreen implements GameScreen {
         gameCamBehindPositionBack = player.b2body.getPosition().y / 2;
         gameCamBehindPositionFront = player.b2body.getPosition().y / 2;
 
-
-
+        //GsClientUtils.saveData(game.gsClient, 1);
+        if (saveData.getSaveUpdated()) {
+            saveData.setSaveUpdated(false);
+            GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
+            //GsClientUtils.loadData(game.gsClient, this);
+        }
+        GsClientUtils.loadData(game.gsClient, this);
         //gameCam.zoom = 2;
     }
 
@@ -340,7 +347,7 @@ public class MenuScreen implements GameScreen {
         gameCam.position.y = player.b2body.getPosition().y;
         gameCam.update();
         renderer.setView(gameCam);
-        renderer.render();
+        //renderer.render();
 
         //render box2d debug renderer
         //b2dr.render(world, gameCam.combined);

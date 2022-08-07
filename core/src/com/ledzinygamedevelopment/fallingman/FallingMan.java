@@ -18,10 +18,12 @@ import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.golfgl.gdxgamesvcs.IGameServiceClient;
 import de.golfgl.gdxgamesvcs.IGameServiceListener;
 import de.golfgl.gdxgamesvcs.NoGameServiceClient;
+import de.golfgl.gdxgamesvcs.gamestate.ISaveGameStateResponseListener;
 
 //import de.golfgl.gdxgamesvcs.IGameServiceClient;
 
@@ -86,7 +88,7 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static final String spin_750 = "spin_750";
 
 
-    public FallingMan (AdsController adsController) {
+    public FallingMan(AdsController adsController) {
         this.adsController = adsController;
     }
 
@@ -103,9 +105,10 @@ public class FallingMan extends Game implements IGameServiceListener {
         // establish a connection to the game service without error messages or login screens
         gsClient.resumeSession();
 
+
         //gsClient.submitToLeaderboard("CgkI-N6Fv6wJEAIQAg", 2, "lol");
 
-        gsClient.unlockAchievement("CgkI-N6Fv6wJEAIQAQ");
+        //gsClient.unlockAchievement("CgkI-N6Fv6wJEAIQAQ");
 
         batch = new SpriteBatch();
         //setScreen(new PlayScreen(this));
@@ -130,6 +133,7 @@ public class FallingMan extends Game implements IGameServiceListener {
 
     @Override
     public void dispose() {
+
         batch.dispose();
     }
 

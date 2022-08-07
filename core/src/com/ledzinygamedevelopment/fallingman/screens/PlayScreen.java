@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -44,6 +45,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
@@ -54,6 +56,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
+
+import de.golfgl.gdxgamesvcs.IGameServiceClient;
+import de.golfgl.gdxgamesvcs.gamestate.ISaveGameStateResponseListener;
 
 public class PlayScreen implements GameScreen {
 
@@ -339,7 +344,7 @@ public class PlayScreen implements GameScreen {
             }
         }
         b2WorldCreator.getInteractiveTileObjects().removeAll(drawableInteractiveObjectToRemove, false);
-        if (startRolling) {
+        /*if (startRolling) {
             spinButton.setLocked(true);
             startRolling(dt);
         } else if (winOneArmedBandit) {
@@ -351,7 +356,7 @@ public class PlayScreen implements GameScreen {
                 loseOneArmedBanditEndTime = 0;
                 loseOneArmedBandit = false;
             }
-        }
+        }*/
         Array<Spark> sparksToRemove = new Array<>();
         for (int i = 0; i < sparks.size; i++) {
             Spark spark = sparks.get(i);
@@ -641,7 +646,6 @@ public class PlayScreen implements GameScreen {
         //transforming player position to new map
         Vector2 playerPosPrevious = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
         MapProperties mapProp = map.getProperties();
-
         player.updateBodyParts(mapProp.get("height", Integer.class) * 32);
 
         for (Rock rock : rocks) {
@@ -651,10 +655,14 @@ public class PlayScreen implements GameScreen {
             huntingSpider.generateMapSpiderUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
         }
         hud.setWholeDistance(hud.getWholeDistance() + 1);
+
+        GsClientUtils.distanceAchievementUnlocker(game.gsClient, hud.getWholeDistance());
         fontMapObjects = new ArrayList<>();
+
+
     }
 
-    public void startRolling(float dt) {
+    /*public void startRolling(float dt) {
         Random random = new Random();
         for (int i = 0; i < rolls.size; i++) {
             Roll roll = rolls.get(i);
@@ -729,7 +737,7 @@ public class PlayScreen implements GameScreen {
                 winOneArmedBanditTime += dt;
             }
         }
-    }
+    }*/
 
     public void removeOneArmedBanditbundle() {
         winOneArmedBanditTime = 0;
@@ -951,4 +959,6 @@ public class PlayScreen implements GameScreen {
     public boolean isNewLife() {
         return newLife;
     }
+
+
 }
