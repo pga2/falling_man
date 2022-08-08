@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -51,7 +52,31 @@ public class B2WorldCreator {
             body = world.createBody(bdef);
             shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
             fdef.shape = shape;
+            fdef.shape.setRadius(shape.getRadius());
             //
+            body.createFixture(fdef);
+            b2bodies.add(body);
+        }
+
+        //polygon walls
+        for(MapObject object : map.getLayers().get(5).getObjects().getByType(PolygonMapObject.class)){
+            bdef = new BodyDef();
+            PolygonShape polygonShape = new PolygonShape();
+            float[] vertices = ((PolygonMapObject) object).getPolygon().getTransformedVertices();
+
+            float[] worldVertices = new float[vertices.length];
+
+            for(int i = 0; i < vertices.length; i++) {
+                worldVertices[i] = vertices[i] / FallingMan.PPM;
+            }
+            polygonShape.set(worldVertices);
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+
+
+            body = world.createBody(bdef);
+            fdef = new FixtureDef();
+            fdef.shape = polygonShape;
             body.createFixture(fdef);
             b2bodies.add(body);
         }

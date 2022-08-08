@@ -2,7 +2,6 @@ package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,9 +15,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -57,8 +56,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-import de.golfgl.gdxgamesvcs.IGameServiceClient;
-import de.golfgl.gdxgamesvcs.gamestate.ISaveGameStateResponseListener;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class PlayScreen implements GameScreen {
 
@@ -135,8 +134,15 @@ public class PlayScreen implements GameScreen {
     private long goldFromPreviousLife;
     private long distFromPreviousLife;
     private float gameCamBehindPositionFront;
+    private boolean dontStopAtNotStraightWalls;
+    private float sunPos;
+    private RayHandler rayHandler;
+    private PointLight headLight;
+    private PointLight lHandLight;
+    private PointLight rHandLight;
+    private boolean highPerformance;
 
-    public PlayScreen(FallingMan game, PlayerVectors playerVectors, Vector3 rockPos, float rockAnimationTimer) {
+    public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
         assetManager.loadPlayScreen();
         assetManager.getManager().finishLoading();
@@ -148,6 +154,8 @@ public class PlayScreen implements GameScreen {
 
         //atlas = new TextureAtlas("player.pack");
         this.game = game;
+        this.gameCamBehindPositionBack = gameCamBehindPositionBack;
+        this.gameCamBehindPositionFront = gameCamBehindPositionFront;
         currentScreen = FallingMan.CURRENT_SCREEN;
         gameCam = new OrthographicCamera();
         gameCamBehind0 = new OrthographicCamera();
@@ -155,7 +163,7 @@ public class PlayScreen implements GameScreen {
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("untitled2.tmx");
+        map = mapLoader.load("start_map0.tmx");
         mapBehind0 = mapLoader.load("menu_map_behind.tmx");
         mapBehind1 = mapLoader.load("menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
@@ -195,8 +203,8 @@ public class PlayScreen implements GameScreen {
             rockTextures.add((Texture) assetManager.getManager().get(path));
         }
         Rock rock = new Rock(this, world, true, rockTextures);
-        rock.getB2body().setTransform(rockPos.x, rockPos.y + player.b2body.getPosition().y, rockPos.z);
-        rock.setAnimationTimer(rockAnimationTimer);
+        //rock.getB2body().setTransform(rockPos.x, rockPos.y + player.b2body.getPosition().y, rockPos.z);
+        //rock.setAnimationTimer(rockAnimationTimer);
         rocks.add(rock);
 
         allFPSData = new LinkedList<>();
@@ -211,15 +219,30 @@ public class PlayScreen implements GameScreen {
         sparks = new Array<>();
         huntingSpiders = new Array<>();
         b2SteeringEntityContainers = new Array<>();
-        gameCamBehindPositionBack = player.b2body.getPosition().y / 2;
-        gameCamBehindPositionFront = player.b2body.getPosition().y / 2;
         watchAdButtonClicked = false;
         gameOverScreenTouched = false;
         newLife = false;
         goldFromPreviousLife = 0;
         distFromPreviousLife = 0;
         //gameCam.zoom = 5f;
-
+        dontStopAtNotStraightWalls = true;
+        this.sunPos = sunPos;
+        rendererBehind0.getBatch().setColor(rendererColor);
+        rendererBehind1.getBatch().setColor(rendererColor);
+        rayHandler = new RayHandler(world);
+        rayHandler.setAmbientLight(1);
+        headLight = new PointLight(rayHandler, 400, Color.BLACK, 2000 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
+        for (Body body : player.getBodyPartsAll()) {
+        }
+        headLight.attachToBody(player.b2body);
+        headLight.setIgnoreAttachedBody(true);
+        Filter filter = new Filter();
+        filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
+        filter.maskBits = FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEFAULT_BIT;
+        headLight.setContactFilter(filter);
+        highPerformance = false;
+        //lHandLight = new PointLight(rayHandler, 100, Color.BLACK, 3200 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
+        //rHandLight = new PointLight(rayHandler, 100, Color.BLACK, 3200 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
         //player.createHeadJoint();
         //player.b2body.applyLinearImpulse(new Vector2(100f, 0f), player.b2body.getWorldCenter(), true);
     }
@@ -327,7 +350,11 @@ public class PlayScreen implements GameScreen {
     public void update(float dt) {
         handleInput(dt);
         world.step(1 / 60f, 8, 5);
-
+        if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 63) {
+            if (player.b2body.getLinearVelocity().y > -5) {
+                player.b2body.setLinearVelocity(player.b2body.getLinearVelocity().x, -5);
+            }
+        }
         if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
             generateNewMap();
         }
@@ -421,7 +448,16 @@ public class PlayScreen implements GameScreen {
         huntingSpiders.removeAll(huntingSpidersToRemove, false);
 
         //oneArmBandit.update(dt);
+        /*for (PlayerBodyPart playerBodyPart : player.getBodyParts()) {
+            if (playerBodyPart.getBodyPartName().equals("handL")) {
+                lHandLight.setPosition(playerBodyPart.getB2body().getPosition().x, playerBodyPart.getB2body().getPosition().y);
 
+            } else if (playerBodyPart.getBodyPartName().equals("handR")) {
+                //rHandLight.setIgnoreAttachedBody();
+                rHandLight.setPosition(playerBodyPart.getB2body().getPosition().x, playerBodyPart.getB2body().getPosition().y);
+
+            }
+        }*/
 
         if (gameOver) {
             if (defaultWindows.size == 0) {
@@ -463,13 +499,15 @@ public class PlayScreen implements GameScreen {
             }
             float posX = player.getBelly().getB2body().getPosition().x;
             float posY = player.getBelly().getB2body().getPosition().y;
-            for (int i=0; i < 50; i++) {
+            for (int i = 0; i < 50; i++) {
                 player.getSparks().add(new Spark(this, posX, posY, (byte) 2));
             }
             buttons.removeAll(buttonsToRemove, false);
             newLife = false;
         }
 
+
+        Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
     }
 
     @Override
@@ -481,8 +519,31 @@ public class PlayScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        gameCam.position.y = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        sunPos += 0.05;
+        gameCam.position.y = sunPos;
+        //gameCam.position.y = 16.9f;
         gameCam.update();
+        if (sunPos > 54 && sunPos < 62) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
+            if (sunPos > 59 && sunPos < 62) {
+                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rayHandler.setAmbientLight((62 - sunPos) / 8 / 1.5f + 0.3333f);
+        } else if (sunPos > 16.8 && sunPos < 24.8) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
+            if (sunPos > 16.8 && sunPos < 19.8) {
+                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            rayHandler.setAmbientLight(((sunPos - 16.8f) / 8 / 1.5f) + 0.3333f);
+        } else if (sunPos <= 16.8 || sunPos >= 62) {
+            rendererBehind0.getBatch().setColor(0.11111f, 0.11111f, 0.5f, 1);
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            rayHandler.setAmbientLight(0.3333f);
+        }
+        if (sunPos > 99) {
+            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        }
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{0, 1});
         gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
@@ -519,6 +580,7 @@ public class PlayScreen implements GameScreen {
 
 
         game.batch.setProjectionMatrix(gameCam.combined);
+        rayHandler.setCombinedMatrix(gameCam);
         game.batch.begin();
         for (Spark spark : sparks) {
             spark.draw(game.batch);
@@ -551,16 +613,23 @@ public class PlayScreen implements GameScreen {
             font.setColor(new Color(174 / 255f, 132 / 255f, 26 / 255f, 1));
             font.draw(game.batch, fontMapObject.getText(), fontMapObject.getPosX() - glyphLayout.width / 2, fontMapObject.getPosY() + glyphLayout.height * 1.6f);
         }
+
+
+//        font.draw(game.batch, "dziala dziala dziala dziala dziala dziala dziala dziala dziala dziala", 0, 8000 / FallingMan.PPM);
+//        font.draw(game.batch, "2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 ", 0, 8100 / FallingMan.PPM);
+
+        game.batch.end();
+
+        rayHandler.updateAndRender();
+
+        game.batch.begin();
+
         for (DefaultWindow window : defaultWindows) {
             window.draw(game.batch);
         }
         for (Button button : buttons) {
             button.draw(game.batch);
         }
-
-//        font.draw(game.batch, "dziala dziala dziala dziala dziala dziala dziala dziala dziala dziala", 0, 8000 / FallingMan.PPM);
-//        font.draw(game.batch, "2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 ", 0, 8100 / FallingMan.PPM);
-
         game.batch.end();
 
         //render box2d debug renderer
@@ -583,13 +652,7 @@ public class PlayScreen implements GameScreen {
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }
-        /*Gdx.app.log("FPS: ", String.valueOf(1 / delta));
-        allFPSData.add(1 / delta);
-        Long allFps = 0l;
-        for (Float integer : allFPSData) {
-            allFps += integer.longValue();
-        }
-        Gdx.app.log("average FPS", String.valueOf(allFps / allFPSData.size()));*/
+
 
     }
 
@@ -616,6 +679,7 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void dispose() {
+        rayHandler.dispose();
         hud.getStage().dispose();
         map.dispose();
         mapBehind0.dispose();
@@ -629,6 +693,8 @@ public class PlayScreen implements GameScreen {
     }
 
     public void generateNewMap() {
+
+        dontStopAtNotStraightWalls = false;
 
         //generating new map
         String mapName = "untitled" + new Random().nextInt(3) + ".tmx";
@@ -646,7 +712,7 @@ public class PlayScreen implements GameScreen {
         //transforming player position to new map
         Vector2 playerPosPrevious = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
         MapProperties mapProp = map.getProperties();
-        player.updateBodyParts(mapProp.get("height", Integer.class) * 32);
+        player.updateBodyParts(mapProp.get("height", Integer.class) * 32, false);
 
         for (Rock rock : rocks) {
             rock.generateMapRockUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
@@ -658,7 +724,6 @@ public class PlayScreen implements GameScreen {
 
         GsClientUtils.distanceAchievementUnlocker(game.gsClient, hud.getWholeDistance());
         fontMapObjects = new ArrayList<>();
-
 
     }
 
@@ -860,13 +925,15 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void watchAdButtonClicked() {
-        game.getAdsController().showRewardedVideo(false);
-        for (DefaultWindow window : defaultWindows) {
-            if (window.isWatchAdToGetSecondLifeReady()) {
-                //...
+        if (game.getAdsController() != null) {
+            game.getAdsController().showRewardedVideo(false);
+            for (DefaultWindow window : defaultWindows) {
+                if (window.isWatchAdToGetSecondLifeReady()) {
+                    //...
+                }
             }
+            watchAdButtonClicked = true;
         }
-        watchAdButtonClicked = true;
     }
 
     public HUD getHud() {

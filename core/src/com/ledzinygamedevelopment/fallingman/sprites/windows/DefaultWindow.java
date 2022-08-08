@@ -79,7 +79,7 @@ public class DefaultWindow extends Sprite {
                 wholeDistance = hud.getWholeDistance();
             }
         }
-        if (!playScreen.isNewLife() && !playScreen.getAdsController().showRewardedVideo(true)) {
+        if (!playScreen.isNewLife() && playScreen.getAdsController() != null && !playScreen.getAdsController().showRewardedVideo(true)) {
             adLoadingAnimation.update(dt);
         } else {
             if (!isRewardedVideoAdLoaded) {

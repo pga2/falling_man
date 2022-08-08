@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
@@ -231,7 +230,7 @@ public class Player extends Sprite {
                     }
 
                     beforeTeleportation = false;
-                } else if (createSecondStateHeadJoint){
+                } else if (createSecondStateHeadJoint) {
                     createSecondStateHeadJoint = false;
                     createHeadJoint();
                 } else if (teleportationTimer < 0.5f) {
@@ -321,7 +320,7 @@ public class Player extends Sprite {
         bodyPart.getJoints().add(world.createJoint(ropeJointDef));
     }
 
-    public void updateBodyParts(int mapHeight) {
+    public void updateBodyParts(int mapHeight, boolean inMenu) {
         //transforming player position to new map (unvisible body parts)
         float playerHeadPreviusX = b2body.getPosition().x;
         float playerHeadPreviusY = b2body.getPosition().y;
@@ -344,10 +343,12 @@ public class Player extends Sprite {
             body.setTransform(body.getPosition().x, (mapHeight - FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + yDiff, body.getAngle());
 
             //checking pos o body part, if out of the walls, then transforming to pos inside walls
-            if (body.getPosition().x < 0) {
-                body.setTransform(96 / FallingMan.PPM, body.getPosition().y, previosBodyAngle);
-            } else if (body.getPosition().x > 2560 / FallingMan.PPM) {
-                body.setTransform((2560 - 96) / FallingMan.PPM, body.getPosition().y, previosBodyAngle);
+            if (!inMenu) {
+                if (body.getPosition().x < 0) {
+                    body.setTransform(96 / FallingMan.PPM, body.getPosition().y, previosBodyAngle);
+                } else if (body.getPosition().x > FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM) {
+                    body.setTransform((FallingMan.MIN_WORLD_WIDTH - 96) / FallingMan.PPM, body.getPosition().y, previosBodyAngle);
+                }
             }
         }
     }
@@ -910,7 +911,7 @@ public class Player extends Sprite {
 
     // checking if mouse position equals player position
     public boolean mouseOver(Vector2 mousePosition) {
-        if(mousePosition.x > b2body.getPosition().x - 180 / FallingMan.PPM && mousePosition.x < b2body.getPosition().x + 180 / FallingMan.PPM
+        if (mousePosition.x > b2body.getPosition().x - 180 / FallingMan.PPM && mousePosition.x < b2body.getPosition().x + 180 / FallingMan.PPM
                 && mousePosition.y > b2body.getPosition().y - 400 / FallingMan.PPM && mousePosition.y < b2body.getPosition().y + 150 / FallingMan.PPM)
             return true;
         else
@@ -919,7 +920,7 @@ public class Player extends Sprite {
 
     // checking if mouse position equals head position
     public boolean mouseOverHead(Vector2 mousePosition) {
-        if(mousePosition.x > b2body.getPosition().x - 60 / FallingMan.PPM && mousePosition.x < b2body.getPosition().x + 60 / FallingMan.PPM
+        if (mousePosition.x > b2body.getPosition().x - 60 / FallingMan.PPM && mousePosition.x < b2body.getPosition().x + 60 / FallingMan.PPM
                 && mousePosition.y > b2body.getPosition().y - 70 / FallingMan.PPM && mousePosition.y < b2body.getPosition().y + 70 / FallingMan.PPM)
             return true;
         else

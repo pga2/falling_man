@@ -151,7 +151,7 @@ public class Rock extends Sprite {
                 radius = 48;
                 break;
             case 11:
-                bdef.position.set(112 / FallingMan.PPM + 616 / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y +  1100 / FallingMan.PPM);
+                bdef.position.set(112 / FallingMan.PPM + 616 / FallingMan.PPM, gameScreen.getPlayer().b2body.getPosition().y +  2500 / FallingMan.PPM);
                 shape.setRadius(616 / FallingMan.PPM);
                 fdef.density = 100f;
                 radius = 616;
