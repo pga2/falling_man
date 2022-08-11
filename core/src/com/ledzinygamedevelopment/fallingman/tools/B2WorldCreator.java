@@ -1,6 +1,5 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -14,14 +13,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.WalkingEnemy;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.Dragon;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.BodyPartsRestorer;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.Spikes;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.HuntingEnemyCreator;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Coin;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.Spins;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.MovingBeam;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Coin;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.TeleportTarget;
 
@@ -44,13 +45,13 @@ public class B2WorldCreator {
         teleportsTarget = new Array<>();
 
         //walls
-        for(MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / FallingMan.PPM, (rect.getY() + rect.getHeight() / 2) / FallingMan.PPM);
             body = world.createBody(bdef);
-            shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
+            shape.setAsBox((rect.getWidth() / 2) / FallingMan.PPM, (rect.getHeight() / 2) / FallingMan.PPM);
             fdef.shape = shape;
             fdef.shape.setRadius(shape.getRadius());
             //
@@ -59,14 +60,14 @@ public class B2WorldCreator {
         }
 
         //polygon walls
-        for(MapObject object : map.getLayers().get(5).getObjects().getByType(PolygonMapObject.class)){
+        for (MapObject object : map.getLayers().get(4).getObjects().getByType(PolygonMapObject.class)) {
             bdef = new BodyDef();
             PolygonShape polygonShape = new PolygonShape();
             float[] vertices = ((PolygonMapObject) object).getPolygon().getTransformedVertices();
 
             float[] worldVertices = new float[vertices.length];
 
-            for(int i = 0; i < vertices.length; i++) {
+            for (int i = 0; i < vertices.length; i++) {
                 worldVertices[i] = vertices[i] / FallingMan.PPM;
             }
             polygonShape.set(worldVertices);
@@ -82,13 +83,13 @@ public class B2WorldCreator {
         }
 
         //walls inside tower
-        for(MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / FallingMan.PPM, (rect.getY() + rect.getHeight() / 2) / FallingMan.PPM);
             body = world.createBody(bdef);
-            shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
+            shape.setAsBox((rect.getWidth() / 2) / FallingMan.PPM, (rect.getHeight() / 2) / FallingMan.PPM);
             fdef.shape = shape;
             fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
             body.createFixture(fdef);
@@ -96,7 +97,7 @@ public class B2WorldCreator {
         }
         //coins
         coins = new Array<>();
-        for(MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             if (object.getProperties().get("tp") != null) {
                 InteractiveObjectInterface teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
@@ -115,23 +116,49 @@ public class B2WorldCreator {
         }
 
         //deadly things
-        for(MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveObjectInterface deadMachine = new DeadMachine(playScreen, world, map, rect, 3);
+            InteractiveObjectInterface deadMachine = new Spikes(playScreen, world, map, rect, 3);
             b2bodies.add(deadMachine.getBody());
             interactiveTileObjects.add(deadMachine);
         }
 
-        //spins
-        for(MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
+        //moving beams
+        for (MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveObjectInterface spins = new Spins(playScreen, world, map, rect, 3);
+
+            MovingBeam movingBeam = new MovingBeam(world, rect, playScreen);
+            b2bodies.add(movingBeam.getBody());
+            b2bodies.add(movingBeam.getHeadHolderBody());
+            interactiveTileObjects.add(movingBeam);
+
+        }
+
+        //walking enemy
+        for (MapObject object : map.getLayers().get(9).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            WalkingEnemy walkingEnemy = new WalkingEnemy(playScreen, world, (rect.x + rect.getWidth() / 2) / FallingMan.PPM, rect.y / FallingMan.PPM, (boolean) object.getProperties().get("right"));
+            b2bodies.add(walkingEnemy.getBody());
+            interactiveTileObjects.add(walkingEnemy);
+
+        }
+
+        //spins
+        for (MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+
+            InteractiveObjectInterface spin = new Spin(world, map, rect, 2, playScreen);
+            b2bodies.add(spin.getBody());
+            interactiveTileObjects.add(spin);
+            /*InteractiveObjectInterface spins = new Spins(playScreen, world, map, rect, 3);
             b2bodies.add(spins.getBody());
-            interactiveTileObjects.add(spins);
+            interactiveTileObjects.add(spins);*/
         }
 
         //restore body parts
-        for(MapObject object : map.getLayers().get(12).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             InteractiveObjectInterface bodyPartsRestorer = new BodyPartsRestorer(world, map, rect, 2, playScreen);
             b2bodies.add(bodyPartsRestorer.getBody());
@@ -139,7 +166,7 @@ public class B2WorldCreator {
         }
 
         //dragons
-        for(MapObject object : map.getLayers().get(13).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(12).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             InteractiveObjectInterface dragon = new Dragon(world, rect, playScreen, Boolean.parseBoolean(String.valueOf(object.getProperties().get("right_side_fire"))));
             b2bodies.add(dragon.getBody());
@@ -147,9 +174,9 @@ public class B2WorldCreator {
         }
 
         //hunter
-        for(MapObject object : map.getLayers().get(14).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(13).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveObjectInterface huntingEnemyCreator = new HuntingEnemyCreator(world, map, rect, 4, playScreen);
+            InteractiveObjectInterface huntingEnemyCreator = new HuntingEnemyCreator(world, map, rect, 3, playScreen);
             b2bodies.add(huntingEnemyCreator.getBody());
             interactiveTileObjects.add(huntingEnemyCreator);
         }

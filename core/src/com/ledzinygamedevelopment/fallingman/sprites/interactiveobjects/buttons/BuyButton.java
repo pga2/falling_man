@@ -60,61 +60,20 @@ public class BuyButton extends Button{
 
     @Override
     public void touched() {
-        switch (type_of_button) {
-            case SET:
-                for(PlayerBodyPart playerBodyPart : gameScreen.getPlayer().getBodyParts()) {
-                    if (playerBodyPart.getBodyPartName().equals(bodyPartName)) {
-                        if (playerBodyPart.getSpriteNumber() == spriteNumber && !boughtOrSetNew) {
-                            drawAlreadySetSprite = true;
-                            drawAlreadySetSpriteTimer = 0;
-                        } else {
-                            boughtOrSetNew = true;
-                            setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button_clicked"), 0, 0, 544, 192);
-                            saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
-                            playerBodyPart.setTexture(spriteNumber);
-                        }
-                    }
-                }
-                if ("head".equals(bodyPartName)) {
-                    if (gameScreen.getPlayer().getHeadSpriteNumber() == spriteNumber && !boughtOrSetNew) {
-                        drawAlreadySetSprite = true;
-                        drawAlreadySetSpriteTimer = 0;
-                    } else {
-                        boughtOrSetNew = true;
-                        setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button_clicked"), 0, 0, 544, 192);
-                        gameScreen.getPlayer().setTexture(spriteNumber);
-                        saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
-                    }
-                }
-                break;
-            case BUY:
-                setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button_clicked"), 0, 0, 544, 192);
-                if (saveData.getGold() < price) {
-                    Gdx.app.log("not enough gold", "price " + price);
-                    notEnoughGold = true;
-                    notEnoughGoldTimer = 0;
-                } else {
-                    Gdx.app.log("bought", "pricePlayer" + spriteNumber + bodyPartName);
-                    saveData.removeGold(price);
-                    toRemove = true;
-                    gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
-                    gameScreen.getOwnedBodySprites().put("owned" + spriteNumber + bodyPartName, true);
-                    saveData.saveBodySpritesOwned(gameScreen.getOwnedBodySprites());
-                    for(PlayerBodyPart playerBodyPart : gameScreen.getPlayer().getBodyParts()) {
-                        if (playerBodyPart.getBodyPartName().equals(bodyPartName)) {
-                            playerBodyPart.setTexture(spriteNumber);
-                        }
-                    }
-                    if ("head".equals(bodyPartName)) {
-                        gameScreen.getPlayer().setTexture(spriteNumber);
-                    }
-                    saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
-                }
-                break;
+        super.touched();
+        if (!clicked) {
+            switch (type_of_button) {
+                case SET:
+                    setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button_clicked"), 0, 0, 544, 192);
+                    break;
+                case BUY:
+                    setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button_clicked"), 0, 0, 544, 192);
+                    break;
 
+            }
+
+            clicked = true;
         }
-
-        clicked = true;
     }
 
     public void update(float dt) {
@@ -146,8 +105,70 @@ public class BuyButton extends Button{
 
     @Override
     public void notTouched() {
-        boughtOrSetNew = false;
+        super.notTouched();
         if (clicked) {
+            switch (type_of_button) {
+                case SET:
+                    for (PlayerBodyPart playerBodyPart : gameScreen.getPlayer().getBodyParts()) {
+                        if (playerBodyPart.getBodyPartName().equals(bodyPartName)) {
+                            if (playerBodyPart.getSpriteNumber() == spriteNumber && !boughtOrSetNew) {
+                                drawAlreadySetSprite = true;
+                                drawAlreadySetSpriteTimer = 0;
+                                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                            } else {
+                                boughtOrSetNew = true;
+                                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                                saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
+                                playerBodyPart.setTexture(spriteNumber);
+                            }
+                        }
+                    }
+                    if ("head".equals(bodyPartName)) {
+                        if (gameScreen.getPlayer().getHeadSpriteNumber() == spriteNumber && !boughtOrSetNew) {
+                            drawAlreadySetSprite = true;
+                            drawAlreadySetSpriteTimer = 0;
+                            setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                        } else {
+                            boughtOrSetNew = true;
+                            setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                            gameScreen.getPlayer().setTexture(spriteNumber);
+                            saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
+                        }
+                    }
+                    break;
+                case BUY:
+                    setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
+                    if (saveData.getGold() < price) {
+                        Gdx.app.log("not enough gold", "price " + price);
+                        notEnoughGold = true;
+                        notEnoughGoldTimer = 0;
+                    } else {
+                        Gdx.app.log("bought", "pricePlayer" + spriteNumber + bodyPartName);
+                        saveData.removeGold(price);
+                        toRemove = true;
+                        gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
+                        gameScreen.getOwnedBodySprites().put("owned" + spriteNumber + bodyPartName, true);
+                        saveData.saveBodySpritesOwned(gameScreen.getOwnedBodySprites());
+                        for (PlayerBodyPart playerBodyPart : gameScreen.getPlayer().getBodyParts()) {
+                            if (playerBodyPart.getBodyPartName().equals(bodyPartName)) {
+                                playerBodyPart.setTexture(spriteNumber);
+                            }
+                        }
+                        if ("head".equals(bodyPartName)) {
+                            gameScreen.getPlayer().setTexture(spriteNumber);
+                        }
+                        saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
+                    }
+                    break;
+
+            }
+            clicked = false;
+        }
+        if (clicked) {
+            Gdx.input.vibrate(50);
+        }
+        boughtOrSetNew = false;
+        /*if (clicked) {
             switch (type_of_button) {
                 case SET:
                     setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
@@ -156,8 +177,7 @@ public class BuyButton extends Button{
                     setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
                     break;
             }
-            clicked = false;
-        }
+        }*/
     }
 
     @Override

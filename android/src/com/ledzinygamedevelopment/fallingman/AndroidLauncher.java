@@ -26,11 +26,12 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
+import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import de.golfgl.gdxgamesvcs.GpgsClient;
 import de.golfgl.gdxgamesvcs.IGameServiceClient;
 
-public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener {
+public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener, ToastCreator {
     //Window window;
     FallingMan fallingMan;
     private RewardedVideoAd rewardedVideoAd;
@@ -40,9 +41,10 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fallingMan = new FallingMan(this);
+        fallingMan = new FallingMan(this, this);
 
         fallingMan.gsClient = new GpgsClient().initialize(this, true);
+
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
@@ -54,6 +56,12 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         }
+
+        config.useGyroscope = true;  //default is false
+
+        //you may want to switch off sensors that are on by default if they are no longer needed.
+        config.useAccelerometer = true;
+        config.useCompass = false;
 
         config.useImmersiveMode = true;
 
@@ -166,5 +174,16 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     @Override
     public void onRewardedVideoCompleted() {
 
+    }
+
+
+    @Override
+    public void makeToast(String text) {
+        AndroidLauncher androidLauncher = this;
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(androidLauncher, text, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

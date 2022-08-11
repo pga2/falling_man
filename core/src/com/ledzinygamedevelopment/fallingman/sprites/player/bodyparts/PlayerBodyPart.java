@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -68,6 +69,7 @@ public abstract class PlayerBodyPart extends Sprite {
                         Body bodyB = joint.getBodyB();
                         for (Joint joint1 : joints) {
                             world.destroyJoint(joint1);
+                                //Gdx.input.vibrate(50);
                         }
                         joints = new Array<>();
                         setConnectedBodiesBitToDeafault(bodyB);

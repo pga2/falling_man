@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.DeadMachine;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.Spikes;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
@@ -40,9 +40,9 @@ public class WorldContactListener implements ContactListener {
                 break;
             case FallingMan.PLAYER_HEAD_BIT | FallingMan.DEAD_MACHINE_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.PLAYER_HEAD_BIT) {
-                    ((DeadMachine) fixB.getUserData()).touched();
+                    ((Spikes) fixB.getUserData()).touched();
                 } else {
-                    ((DeadMachine) fixA.getUserData()).touched();
+                    ((Spikes) fixA.getUserData()).touched();
                 }
                 break;
             case FallingMan.PLAYER_BELLY_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
@@ -117,7 +117,13 @@ public class WorldContactListener implements ContactListener {
                     ((PlayerBodyPart) fixA.getUserData()).setTouchWall(true);
                 }
                 break;
-
+            /*case FallingMan.WALL_INSIDE_TOWER | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
+                if (fixA.getFilterData().categoryBits == FallingMan.WALL_INSIDE_TOWER) {
+                    ((InteractiveObjectInterface) fixB.getUserData()).setChangeDirection(true);
+                } else {
+                    ((InteractiveObjectInterface) fixA.getUserData()).setChangeDirection(true);
+                }
+                break;*/
         }
     }
 

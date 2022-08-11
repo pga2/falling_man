@@ -11,4 +11,5 @@ public interface InteractiveObjectInterface {
     public void draw(Batch batch);
     public void update(float dt);
     public boolean isToRemove();
+    public void setChangeDirection(boolean changeDirection);
 }

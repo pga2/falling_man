@@ -40,4 +40,5 @@ public interface GameScreen extends Screen {
     public void watchAdButtonClicked();
     public Array<Button> getButtons();
     public void setNewLife(boolean newLife);
+    public FallingMan getGame();
 }

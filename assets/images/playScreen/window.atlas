@@ -10,3 +10,24 @@ window
   orig: 1312, 2046
   offset: 0, 0
   index: -1
+high_score
+  rotate: false
+  xy: 1315, 1547
+  size: 732, 500
+  orig: 732, 500
+  offset: 0, 0
+  index: -1
+score
+  rotate: false
+  xy: 1315, 1045
+  size: 732, 500
+  orig: 732, 500
+  offset: 0, 0
+  index: -1
+gold
+  rotate: false
+  xy: 1315, 693
+  size: 732, 350
+  orig: 732, 350
+  offset: 0, 0
+  index: -1

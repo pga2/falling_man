@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.font;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class FontMapObject {
@@ -7,11 +8,13 @@ public class FontMapObject {
     private float posX;
     private float posY;
     private String text;
+    private Color color;
 
-    public FontMapObject(float posX, float posY, String text) {
+    public FontMapObject(float posX, float posY, String text, Color color) {
         this.posX = posX;
         this.posY = posY;
         this.text = text;
+        this.color = color;
     }
 
     public void update(float dt) {
@@ -28,5 +31,9 @@ public class FontMapObject {
 
     public String getText() {
         return text;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

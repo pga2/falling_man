@@ -15,11 +15,13 @@ public class MenuButton extends Button{
 
     @Override
     public void touched() {
+        super.touched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
     }
 
     @Override
     public void notTouched() {
+        super.notTouched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("menu_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         if(clicked) {
             gameScreen.setCurrentScreen(FallingMan.MENU_SCREEN);

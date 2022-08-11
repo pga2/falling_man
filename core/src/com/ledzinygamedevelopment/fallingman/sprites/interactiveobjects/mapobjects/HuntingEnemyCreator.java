@@ -1,7 +1,5 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -10,8 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
-import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
-import com.ledzinygamedevelopment.fallingman.tools.entities.B2dSteeringEntity;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spark;
 
 public class HuntingEnemyCreator extends InteractiveTileObject {
 
@@ -41,7 +38,15 @@ public class HuntingEnemyCreator extends InteractiveTileObject {
     }
 
     @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
+
+    @Override
     public void touched() {
+        for (int i = 0; i < 50; i++) {
+            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 3));
+        }
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         for(TiledMapTileLayer.Cell cell : getCells()) {
             try {

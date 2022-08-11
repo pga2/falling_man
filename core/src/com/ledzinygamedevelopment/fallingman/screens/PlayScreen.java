@@ -28,10 +28,11 @@ import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.Hunti
 import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ShowLeaderboardButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coin.Spark;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
@@ -141,6 +142,8 @@ public class PlayScreen implements GameScreen {
     private PointLight lHandLight;
     private PointLight rHandLight;
     private boolean highPerformance;
+    private boolean turnOnLights;
+    private float vibrationTimer;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -232,8 +235,6 @@ public class PlayScreen implements GameScreen {
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
         headLight = new PointLight(rayHandler, 400, Color.BLACK, 2000 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
-        for (Body body : player.getBodyPartsAll()) {
-        }
         headLight.attachToBody(player.b2body);
         headLight.setIgnoreAttachedBody(true);
         Filter filter = new Filter();
@@ -245,6 +246,8 @@ public class PlayScreen implements GameScreen {
         //rHandLight = new PointLight(rayHandler, 100, Color.BLACK, 3200 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
         //player.createHeadJoint();
         //player.b2body.applyLinearImpulse(new Vector2(100f, 0f), player.b2body.getWorldCenter(), true);
+        turnOnLights = false;
+        vibrationTimer = 0;
     }
 
     public TextureAtlas getDefaultAtlas() {
@@ -287,6 +290,8 @@ public class PlayScreen implements GameScreen {
                     if (button.mouseOver(mouseVector) && !button.isLocked()) {
                         button.touched();
                         button.setClicked(true);
+                    } else {
+                        button.restoreNotClickedTexture();
                     }
                 }
 
@@ -321,6 +326,8 @@ public class PlayScreen implements GameScreen {
                     if (button.mouseOver(mouseVector) && !button.isLocked()) {
                         button.touched();
                         button.setClicked(true);
+                    } else {
+                        button.restoreNotClickedTexture();
                     }
                 }
             } else {
@@ -402,6 +409,7 @@ public class PlayScreen implements GameScreen {
         player.getSparks().removeAll(sparksToRemove, false);
 
         player.update(dt);
+
 
         MapProperties mapProp = map.getProperties();
         hud.update(dt, player.b2body.getPosition().y, mapProp.get("height", Integer.class) * 32);
@@ -493,7 +501,7 @@ public class PlayScreen implements GameScreen {
             hud.setWholeDistance(distFromPreviousLife);
             Array<Button> buttonsToRemove = new Array<>();
             for (Button button : buttons) {
-                if (button instanceof WatchAdButton) {
+                if (button instanceof WatchAdButton || button instanceof ShowLeaderboardButton) {
                     buttonsToRemove.add(button);
                 }
             }
@@ -519,31 +527,12 @@ public class PlayScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += 0.05;
+        sunPos += FallingMan.SUN_SPEED;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
-        if (sunPos > 54 && sunPos < 62) {
-            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
-            if (sunPos > 59 && sunPos < 62) {
-                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
-            }
-            rayHandler.setAmbientLight((62 - sunPos) / 8 / 1.5f + 0.3333f);
-        } else if (sunPos > 16.8 && sunPos < 24.8) {
-            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
-            if (sunPos > 16.8 && sunPos < 19.8) {
-                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
-            }
-            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            rayHandler.setAmbientLight(((sunPos - 16.8f) / 8 / 1.5f) + 0.3333f);
-        } else if (sunPos <= 16.8 || sunPos >= 62) {
-            rendererBehind0.getBatch().setColor(0.11111f, 0.11111f, 0.5f, 1);
-            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            rayHandler.setAmbientLight(0.3333f);
-        }
-        if (sunPos > 99) {
-            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
-        }
+        prepareDayAndNightCycle();
+
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{0, 1});
         gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
@@ -610,7 +599,7 @@ public class PlayScreen implements GameScreen {
         font.getData().setScale(0.007f);
         for (FontMapObject fontMapObject : fontMapObjects) {
             GlyphLayout glyphLayout = new GlyphLayout(font, fontMapObject.getText());
-            font.setColor(new Color(174 / 255f, 132 / 255f, 26 / 255f, 1));
+            font.setColor(fontMapObject.getColor());
             font.draw(game.batch, fontMapObject.getText(), fontMapObject.getPosX() - glyphLayout.width / 2, fontMapObject.getPosY() + glyphLayout.height * 1.6f);
         }
 
@@ -620,7 +609,9 @@ public class PlayScreen implements GameScreen {
 
         game.batch.end();
 
-        rayHandler.updateAndRender();
+        if (turnOnLights) {
+            rayHandler.updateAndRender();
+        }
 
         game.batch.begin();
 
@@ -647,7 +638,7 @@ public class PlayScreen implements GameScreen {
                 saveData.addGold(hud.getGold());
                 saveData.setHighScore(hud.getWholeDistance());
                 dispose();
-                FallingMan.gameScreen = new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight());
+                FallingMan.gameScreen = new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
                 FallingMan.currentScreen = FallingMan.MENU_SCREEN;
                 game.setScreen(FallingMan.gameScreen);
                 break;
@@ -655,6 +646,7 @@ public class PlayScreen implements GameScreen {
 
 
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -1027,5 +1019,43 @@ public class PlayScreen implements GameScreen {
         return newLife;
     }
 
+    private void prepareDayAndNightCycle() {
+        if (sunPos > 54 && sunPos < 62) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
+            if (sunPos > 59 && sunPos < 62) {
+                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            rayHandler.setAmbientLight((62 - sunPos) / 8 / 1.5f + 0.3333f);
+            if (sunPos > 58) {
+                turnOnLights = true;
+            } else {
+                turnOnLights = false;
+            }
+        } else if (sunPos > 16.8 && sunPos < 24.8) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
+            if (sunPos > 16.8 && sunPos < 19.8) {
+                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            rayHandler.setAmbientLight(((sunPos - 16.8f) / 8 / 1.5f) + 0.3333f);
+            if (sunPos > 20.8f) {
+                turnOnLights = false;
+            } else {
+                turnOnLights = true;
+            }
+        } else if (sunPos <= 16.8 || sunPos >= 62) {
+            rendererBehind0.getBatch().setColor(0.11111f, 0.11111f, 0.5f, 1);
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            rayHandler.setAmbientLight(0.3333f);
+            turnOnLights = true;
+        } else {
+            rayHandler.setAmbientLight(1);
+            turnOnLights = false;
+        }
+        if (sunPos > 99) {
+            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        }
+    }
 
 }

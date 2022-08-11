@@ -17,12 +17,14 @@ public class PlayButton extends Button{
 
     @Override
     public void touched() {
+        super.touched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("play_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         clicked = true;
     }
 
     @Override
     public void notTouched() {
+        super.notTouched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("play_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         if(clicked) {
             gameScreen.setCurrentScreen(FallingMan.PLAY_SCREEN);

@@ -46,6 +46,26 @@ public abstract class InteractiveTileObject implements InteractiveObjectInterfac
         touched = false;
     }
 
+    public InteractiveTileObject(World world, TiledMap map, Rectangle bounds, int mapLayer, BodyDef.BodyType bodyType) {
+        this.world = world;
+        this.map = map;
+        this.bounds = bounds;
+        this.mapLayer = mapLayer;
+
+        BodyDef bdef = new BodyDef();
+        fdef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+
+        bdef.type = bodyType;
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / FallingMan.PPM, (bounds.getY() + bounds.getHeight() / 2) / FallingMan.PPM);
+        body = world.createBody(bdef);
+        shape.setAsBox((bounds.getWidth() / 2)  / FallingMan.PPM, (bounds.getHeight() / 2)  / FallingMan.PPM);
+        fdef.shape = shape;
+        fdef.isSensor = true;
+        fixture = body.createFixture(fdef);
+        touched = false;
+    }
+
     public abstract void touched();
 
     public void setCategoryFilter(short filterBit) {

@@ -141,4 +141,9 @@ public class HuntingSpider extends Sprite implements InteractiveObjectInterface 
     public boolean isToRemove() {
         return toRemove;
     }
+
+    @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
 }

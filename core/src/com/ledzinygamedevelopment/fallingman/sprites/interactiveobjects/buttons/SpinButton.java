@@ -16,6 +16,7 @@ public class SpinButton extends Button{
 
     @Override
     public void touched() {
+        super.touched();
         if (!locked) {
             setRegion(gameScreen.getDefaultAtlas().findRegion("spin_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
             clicked = true;
@@ -23,6 +24,7 @@ public class SpinButton extends Button{
     }
 
     public void notTouched() {
+        super.notTouched();
         if (!locked) {
             setRegion(gameScreen.getDefaultAtlas().findRegion("spin"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         }

@@ -12,7 +12,8 @@ import com.badlogic.gdx.utils.Align;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ShowLeaderboardButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.tools.loadinganimation.LoadingAnimation;
 
 public class DefaultWindow extends Sprite {
@@ -33,6 +34,8 @@ public class DefaultWindow extends Sprite {
     private LoadingAnimation adLoadingAnimation;
     private boolean isRewardedVideoAdLoaded;
     private boolean watchAdToGetSecondLifeReady;
+    private ScoreWindow scoreWindow;
+    private GoldWindow goldWindow;
     /*private boolean clicked;
     private boolean locked;*/
 
@@ -64,13 +67,18 @@ public class DefaultWindow extends Sprite {
         adLoadingAnimation = new LoadingAnimation(playScreen, getX() + getWidth() / 2, getY() + getHeight() / 4.3f);
         isRewardedVideoAdLoaded = false;
         watchAdToGetSecondLifeReady = false;
+        playScreen.getGame().gsClient.submitToLeaderboard("CgkI-N6Fv6wJEAIQAg", playScreen.getHud().getWholeDistance(), "someTag");
+
+        scoreWindow = new ScoreWindow(playScreen, world, getY() + 950 / FallingMan.PPM, playScreen.getHud().getWholeDistance() > playScreen.getSaveData().getHighScore());
+        goldWindow = new GoldWindow(playScreen, world, getY() + 1460 / FallingMan.PPM);
+        playScreen.getButtons().add(new ShowLeaderboardButton(playScreen, world, getX() + getWidth() / 2, getY() + 750 / FallingMan.PPM));
     }
 
     public void update(float dt, HUD hud, Vector2 playerPos){
         setPosition(getX(), playerPos.y - getHeight() / 2);
         if (typeOfWindowText == FallingMan.GAME_OVER_WINDOW) {
-            int loadingTapTime = 5;
-            if (timer < loadingTapTime) {
+            int loadingTapTime = 3;
+            if (timer + dt < loadingTapTime) {
                 gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
                 wholeDistance = (int) (hud.getWholeDistance() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
             } else {
@@ -97,18 +105,21 @@ public class DefaultWindow extends Sprite {
         if (!isRewardedVideoAdLoaded) {
             adLoadingAnimation.draw(batch);
         }
-        font.getData().setScale(0.006f);
-        font.setColor(Color.GOLD);
-        font.draw(batch, "Gold:", getX() + 120 / FallingMan.PPM, getY() + 1900 / FallingMan.PPM);
-        GlyphLayout glyphLayoutGold = new GlyphLayout(font, String.valueOf(gold));
-        font.draw(batch, String.valueOf(gold), getX() + 1200 / FallingMan.PPM - glyphLayoutGold.width, getY() + 1900 / FallingMan.PPM, glyphLayoutGold.width, Align.left, false);
-
+        goldWindow.draw(batch);
+        scoreWindow.draw(batch);
+        font.getData().setScale(0.0058f);
         font.setColor(Color.BLACK);
-        font.draw(batch, "Distance:", getX() + 120 / FallingMan.PPM, getY() - glyphLayoutGold.height * 1.2f + 1900 / FallingMan.PPM);
-        GlyphLayout glyphLayoutDist = new GlyphLayout(font, String.valueOf(wholeDistance));
-        font.draw(batch, String.valueOf(wholeDistance), getX() + 1200 / FallingMan.PPM - glyphLayoutDist.width, getY() - glyphLayoutGold.height * 1.2f + 1900 / FallingMan.PPM, glyphLayoutDist.width, Align.left, false);
+        //font.draw(batch, "Gold:", getX() + 120 / FallingMan.PPM, getY() + 1900 / FallingMan.PPM);
+        GlyphLayout glyphLayoutGold = new GlyphLayout(font, String.valueOf(gold));
+        font.draw(batch, String.valueOf(gold), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 134 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
 
-        if (tapExist) {
+        font.getData().setScale(0.008f);
+        font.setColor(Color.BLACK);
+        //font.draw(batch, "Distance:", getX() + 120 / FallingMan.PPM, getY() - glyphLayoutGold.height * 1.2f + 1900 / FallingMan.PPM);
+        GlyphLayout glyphLayoutDist = new GlyphLayout(font, String.valueOf(wholeDistance));
+        font.draw(batch, String.valueOf(wholeDistance), scoreWindow.getX() + scoreWindow.getWidth() / 2 - glyphLayoutDist.width / 2, scoreWindow.getY() + 295 / FallingMan.PPM, glyphLayoutDist.width, Align.center, false);
+
+        /*if (tapExist) {
             if (tapGrow) {
                 if (scale < 0.013f) {
                     scale += 0.0005;
@@ -126,13 +137,15 @@ public class DefaultWindow extends Sprite {
             font.setColor(Color.CHARTREUSE);
             GlyphLayout glyphLayoutTap = new GlyphLayout(font, "TAP!");
             font.draw(batch, "TAP!", getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
-        } else {
+        } else {*/
+        if (!tapExist) {
             scale = 0.01f;
             font.getData().setScale(scale);
             font.setColor(Color.CHARTREUSE);
-            GlyphLayout glyphLayoutTap = new GlyphLayout(font, String.valueOf(Math.round(5-timer)));
-            font.draw(batch, String.valueOf(Math.round(5-timer)), getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
+            GlyphLayout glyphLayoutTap = new GlyphLayout(font, String.valueOf((int) Math.ceil(3 - timer)));
+            font.draw(batch, String.valueOf((int) Math.ceil(3 - timer)), getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
         }
+       // }
     }
 
     public byte getTypeOfWindowText() {

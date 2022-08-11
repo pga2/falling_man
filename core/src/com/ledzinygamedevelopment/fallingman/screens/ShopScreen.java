@@ -1,6 +1,8 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -52,7 +55,11 @@ public class ShopScreen implements GameScreen {
     private ExtendViewport gamePort;
     private TmxMapLoader mapLoader;
     private TiledMap map;
+    private TiledMap mapBehind0;
+    private TiledMap mapBehind1;
     private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer rendererBehind0;
+    private OrthogonalTiledMapRenderer rendererBehind1;
     private World world;
     private Box2DDebugRenderer b2dr;
     private TextureAtlas defaultAtlas;
@@ -82,10 +89,15 @@ public class ShopScreen implements GameScreen {
     private Array<Vector2> cloudsPositionForNextScreen;
     private boolean changeScreen;
     private Array<BodyPartBacklight> bodyPartBacklights;
+    private float gameCamBehindPositionBack;
+    private float sunPos;
+    private float gameCamBehindPositionFront;
 
-    public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopInAppPurchasesScreen) {
+    public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopInAppPurchasesScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         this.game = game;
         this.changeToShopInAppPurchasesScreen = changeToShopInAppPurchasesScreen;
+        this.gameCamBehindPositionBack = gameCamBehindPositionBack;
+        this.gameCamBehindPositionFront = gameCamBehindPositionFront;
         currentScreen = FallingMan.CURRENT_SCREEN;
 
         assetManager = new GameAssetManager();
@@ -104,6 +116,10 @@ public class ShopScreen implements GameScreen {
         mapLoader = new TmxMapLoader();
         //map = mapLoader.load("menu_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
+        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
+        rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
+        rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
         //gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         gameCam.update();
         renderer.setView(gameCam);
@@ -137,6 +153,11 @@ public class ShopScreen implements GameScreen {
         ownedBodySprites = saveData.getBodySpritesOwned();
         currentPlayer = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySpritesCurrentlyWear(), FallingMan.MAX_WORLD_WIDTH / 4f / FallingMan.PPM, 1500 / FallingMan.PPM, false);
         currentPlayer.createHeadJoint();
+        //currentPlayer.b2body.setGravityScale(0);
+        /*for (Body body : currentPlayer.getBodyPartsAll()) {
+            //body.setGravityScale(0);
+        }*/
+        //currentPlayer.getBelly().getB2body().applyLinearImpulse(new Vector2(3, 0), currentPlayer.getBelly().getB2body().getWorldCenter(), true);
 
         clouds = new Array<>();
         for (Vector2 pos : cloudsPositionForNextScreen) {
@@ -148,6 +169,9 @@ public class ShopScreen implements GameScreen {
         changeScreen = false;
 
         bodyPartBacklights = new Array<>();
+        this.sunPos = sunPos;
+        rendererBehind0.getBatch().setColor(rendererColor);
+        rendererBehind1.getBatch().setColor(rendererColor);
     }
 
     @Override
@@ -177,6 +201,9 @@ public class ShopScreen implements GameScreen {
             }
             for (Button button : buttons) {
                 if (button.mouseOver(gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY())))) {
+                    //if (!button.isClicked()) {
+                        //Gdx.input.vi
+                    //}
                     button.touched();
                 }
             }
@@ -339,6 +366,9 @@ public class ShopScreen implements GameScreen {
                 for (Button button : buttons) {
                     if (button.isClicked()) {
                         button.notTouched();
+                        if (button.isToRemove()) {
+                            bodyPartBacklights = new Array<>();
+                        }
                     }
                 }
             }
@@ -389,6 +419,22 @@ public class ShopScreen implements GameScreen {
         }
 
         currentPlayer.update(dt);
+        /*Vector3 tempGyroscope = new Vector3(Gdx.input.getGyroscopeX(), Gdx.input.getGyroscopeY(), Gdx.input.getGyroscopeZ());
+        Vector3 tempAccelerometer = new Vector3(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerZ());
+        Gdx.app.log("gyroscope anaveible", "\n\n");
+        if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
+
+            //Gdx.app.log("gyroscope x ", String.valueOf(Gdx.input.getGyroscopeX()));
+            //Gdx.app.log("gyroscope y ", String.valueOf(Gdx.input.getGyroscopeY()));
+            *//*Gdx.app.log("gyroscope z ", String.valueOf(Gdx.input.getGyroscopeZ()));
+            //currentPlayer.b2body.applyForce(new Vector2(-Gdx.input.getAccelerometerX() / 10 * 3f, -Gdx.input.getAccelerometerY() / 10 * 3f), currentPlayer.b2body.getWorldCenter(), true);
+            //currentPlayer.getBelly().getB2body().applyForce(new Vector2(-Gdx.input.getAccelerometerX() / 10 * 300f, -Gdx.input.getAccelerometerY() / 10 * 300f), currentPlayer.getBelly().getB2body().getWorldCenter(), false);
+            for (Body body : currentPlayer.getBodyPartsAll()) {
+                body.applyForceToCenter(new Vector2(-Gdx.input.getAccelerometerX() / 10 * 3f, -Gdx.input.getAccelerometerY() / 10 * 3f),true);
+            }*//*
+            world.setGravity(new Vector2(-Gdx.input.getAccelerometerX() / 10 * 300f, -Gdx.input.getAccelerometerY() / 10 * 300f));
+            //currentPlayer.getBelly().getB2body().setLinearVelocity(new Vector2(-Gdx.input.getAccelerometerX() / 10 * 3f, -Gdx.input.getAccelerometerY() / 10 * 3f));
+        }*/
 
         Array<Button> buttonsToRemove = new Array<>();
         for (Button button : buttons) {
@@ -461,7 +507,46 @@ public class ShopScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        renderer.render();
+        sunPos += FallingMan.SUN_SPEED;
+        gameCam.position.y = sunPos;
+        //gameCam.position.y = 16.9f;
+        gameCam.update();
+        prepareDayAndNightCycle();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{0, 1});
+        Random random = new Random();
+        gameCamBehindPositionBack -= random.nextFloat() / 200 + 0.005;
+        if (gameCamBehindPositionBack < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionBack += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+        gameCam.position.y = gameCamBehindPositionBack;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{2});
+        gameCam.position.y = gameCamBehindPositionBack + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{2});
+
+        gameCamBehindPositionFront -= random.nextFloat() / 100 + 0.01;
+        if (gameCamBehindPositionFront < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionFront += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+
+        //render box2d debug renderer
+        //b2dr.render(world, gameCam.combined);
+        gameCam.position.y = gameCamBehindPositionFront;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{3});
+        gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{3});
+
+        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
+        gameCam.update();
+        //renderer.render();
 
 
         game.batch.setProjectionMatrix(gameCam.combined);
@@ -512,12 +597,12 @@ public class ShopScreen implements GameScreen {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
                 FallingMan.currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
-                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), true));
+                game.setScreen(new OneArmedBanditScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), true, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor()));
                 break;
             case FallingMan.IN_APP_PURCHASES_SCREEN:
                 dispose();
                 FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
-                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight());
+                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }
@@ -549,7 +634,12 @@ public class ShopScreen implements GameScreen {
 
     @Override
     public void dispose() {
+        map.dispose();
+        mapBehind0.dispose();
+        mapBehind1.dispose();
         renderer.dispose();
+        rendererBehind0.dispose();
+        rendererBehind1.dispose();
         world.dispose();
         b2dr.dispose();
         assetManager.getManager().dispose();
@@ -817,5 +907,31 @@ public class ShopScreen implements GameScreen {
     @Override
     public void setNewLife(boolean newLife) {
 
+    }
+
+    @Override
+    public FallingMan getGame() {
+        return game;
+    }
+
+    private void prepareDayAndNightCycle() {
+        if (sunPos > 54 && sunPos < 62) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
+            if (sunPos > 59 && sunPos < 62) {
+                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight((62 - sunPos) / 2 + 0.5f);
+        } else if (sunPos > 16.8 && sunPos < 24.8) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
+            if (sunPos > 16.8 && sunPos < 19.8) {
+                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight(1 - ((62 - sunPos) / 2 + 0.5f));
+        }
+        if (sunPos > 99) {
+            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        }
     }
 }

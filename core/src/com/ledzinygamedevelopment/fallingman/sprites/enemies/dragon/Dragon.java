@@ -95,6 +95,11 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
         return toRemove;
     }
 
+    @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
+
     public void defineBody() {
         BodyDef bdef = new BodyDef();
         fdef = new FixtureDef();

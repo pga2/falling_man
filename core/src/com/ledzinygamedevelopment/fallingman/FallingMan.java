@@ -2,6 +2,7 @@ package com.ledzinygamedevelopment.fallingman;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.pay.Offer;
@@ -16,6 +17,7 @@ import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
+import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +37,13 @@ public class FallingMan extends Game implements IGameServiceListener {
 
     public IGameServiceClient gsClient;
 
+    public ToastCreator toastCreator;
+
     public static PurchaseManager purchaseManager;
     public static byte currentScreen;
     public static GameScreen gameScreen;
+
+    public static final float SUN_SPEED = 0.05f;
 
     public static final int MIN_WORLD_WIDTH = 1440;
     public static final int MIN_WORLD_HEIGHT = 2560;
@@ -88,8 +94,9 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static final String spin_750 = "spin_750";
 
 
-    public FallingMan(AdsController adsController) {
+    public FallingMan(AdsController adsController, ToastCreator toastCreator) {
         this.adsController = adsController;
+        this.toastCreator = toastCreator;
     }
 
     @Override
@@ -120,7 +127,7 @@ public class FallingMan extends Game implements IGameServiceListener {
             e.printStackTrace();
         }
         currentScreen = FallingMan.MENU_SCREEN;
-        gameScreen = new MenuScreen(this, new Array<Vector2>(), 0);
+        gameScreen = new MenuScreen(this, new Array<Vector2>(), 0, 1, 1, 1, Color.BLACK, true);
 		/*currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
 		gameScreen = new InAppPurchasesScreen(this, null, 0);*/
         setScreen(gameScreen);
@@ -176,27 +183,23 @@ public class FallingMan extends Game implements IGameServiceListener {
 
         @Override
         public void handleRestore(Transaction[] transactions) {
-			/*for (int i = 0; i < transactions.length; i++) {
-				if (checkTransaction(transactions[i].getIdentifier()) == true) break;
-			}
-			// to make a purchase (results are reported to the observer)
-			PurchaseSystem.purchase(SKU_REMOVE_ADS);*/
-			/*if (currentScreen == IN_APP_PURCHASES_SCREEN) {
-				for (Transaction transaction : transactions) {
-					gameScreen.addOnePartRolls(100, transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
-				}
-			} else {*/
             SaveData saveData = new SaveData();
             for (Transaction transaction : transactions) {
-                if (transaction.getIdentifier().startsWith("spin")) {
-                    saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
-                } else if (transaction.getIdentifier().startsWith("gold")) {
-                    saveData.addGold(Long.parseLong(transaction.getIdentifier().substring(5)));
+                if (currentScreen == IN_APP_PURCHASES_SCREEN) {
+                    gameScreen.addOnePartRolls(100, transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
                 } else {
-                    throw new NullPointerException("transaction identifier incorrect");
+                    if (transaction.getIdentifier().startsWith("spin")) {
+                        saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
+                    } else if (transaction.getIdentifier().startsWith("gold")) {
+                        saveData.addGold(Long.parseLong(transaction.getIdentifier().substring(5)));
+                        if (gameScreen != null) {
+                            gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
+                        }
+                    } else {
+                        throw new NullPointerException("transaction identifier incorrect");
+                    }
                 }
             }
-            //}
         }
 
         @Override
@@ -208,8 +211,20 @@ public class FallingMan extends Game implements IGameServiceListener {
         @Override
         public void handlePurchase(Transaction transaction) {
             //checkTransaction(transaction.getIdentifier());
+            SaveData saveData = new SaveData();
             if (currentScreen == IN_APP_PURCHASES_SCREEN) {
                 gameScreen.addOnePartRolls(100, transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
+            } else {
+                if (transaction.getIdentifier().startsWith("spin")) {
+                    saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
+                } else if (transaction.getIdentifier().startsWith("gold")) {
+                    saveData.addGold(Long.parseLong(transaction.getIdentifier().substring(5)));
+                    if (gameScreen != null) {
+                        gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
+                    }
+                } else {
+                    throw new NullPointerException("transaction identifier incorrect");
+                }
             }
         }
 

@@ -12,6 +12,8 @@ import java.util.Random;
 public class OnePartRoll extends Sprite {
 
     private GameScreen gameScreen;
+    private float posX;
+    private float posY;
     private float width;
     private float height;
     private int currentTextureNumber;
@@ -21,9 +23,13 @@ public class OnePartRoll extends Sprite {
     private boolean toRemove;
     private float endAnimationTime;
     private long Amount;
+    private boolean firstTimeStageTwo;
+    private float firstStageTimer;
 
     public OnePartRoll(GameScreen gameScreen, float posX, float posY, float width, float height, int rollTexture) {
         this.gameScreen = gameScreen;
+        this.posX = posX;
+        this.posY = posY;
         this.width = width;
         this.height = height;
 
@@ -36,17 +42,24 @@ public class OnePartRoll extends Sprite {
         winOneArmedBanditScaleUp = true;
         flyingTime = 0;
         toRemove = false;
+        firstTimeStageTwo = true;
+        firstStageTimer = 0.75f;
     }
 
     public void flyingRollUpdate(float dt, Vector2 lastDirection, SaveData saveData) {
-        if (flyingTime < 0.25f) {
-            setPosition(getX() + flyingDirection.x, getY() + flyingDirection.y);
+        if (flyingTime < firstStageTimer) {
+            setPosition(getX() + flyingDirection.x / 3, getY() + flyingDirection.y / 3);
             setRotation(getRotation() + flyingDirection.z);
             if (currentTextureNumber == 1) {
                 setScale((4 - flyingTime) / 4);
             }
         } else if (flyingTime <= endAnimationTime){
-            setPosition(getX() + (lastDirection.x - getWidth() / 2 - getX()) * dt, getY() + (lastDirection.y - getHeight() / 4 - getY()) * dt);
+            if (firstTimeStageTwo) {
+                posX = getX();
+                posY = getY();
+                firstTimeStageTwo = false;
+            }
+            setPosition(posX + (lastDirection.x - posX) * ((flyingTime - firstStageTimer) / (endAnimationTime - firstStageTimer)) , posY + (lastDirection.y - posY) * ((flyingTime - firstStageTimer) / (endAnimationTime - firstStageTimer)));
             setRotation(getRotation() + flyingDirection.z * 2);
             if (currentTextureNumber == 1) {
                 setScale((4 - flyingTime) / 4);
@@ -59,8 +72,8 @@ public class OnePartRoll extends Sprite {
 
     public void startFlying() {
         Random random = new Random();
-        flyingDirection = new Vector3(random.nextFloat() / 1.5f - 0.3333f, random.nextFloat() / 1.5f - 0.3333f, (random.nextFloat() * 12 - 6));
-        endAnimationTime = random.nextFloat() + 1.5f;
+        flyingDirection = new Vector3(random.nextFloat() / 3f - 0.16666f, random.nextFloat() / 3f - 0.16666f, (random.nextFloat() * 12 - 6));
+        endAnimationTime = random.nextFloat() / 3 + 1f;
     }
 
     public boolean isWinOneArmedBanditScaleUp() {

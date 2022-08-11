@@ -41,6 +41,11 @@ public class TeleportTarget extends InteractiveTileObject {
         return false;
     }
 
+    @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
+
     public int getId() {
         return id;
     }

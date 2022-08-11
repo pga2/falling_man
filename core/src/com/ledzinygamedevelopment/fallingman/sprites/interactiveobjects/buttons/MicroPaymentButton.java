@@ -63,12 +63,14 @@ public class MicroPaymentButton extends Button{
 
     @Override
     public void touched() {
+        super.touched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("buy_coins_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         clicked = true;
     }
 
     @Override
     public void notTouched() {
+        super.notTouched();
         if (clicked) {
             setRegion(gameScreen.getDefaultAtlas().findRegion("buy_coins_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
             if (skuInfo == null || skuInfo.equals(Information.UNAVAILABLE)) {

@@ -103,7 +103,7 @@ public class MenuScreen implements GameScreen {
     private RayHandler rayHandler;
     private PointLight headLight;
 
-    public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight) {
+    public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor, boolean newBackground) {
         this.game = game;
         currentScreen = FallingMan.CURRENT_SCREEN;
 
@@ -178,8 +178,17 @@ public class MenuScreen implements GameScreen {
         //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
         fontScale = 0.006f;
         fontScaleUp = true;
-        gameCamBehindPositionBack = player.b2body.getPosition().y / 2;
-        gameCamBehindPositionFront = player.b2body.getPosition().y / 2;
+        if (newBackground) {
+            this.gameCamBehindPositionBack = player.b2body.getPosition().y / 2;
+            this.gameCamBehindPositionFront = player.b2body.getPosition().y / 2;
+            this.sunPos = 35;
+        } else {
+            this.gameCamBehindPositionBack = gameCamBehindPositionBack;
+            this.gameCamBehindPositionFront = gameCamBehindPositionFront;
+            this.sunPos = sunPos;
+            rendererBehind0.getBatch().setColor(rendererColor);
+            rendererBehind1.getBatch().setColor(rendererColor);
+        }
 
         //GsClientUtils.saveData(game.gsClient, 1);
         if (saveData.getSaveUpdated()) {
@@ -188,7 +197,6 @@ public class MenuScreen implements GameScreen {
             //GsClientUtils.loadData(game.gsClient, this);
         }
         GsClientUtils.loadData(game.gsClient, this);
-        sunPos = 35;
 
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
@@ -202,6 +210,10 @@ public class MenuScreen implements GameScreen {
         filter.maskBits = FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEFAULT_BIT;
         headLight.setContactFilter(filter);
         //gameCam.zoom = 2;
+
+        /*if (game.toastCreator != null) {
+            game.toastCreator.makeToast("data: \n" + saveData.getTestString());
+        }*/
     }
 
     @Override
@@ -287,9 +299,9 @@ public class MenuScreen implements GameScreen {
             player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f, 0), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM) {
             player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f, 0), player.b2body.getWorldCenter(), true);
-        }else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH * 5f / 8 / FallingMan.PPM) {
+        } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH * 5f / 8 / FallingMan.PPM) {
             player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f, 0), player.b2body.getWorldCenter(), true);
-        }else if (player.b2body.getPosition().x < FallingMan.MIN_WORLD_WIDTH * 3f / 8 / FallingMan.PPM) {
+        } else if (player.b2body.getPosition().x < FallingMan.MIN_WORLD_WIDTH * 3f / 8 / FallingMan.PPM) {
             player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f, 0), player.b2body.getWorldCenter(), true);
         } else {
             player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f, 0), player.b2body.getWorldCenter(), true);
@@ -334,8 +346,7 @@ public class MenuScreen implements GameScreen {
         clouds.removeAll(cloudsToRemove, false);
 
 
-
-        firstOpenTimer +=dt;
+        firstOpenTimer += dt;
     }
 
     @Override
@@ -347,28 +358,11 @@ public class MenuScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += 0.05;
+        sunPos += FallingMan.SUN_SPEED;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
-        if (sunPos > 54 && sunPos < 62) {
-            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
-            if (sunPos > 59 && sunPos < 62) {
-                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
-            }
-            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            //rayHandler.setAmbientLight((62 - sunPos) / 2 + 0.5f);
-        } else if (sunPos > 16.8 && sunPos < 24.8) {
-            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
-            if (sunPos > 16.8 && sunPos < 19.8) {
-                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
-            }
-            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            //rayHandler.setAmbientLight(1 - ((62 - sunPos) / 2 + 0.5f));
-        }
-        if (sunPos > 99) {
-            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
-        }
+        prepareDayAndNightCycle();
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{0, 1});
         gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
@@ -422,7 +416,6 @@ public class MenuScreen implements GameScreen {
         }
 
 
-
         //preparing font
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
@@ -454,9 +447,6 @@ public class MenuScreen implements GameScreen {
         }
 
 
-
-
-
         game.batch.end();
 
         //rayHandler.render();
@@ -464,7 +454,7 @@ public class MenuScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.ONE_ARMED_BANDIT_SCREEN:
                 dispose();
-                FallingMan.gameScreen = new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY(), false);
+                FallingMan.gameScreen = new OneArmedBanditScreen(game, cloudsPositionForNextScreen, player.getY(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 FallingMan.currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
                 game.setScreen(FallingMan.gameScreen);
                 break;
@@ -627,6 +617,11 @@ public class MenuScreen implements GameScreen {
 
     }
 
+    @Override
+    public FallingMan getGame() {
+        return game;
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
@@ -655,13 +650,13 @@ public class MenuScreen implements GameScreen {
         Body body;
 
         //walls
-        for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / FallingMan.PPM, (rect.getY() + rect.getHeight() / 2) / FallingMan.PPM);
             body = world.createBody(bdef);
-            shape.setAsBox((rect.getWidth() / 2)  / FallingMan.PPM, (rect.getHeight() / 2)  / FallingMan.PPM);
+            shape.setAsBox((rect.getWidth() / 2) / FallingMan.PPM, (rect.getHeight() / 2) / FallingMan.PPM);
             fdef.shape = shape;
             //
             body.createFixture(fdef);
@@ -672,5 +667,26 @@ public class MenuScreen implements GameScreen {
     public void generateWindows() {
         goldAndHighScoresBackground = new GoldAndHighScoresBackground(this, world);
         goldAndHighScoresIcons = new GoldAndHighScoresIcons(this, world, saveData.getGold(), saveData.getHighScore());
+    }
+
+    private void prepareDayAndNightCycle() {
+        if (sunPos > 54 && sunPos < 62) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
+            if (sunPos > 59 && sunPos < 62) {
+                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight((62 - sunPos) / 2 + 0.5f);
+        } else if (sunPos > 16.8 && sunPos < 24.8) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
+            if (sunPos > 16.8 && sunPos < 19.8) {
+                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight(1 - ((62 - sunPos) / 2 + 0.5f));
+        }
+        if (sunPos > 99) {
+            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        }
     }
 }

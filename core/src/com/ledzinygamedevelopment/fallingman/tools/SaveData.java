@@ -203,4 +203,13 @@ public class SaveData {
         prefs.putBoolean("saveUpdated", saveUpdated);
         prefs.flush();
     }
+
+    public void saveTestString(String testString) {
+        prefs.putString("testString", testString);
+        prefs.flush();
+    }
+
+    public String getTestString() {
+        return prefs.getString("testString");
+    }
 }

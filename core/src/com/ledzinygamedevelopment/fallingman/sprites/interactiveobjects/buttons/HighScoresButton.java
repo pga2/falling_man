@@ -16,12 +16,14 @@ public class HighScoresButton extends Button{
 
     @Override
     public void touched() {
+        super.touched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         clicked = true;
     }
 
     @Override
     public void notTouched() {
+        super.notTouched();
         setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         gameScreen.setCurrentScreen(FallingMan.ONE_ARMED_BANDIT_SCREEN);
     }

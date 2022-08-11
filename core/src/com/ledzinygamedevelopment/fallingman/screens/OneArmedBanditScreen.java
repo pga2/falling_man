@@ -1,6 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -50,7 +51,11 @@ public class OneArmedBanditScreen implements GameScreen {
     private ExtendViewport gamePort;
     private TmxMapLoader mapLoader;
     private TiledMap map;
+    private TiledMap mapBehind0;
+    private TiledMap mapBehind1;
     private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer rendererBehind0;
+    private OrthogonalTiledMapRenderer rendererBehind1;
     private World world;
     private Box2DDebugRenderer b2dr;
     private Array<Button> buttons;
@@ -95,9 +100,12 @@ public class OneArmedBanditScreen implements GameScreen {
     private Array<BigChest> bigChests;
     private boolean newScreenJustOpened;
     private boolean changeToShopScreen;
+    private float gameCamBehindPositionBack;
+    private float sunPos;
+    private float gameCamBehindPositionFront;
 
 
-    public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopScreen) {
+    public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
 
         assetManager = new GameAssetManager();
         assetManager.loadOneArmedBandit();
@@ -106,6 +114,8 @@ public class OneArmedBanditScreen implements GameScreen {
         font = assetManager.getManager().get(assetManager.getFont());
         this.game = game;
         this.changeToShopScreen = changeToShopScreen;
+        this.gameCamBehindPositionBack = gameCamBehindPositionBack;
+        this.gameCamBehindPositionFront = gameCamBehindPositionFront;
         currentScreen = FallingMan.CURRENT_SCREEN;
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
@@ -113,6 +123,10 @@ public class OneArmedBanditScreen implements GameScreen {
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("one_armed_bandit_maps/one_armed_bandit_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
+        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
+        rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
+        rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
 
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         world = new World(new Vector2(0, -4f), true);
@@ -163,6 +177,9 @@ public class OneArmedBanditScreen implements GameScreen {
         this.cloudsPositionForNextScreen = new Array<>();
         changeScreen = false;
         newScreenJustOpened = true;
+        this.sunPos = sunPos;
+        rendererBehind0.getBatch().setColor(rendererColor);
+        rendererBehind1.getBatch().setColor(rendererColor);
         changeToShopScreen = false;
         //gameCam.zoom = 5;
     }
@@ -342,7 +359,7 @@ public class OneArmedBanditScreen implements GameScreen {
             if (flyingRoll.getCurrentTextureNumber() == 0) {
                 flyingRoll.flyingRollUpdate(dt, new Vector2(FallingMan.MIN_WORLD_WIDTH / 2f / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM), saveData);
             } else if (flyingRoll.getCurrentTextureNumber() == 1) {
-                flyingRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4 * 3), saveData);
+                flyingRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4), saveData);
             }
             if (flyingRoll.isToRemove()) {
                 if (flyingRoll.getCurrentTextureNumber() == 0) {
@@ -376,10 +393,46 @@ public class OneArmedBanditScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        renderer.render();
+        sunPos += FallingMan.SUN_SPEED;
+        gameCam.position.y = sunPos;
+        //gameCam.position.y = 16.9f;
+        gameCam.update();
+        prepareDayAndNightCycle();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{0, 1});
+        Random random = new Random();
+        gameCamBehindPositionBack -= random.nextFloat() / 200 + 0.005;
+        if (gameCamBehindPositionBack < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionBack += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
+        gameCam.position.y = gameCamBehindPositionBack;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{2});
+        gameCam.position.y = gameCamBehindPositionBack + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{2});
+
+        gameCamBehindPositionFront -= random.nextFloat() / 100 + 0.01;
+        if (gameCamBehindPositionFront < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+            gameCamBehindPositionFront += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        }
 
         //render box2d debug renderer
         //b2dr.render(world, gameCam.combined);
+        gameCam.position.y = gameCamBehindPositionFront;
+        gameCam.update();
+        rendererBehind0.setView(gameCam);
+        rendererBehind0.render(new int[]{3});
+        gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        gameCam.update();
+        rendererBehind1.setView(gameCam);
+        rendererBehind1.render(new int[]{3});
+
+        gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
+        gameCam.update();
+        //renderer.render();
 
         game.batch.setProjectionMatrix(gameCam.combined);
 
@@ -458,14 +511,14 @@ public class OneArmedBanditScreen implements GameScreen {
         switch (currentScreen) {
             case FallingMan.MENU_SCREEN:
                 dispose();
-                FallingMan.gameScreen = new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight());
+                FallingMan.gameScreen = new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
                 FallingMan.currentScreen = FallingMan.MENU_SCREEN;
                 game.setScreen(FallingMan.gameScreen);
                 break;
             case FallingMan.SHOP_SCREEN:
-                dispose();
-                FallingMan.gameScreen = new ShopScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false);
+                FallingMan.gameScreen = new ShopScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 FallingMan.currentScreen = FallingMan.SHOP_SCREEN;
+                dispose();
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }
@@ -499,7 +552,11 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public void dispose() {
         map.dispose();
+        mapBehind0.dispose();
+        mapBehind1.dispose();
         renderer.dispose();
+        rendererBehind0.dispose();
+        rendererBehind1.dispose();
         world.dispose();
         b2dr.dispose();
         assetManager.getManager().dispose();
@@ -848,5 +905,31 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public void setNewLife(boolean newLife) {
 
+    }
+
+    @Override
+    public FallingMan getGame() {
+        return game;
+    }
+
+    private void prepareDayAndNightCycle() {
+        if (sunPos > 54 && sunPos < 62) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
+            if (sunPos > 59 && sunPos < 62) {
+                rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight((62 - sunPos) / 2 + 0.5f);
+        } else if (sunPos > 16.8 && sunPos < 24.8) {
+            rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, 1 - ((24.8f - sunPos) / 9) + 0.11111f, 1 - ((24.8f - sunPos) / 16) + 0.5f, 1);
+            if (sunPos > 16.8 && sunPos < 19.8) {
+                rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
+            }
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+            //rayHandler.setAmbientLight(1 - ((62 - sunPos) / 2 + 0.5f));
+        }
+        if (sunPos > 99) {
+            sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
+        }
     }
 }

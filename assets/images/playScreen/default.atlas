@@ -5,134 +5,251 @@ filter: Nearest,Nearest
 repeat: none
 teleportation_effect
   rotate: false
-  xy: 1, 743
+  xy: 1, 745
   size: 1280, 1280
   orig: 1280, 1280
   offset: 0, 0
   index: -1
 cloud
   rotate: false
-  xy: 1, 357
+  xy: 1, 359
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
-watch_ad_button
+show_leaderboard_button
   rotate: false
-  xy: 1, 99
+  xy: 1, 101
   size: 1024, 256
   orig: 1024, 256
   offset: 0, 0
   index: -1
+walking_enemy
+  rotate: false
+  xy: 1283, 1540
+  size: 200, 485
+  orig: 200, 485
+  offset: 0, 0
+  index: -1
+show_leaderboard_button_clicked
+  rotate: false
+  xy: 963, 487
+  size: 1024, 256
+  orig: 1024, 256
+  offset: 0, 0
+  index: -1
+ad_icon
+  rotate: false
+  xy: 1283, 1346
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
 blank160
   rotate: false
-  xy: 1283, 1863
+  xy: 1485, 1865
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
+moving_beam
+  rotate: false
+  xy: 1, 67
+  size: 256, 32
+  orig: 256, 32
+  offset: 0, 0
+  index: -1
 spider
   rotate: false
-  xy: 963, 613
+  xy: 1283, 1216
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 loading_animationLB
   rotate: false
-  xy: 1, 1
+  xy: 963, 389
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationLT
   rotate: false
-  xy: 1283, 1765
+  xy: 1485, 1767
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationRB
   rotate: false
-  xy: 1445, 1927
+  xy: 1647, 1929
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationRT
   rotate: false
-  xy: 963, 515
+  xy: 1283, 1118
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 coin1
   rotate: false
-  xy: 1093, 677
+  xy: 1, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin2
   rotate: false
-  xy: 99, 33
+  xy: 1061, 421
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin3
   rotate: false
-  xy: 1283, 1699
+  xy: 1485, 1701
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin4
   rotate: false
-  xy: 1543, 1959
+  xy: 1745, 1961
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin5
   rotate: false
-  xy: 963, 449
+  xy: 1283, 1052
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin6
   rotate: false
-  xy: 1159, 677
+  xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin7
   rotate: false
-  xy: 165, 33
+  xy: 1127, 421
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin8
   rotate: false
-  xy: 1283, 1633
+  xy: 1485, 1635
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spark_hounting_enemy
+  rotate: false
+  xy: 1811, 1961
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark_new_life
   rotate: false
-  xy: 1609, 1959
+  xy: 1283, 986
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin1
+  rotate: false
+  xy: 133, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin2
+  rotate: false
+  xy: 1193, 421
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin3
+  rotate: false
+  xy: 1485, 1569
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin4
+  rotate: false
+  xy: 1877, 1961
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin5
+  rotate: false
+  xy: 1283, 920
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin6
+  rotate: false
+  xy: 1259, 421
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin7
+  rotate: false
+  xy: 1943, 1961
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin8
+  rotate: false
+  xy: 1283, 854
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark
   rotate: false
-  xy: 1381, 1829
+  xy: 259, 67
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+spark_spin
+  rotate: false
+  xy: 1413, 1312
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+default2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+watch_ad_button
+  rotate: false
+  xy: 1, 259
+  size: 1024, 256
+  orig: 1024, 256
+  offset: 0, 0
+  index: -1
+watch_ad_button_clicked
+  rotate: false
+  xy: 1, 1
+  size: 1024, 256
+  orig: 1024, 256
   offset: 0, 0
   index: -1

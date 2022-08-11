@@ -58,4 +58,9 @@ public class Teleport extends InteractiveTileObject {
     public boolean isToRemove() {
         return false;
     }
+
+    @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
 }

@@ -59,4 +59,9 @@ public class Spins extends InteractiveTileObject{
         return false;
     }
 
+    @Override
+    public void setChangeDirection(boolean changeDirection) {
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -46,9 +47,17 @@ public abstract class Button extends Sprite {
         setPosition(pos.x, pos.y);
     }
 
-    public abstract void touched();
+    public void touched() {
+        if (!clicked) {
+            Gdx.input.vibrate(50);
+        }
+    }
 
-    public abstract void notTouched();
+    public void notTouched() {
+        if (clicked) {
+            Gdx.input.vibrate(50);
+        }
+    }
 
     public abstract void restoreNotClickedTexture();
 
