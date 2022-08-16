@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
@@ -53,14 +54,14 @@ public class WalkingEnemy extends Sprite implements InteractiveObjectInterface {
         PolygonShape shape = new PolygonShape();
 
         bdef.type = BodyDef.BodyType.DynamicBody;
-        bdef.position.set(posX, posY + 242.5f / FallingMan.PPM);
+        bdef.position.set(posX, posY + 241.5f / FallingMan.PPM);
         body = world.createBody(bdef);
-        shape.setAsBox(100 / FallingMan.PPM, 242.5f / FallingMan.PPM);
+        shape.setAsBox(100 / FallingMan.PPM, 241.5f / FallingMan.PPM);
         fdef.shape = shape;
         //fdef.density = 1;
         fdef.friction = 1;
         fdef.filter.categoryBits = FallingMan.INTERACTIVE_TILE_OBJECT_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.WALL_INSIDE_TOWER
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.STOP_WALKING_ENEMY_BIT
                 | FallingMan.PLAYER_HEAD_BIT | FallingMan.PLAYER_BELLY_BIT | FallingMan.PLAYER_ARM_BIT | FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.PLAYER_HAND_BIT
                 | FallingMan.PLAYER_THIGH_BIT | FallingMan.PLAYER_SHIN_BIT | FallingMan.PLAYER_FOOT_BIT;
         fixture = body.createFixture(fdef);
@@ -92,17 +93,17 @@ public class WalkingEnemy extends Sprite implements InteractiveObjectInterface {
         if (body.getPosition().y < gameScreen.getPlayer().b2body.getPosition().y + (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 242.5f / FallingMan.PPM
                 && body.getPosition().y > gameScreen.getPlayer().b2body.getPosition().y - (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM - 242.5f / FallingMan.PPM) {
             body.setAwake(true);
-        } else if (body.getLinearVelocity().y >= 0){
+        } else if (body.getLinearVelocity().y >= 0) {
             body.setAwake(false);
         }
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRotation((float) Math.toDegrees(body.getAngle()));
-            if (body.getLinearVelocity().x > -1 && body.getLinearVelocity().x < 1) {
-                speed = -speed;
-                changeDirection = false;
-            }
-        body.setLinearVelocity(body.getLinearVelocity().y >= -0.1 ? speed : 0 , body.getLinearVelocity().y);
-            body.applyLinearImpulse(new Vector2(0, -0.1f), body.getWorldCenter(), false);
+        if (body.getLinearVelocity().x > -1 && body.getLinearVelocity().x < 1) {
+            speed = -speed;
+            changeDirection = false;
+        }
+        body.setLinearVelocity(body.getLinearVelocity().y >= -0.1 ? speed : 0, body.getLinearVelocity().y);
+        body.applyLinearImpulse(new Vector2(0, -0.1f), body.getWorldCenter(), false);
         if (touched) {
             touched();
             toRemove = true;
@@ -126,4 +127,5 @@ public class WalkingEnemy extends Sprite implements InteractiveObjectInterface {
         filter.categoryBits = filterBit;
         fixture.setFilterData(filter);
     }
+
 }

@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects;
+package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.beams;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 
 public class MovingBeam extends Sprite implements InteractiveObjectInterface {
     private boolean touched;
@@ -96,6 +97,7 @@ public class MovingBeam extends Sprite implements InteractiveObjectInterface {
 
     @Override
     public void draw(Batch batch) {
+
         super.draw(batch);
     }
 

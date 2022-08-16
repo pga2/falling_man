@@ -55,7 +55,7 @@ public class FallingMan extends Game implements IGameServiceListener {
 
     public static final short DEFAULT_BIT = 1;
     public static final short INTERACTIVE_TILE_OBJECT_BIT = 2;
-    public static final short DEAD_MACHINE_BIT = 4;
+    public static final short STOP_WALKING_ENEMY_BIT = 4;
     public static final short DESTROYED_BIT = 8;
     public static final short PLAYER_HEAD_BIT = 16;
     public static final short PLAYER_BELLY_BIT = 32;
@@ -75,6 +75,7 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static final byte ONE_ARMED_BANDIT_SCREEN = 3;
     public static final byte SHOP_SCREEN = 4;
     public static final byte IN_APP_PURCHASES_SCREEN = 5;
+    public static final byte SETTINGS_SCREEN = 6;
 
     public static final byte GAME_OVER_WINDOW = 6;
 
@@ -192,7 +193,7 @@ public class FallingMan extends Game implements IGameServiceListener {
                         saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
                     } else if (transaction.getIdentifier().startsWith("gold")) {
                         saveData.addGold(Long.parseLong(transaction.getIdentifier().substring(5)));
-                        if (gameScreen != null) {
+                        if (gameScreen != null && gameScreen.getGoldAndHighScoresIcons() != null) {
                             gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
                         }
                     } else {
@@ -219,7 +220,7 @@ public class FallingMan extends Game implements IGameServiceListener {
                     saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
                 } else if (transaction.getIdentifier().startsWith("gold")) {
                     saveData.addGold(Long.parseLong(transaction.getIdentifier().substring(5)));
-                    if (gameScreen != null) {
+                    if (gameScreen != null && gameScreen.getGoldAndHighScoresIcons() != null) {
                         gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
                     }
                 } else {

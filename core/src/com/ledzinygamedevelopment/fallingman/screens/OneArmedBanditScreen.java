@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.BaloonButton;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
@@ -47,6 +48,7 @@ public class OneArmedBanditScreen implements GameScreen {
     private byte currentScreen;
     private FallingMan game;
     private TextureAtlas defaultAtlas;
+    private TextureAtlas baloonAtlas;
     private OrthographicCamera gameCam;
     private ExtendViewport gamePort;
     private TmxMapLoader mapLoader;
@@ -103,6 +105,7 @@ public class OneArmedBanditScreen implements GameScreen {
     private float gameCamBehindPositionBack;
     private float sunPos;
     private float gameCamBehindPositionFront;
+    private Array<BaloonButton> baloonButtons;
 
 
     public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
@@ -111,6 +114,7 @@ public class OneArmedBanditScreen implements GameScreen {
         assetManager.loadOneArmedBandit();
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenDefault());
+        baloonAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenBaloon());
         font = assetManager.getManager().get(assetManager.getFont());
         this.game = game;
         this.changeToShopScreen = changeToShopScreen;
@@ -131,7 +135,6 @@ public class OneArmedBanditScreen implements GameScreen {
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         world = new World(new Vector2(0, -4f), true);
         b2dr = new Box2DDebugRenderer();
-        buttons = new Array<>();
         previousTouchPos = new Vector2();
         lastTouchPos = new Vector2();
         firstTouch = true;
@@ -139,7 +142,6 @@ public class OneArmedBanditScreen implements GameScreen {
 
         rolls = new Array<>();
         oneArmBandits = new Array<>();
-        buttons = new Array<>();
         smallRolls = new Array<>();
         createOneArmedBanditBundle = true;
         loseOneArmedBanditEndTime = 0;
@@ -174,12 +176,16 @@ public class OneArmedBanditScreen implements GameScreen {
             cloud.setPosition(pos.x, pos.y);
             clouds.add(cloud);
         }
+        buttons = new Array<>();
+        baloonButtons = new Array<>();
         this.cloudsPositionForNextScreen = new Array<>();
         changeScreen = false;
         newScreenJustOpened = true;
         this.sunPos = sunPos;
         rendererBehind0.getBatch().setColor(rendererColor);
         rendererBehind1.getBatch().setColor(rendererColor);
+
+
         changeToShopScreen = false;
         //gameCam.zoom = 5;
     }
@@ -351,6 +357,23 @@ public class OneArmedBanditScreen implements GameScreen {
                 }
         }
         clouds.removeAll(cloudsToRemove, false);
+
+        Array<BaloonButton> baloonButtonsToRemove = new Array<>();
+        for (BaloonButton baloonButton : baloonButtons) {
+            if (baloonButton.isToRemove()) {
+                buttons.removeValue(baloonButton, false);
+                baloonButtonsToRemove.add(baloonButton);
+            }
+            baloonButton.update(dt);
+        }
+        if (baloonButtons.size < 4) {
+            Random random = new Random();
+            float posY = random.nextInt((int) (gameCam.viewportHeight * FallingMan.PPM) - 640) / FallingMan.PPM;
+            BaloonButton newBaloonButton = new BaloonButton(this, world, random.nextBoolean() ? -256 / FallingMan.PPM : FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, posY, 256 / FallingMan.PPM, 640 / FallingMan.PPM);
+            baloonButtons.add(newBaloonButton);
+            buttons.add(newBaloonButton);
+        }
+        baloonButtons.removeAll(baloonButtonsToRemove, false);
 
         goldAndHighScoresBackground.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
         goldAndHighScoresIcons.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
@@ -758,7 +781,8 @@ public class OneArmedBanditScreen implements GameScreen {
         buttons.add(spinButton);
         startRolling = false;
         rollingTime = 0;
-        Gdx.app.log("world height", String.valueOf(gamePort.getScreenHeight()));
+        Gdx.app.log("world height", String.valueOf(
+                gameCam.viewportHeight));
         Roll roll1 = new Roll(this, world, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         Roll roll2 = new Roll(this, world, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         Roll roll3 = new Roll(this, world, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
@@ -774,6 +798,15 @@ public class OneArmedBanditScreen implements GameScreen {
 
         if (saveData.getNumberOfSpins() <= 0) {
             spinButton.setLocked(true);
+        }
+
+        Random random = new Random();
+        baloonButtons = new Array<>();
+        for (int i = 0; i < 4; i++) {
+            float posY = random.nextInt((int) (gameCam.viewportHeight * FallingMan.PPM) - 640) / FallingMan.PPM;
+            BaloonButton baloonButton = new BaloonButton(this, world, random.nextBoolean() ? -256 / FallingMan.PPM : FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, posY, 256 / FallingMan.PPM, 640 / FallingMan.PPM);
+            baloonButtons.add(baloonButton);
+            buttons.add(baloonButton);
         }
     }
 
@@ -910,6 +943,14 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public FallingMan getGame() {
         return game;
+    }
+
+    public TextureAtlas getBaloonAtlas() {
+        return baloonAtlas;
+    }
+
+    public SaveData getSaveData() {
+        return saveData;
     }
 
     private void prepareDayAndNightCycle() {

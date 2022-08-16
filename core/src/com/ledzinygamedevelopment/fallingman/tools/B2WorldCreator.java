@@ -5,6 +5,8 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -15,12 +17,14 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.WalkingEnemy;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.Dragon;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.SpiderWeb;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.beams.ChangingPosBeam;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.BodyPartsRestorer;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.Spikes;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.HuntingEnemyCreator;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.MovingBeam;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.beams.MovingBeam;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Coin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spin;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.teleports.Teleport;
@@ -91,10 +95,16 @@ public class B2WorldCreator {
             body = world.createBody(bdef);
             shape.setAsBox((rect.getWidth() / 2) / FallingMan.PPM, (rect.getHeight() / 2) / FallingMan.PPM);
             fdef.shape = shape;
-            fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
+            if (object.getProperties().get("t") != null) {
+                fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
+                fdef.filter.maskBits = FallingMan.INTERACTIVE_TILE_OBJECT_BIT;
+            } else {
+                fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
+            }
             body.createFixture(fdef);
             b2bodies.add(body);
         }
+
         //coins
         coins = new Array<>();
         for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
@@ -179,6 +189,43 @@ public class B2WorldCreator {
             InteractiveObjectInterface huntingEnemyCreator = new HuntingEnemyCreator(world, map, rect, 3, playScreen);
             b2bodies.add(huntingEnemyCreator.getBody());
             interactiveTileObjects.add(huntingEnemyCreator);
+        }
+
+        //changing pos beam
+        Array<ChangingPosBeam> changingPosBeamsToConnect = new Array<>();
+        Array<Vector3> beamTargets = new Array<>();
+        for (MapObject object : map.getLayers().get(14).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            if (object.getProperties().get("b_target") != null) {
+                beamTargets.add(new Vector3(rect.x, rect.y, (int) object.getProperties().get("b_target")));
+            } else {
+                ChangingPosBeam changingPosBeam = new ChangingPosBeam(world, rect, playScreen, object.getProperties().get("b") != null ? (int) object.getProperties().get("b") : -1);
+                b2bodies.add(changingPosBeam.getBody());
+                interactiveTileObjects.add(changingPosBeam);
+                changingPosBeamsToConnect.add(changingPosBeam);
+            }
+        }
+        for (ChangingPosBeam changingPosBeam : changingPosBeamsToConnect) {
+            for (Vector3 beamTarget : beamTargets) {
+                if (beamTarget.z == changingPosBeam.getBeamNumber()) {
+                    changingPosBeam.setEndMovingPos(new Vector2(beamTarget.x, beamTarget.y));
+                }
+            }
+        }
+        for (ChangingPosBeam changingPosBeam : changingPosBeamsToConnect) {
+            if (changingPosBeam.getEndMovingPos() == null) {
+                interactiveTileObjects.removeValue(changingPosBeam, false);
+                b2bodies.removeValue(changingPosBeam.getBody(), false);
+                world.destroyBody(changingPosBeam.getBody());
+            }
+        }
+
+        //spider webs
+        for (MapObject object : map.getLayers().get(15).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            InteractiveObjectInterface spiderWeb = new SpiderWeb(playScreen, world, map, rect, 3);
+            b2bodies.add(spiderWeb.getBody());
+            interactiveTileObjects.add(spiderWeb);
         }
 
         /*//one-armed bandit spin button

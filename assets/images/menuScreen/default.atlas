@@ -5,28 +5,49 @@ filter: Nearest,Nearest
 repeat: none
 cloud
   rotate: false
-  xy: 1, 23
+  xy: 1, 119
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
-player
+in_app_purchases_button
   rotate: false
   xy: 963, 247
-  size: 800, 160
-  orig: 800, 160
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 963, 1
+  xy: 1221, 259
   size: 660, 244
   orig: 660, 244
   offset: 0, 0
   index: -1
+in_app_purchases_button_clicked
+  rotate: false
+  xy: 1221, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+settings_button
+  rotate: false
+  xy: 1479, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+settings_button_clicked
+  rotate: false
+  xy: 1737, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 1625, 21
+  xy: 1883, 279
   size: 112, 224
   orig: 112, 224
   offset: 0, 0

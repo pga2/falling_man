@@ -1,0 +1,61 @@
+
+baloon.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+baloon
+  rotate: false
+  xy: 1, 1285
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon1
+  rotate: false
+  xy: 1, 643
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon2
+  rotate: false
+  xy: 259, 1285
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon3
+  rotate: false
+  xy: 1, 1
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon4
+  rotate: false
+  xy: 259, 643
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon5
+  rotate: false
+  xy: 517, 1285
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon6
+  rotate: false
+  xy: 259, 1
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1
+baloon7
+  rotate: false
+  xy: 517, 643
+  size: 256, 640
+  orig: 256, 640
+  offset: 0, 0
+  index: -1

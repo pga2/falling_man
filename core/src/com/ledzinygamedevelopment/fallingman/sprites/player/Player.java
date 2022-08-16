@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
@@ -269,7 +268,7 @@ public class Player extends Sprite {
         fdef.friction = 0.001f;
         fdef.restitution = 0.03f;
         fdef.filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                 | FallingMan.PLAYER_BELLY_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }
@@ -293,7 +292,7 @@ public class Player extends Sprite {
         fdef.friction = 0.001f;
         fdef.restitution = 0.03f;
         fdef.filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                 | FallingMan.PLAYER_BELLY_BIT;
         b2body.createFixture(fdef).setUserData(this);
     }

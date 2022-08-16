@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Thigh extends PlayerBodyPart {
     public Thigh(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
@@ -35,7 +34,7 @@ public class Thigh extends PlayerBodyPart {
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_THIGH_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                 | FallingMan.PLAYER_BELLY_BIT | FallingMan.PLAYER_SHIN_BIT;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this);

@@ -1,4 +1,4 @@
-package com.ledzinygamedevelopment.fallingman.sprites.fallingobjects;
+package com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;

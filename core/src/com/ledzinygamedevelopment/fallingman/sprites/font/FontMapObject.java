@@ -1,7 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.font;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class FontMapObject {
 

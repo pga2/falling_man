@@ -1,6 +1,5 @@
 package com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +13,14 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.Spikes;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.WalkingEnemy;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.Dragon;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.DragonFire;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.SpiderWeb;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 
 import java.text.DecimalFormat;
@@ -33,6 +40,7 @@ public abstract class PlayerBodyPart extends Sprite {
     protected String bodyPartName;
     protected int mapHeight;
     protected int spriteNumber;
+    private boolean removeJoint;
 
     public PlayerBodyPart(World world, GameScreen gameScreen, int texturePos, int sideOfBodyPart, int mapHeight, int spriteNumber) {
         //super(gameScreen.getAtlas().findRegion("player"));
@@ -51,6 +59,7 @@ public abstract class PlayerBodyPart extends Sprite {
         setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
         setRegion(bodyPartTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
+        removeJoint = false;
 
         if (sideOfBodyPart == Player.RIGHT_BODY_PART) {
             flip(true, false);
@@ -77,6 +86,19 @@ public abstract class PlayerBodyPart extends Sprite {
                     }
                 }
             }
+        }
+        if (removeJoint) {
+            for (int i = 0; i < joints.size; i++) {
+                Joint joint = joints.get(i);
+                Body bodyB = joint.getBodyB();
+                for (Joint joint1 : joints) {
+                    world.destroyJoint(joint1);
+                }
+                joints = new Array<>();
+                setConnectedBodiesBitToDeafault(bodyB);
+                setCategoryFilter(FallingMan.DEFAULT_BIT);
+            }
+            removeJoint = false;
         }
         touchWall = false;
     }
@@ -177,5 +199,15 @@ public abstract class PlayerBodyPart extends Sprite {
 
     public int getSpriteNumber() {
         return spriteNumber;
+    }
+
+    public void setRemoveJoint(boolean removeJoint, Object object) {
+        if (object instanceof HuntingSpider || object instanceof Spikes || object instanceof WalkingEnemy || object instanceof Dragon || object instanceof DragonFire || object instanceof Rock) {
+            this.removeJoint = removeJoint;
+        }/* else if (object instanceof SpiderWeb && this instanceof Belly) {
+            ((SpiderWeb) object).setTouchedByBelly(true);
+        }*/ else {
+            ((InteractiveObjectInterface) object).setTouched(true);
+        }
     }
 }

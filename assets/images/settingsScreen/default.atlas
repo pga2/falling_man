@@ -1,0 +1,110 @@
+
+default.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cloud
+  rotate: false
+  xy: 1, 1405
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+gold_and_high_score_background
+  rotate: false
+  xy: 1, 1159
+  size: 660, 244
+  orig: 660, 244
+  offset: 0, 0
+  index: -1
+music_off
+  rotate: false
+  xy: 963, 1405
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+music_off_clicked
+  rotate: false
+  xy: 1, 773
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+music_on
+  rotate: false
+  xy: 1349, 1405
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+music_on_clicked
+  rotate: false
+  xy: 1, 387
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+sound_off
+  rotate: false
+  xy: 1, 1
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+sound_off_clicked
+  rotate: false
+  xy: 387, 773
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+sound_on
+  rotate: false
+  xy: 387, 387
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+sound_on_clicked
+  rotate: false
+  xy: 387, 1
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+vibrations_off
+  rotate: false
+  xy: 773, 1019
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+vibrations_off_clicked
+  rotate: false
+  xy: 773, 633
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+vibrations_on
+  rotate: false
+  xy: 1159, 1019
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+vibrations_on_clicked
+  rotate: false
+  xy: 773, 247
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
+gold_and_high_score_icons
+  rotate: false
+  xy: 1735, 1565
+  size: 112, 224
+  orig: 112, 224
+  offset: 0, 0
+  index: -1

@@ -19,6 +19,7 @@ public class GameAssetManager {
 
     //OneArmedBandtScreen
     private final String oneArmedBanditScreenDefault = "images/oneArmedBanditScreen/default.atlas";
+    private final String oneArmedBanditScreenBaloon = "images/oneArmedBanditScreen/baloon.atlas";
 
     //PlayScreen
     private final String playScreenDefault = "images/playScreen/default.atlas";
@@ -34,6 +35,9 @@ public class GameAssetManager {
     //InAppPurchasesScreen
     private final String inAppPurchasesMap = "shop_maps/basic_shop_map.tmx";
     private final String inAppPurchasesDefault = "images/inAppPurchasesScreen/default.atlas";
+
+    //SettingsScreen
+    private final String settingsDefault = "images/settingsScreen/default.atlas";
 
     //all screens
     private final String font = "test_font/FSM.fnt";
@@ -88,6 +92,7 @@ public class GameAssetManager {
 
     public void loadOneArmedBandit() {
         manager.load(oneArmedBanditScreenDefault, TextureAtlas.class);
+        manager.load(oneArmedBanditScreenBaloon, TextureAtlas.class);
         manager.load(playerSprite, TextureAtlas.class);
 
         manager.load(font, BitmapFont.class);
@@ -106,7 +111,13 @@ public class GameAssetManager {
         manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         manager.load(inAppPurchasesMap, TiledMap.class);
         manager.load(inAppPurchasesDefault, TextureAtlas.class);
+    }
 
+    public void loadSettingsScreen() {
+        manager.load(font, BitmapFont.class);
+        manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        manager.load(inAppPurchasesMap, TiledMap.class);
+        manager.load(settingsDefault, TextureAtlas.class);
     }
 
     public AssetManager getManager() {
@@ -171,5 +182,13 @@ public class GameAssetManager {
 
     public String getInAppPurchasesDefault() {
         return inAppPurchasesDefault;
+    }
+
+    public String getOneArmedBanditScreenBaloon() {
+        return oneArmedBanditScreenBaloon;
+    }
+
+    public String getSettingsDefault() {
+        return settingsDefault;
     }
 }

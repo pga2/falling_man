@@ -1,8 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -19,7 +16,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -31,10 +27,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
-import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
@@ -155,6 +153,8 @@ public class MenuScreen implements GameScreen {
         //rocks.add(new Rock(this, world, true, rockTextures));
         generateWindows();
         buttons = new Array<>();
+        buttons.add(new InApPurchasesScreenButton(this, world, FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM - 256 / FallingMan.PPM - 64 / FallingMan.PPM, 0));
+        buttons.add(new SettingsScreenButton(this, world, 64 / FallingMan.PPM, 0));
         //buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //player.b2body.applyLinearImpulse(new Vector2(3, 0), player.b2body.getWorldCenter(), true);
@@ -201,13 +201,11 @@ public class MenuScreen implements GameScreen {
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
         headLight = new PointLight(rayHandler, 100, Color.BLACK, 4000 / FallingMan.PPM, player.b2body.getPosition().x, player.b2body.getPosition().y);
-        for (Body body : player.getBodyPartsAll()) {
-        }
         headLight.attachToBody(player.b2body);
         headLight.setIgnoreAttachedBody(true);
         Filter filter = new Filter();
         filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
-        filter.maskBits = FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEFAULT_BIT;
+        filter.maskBits = FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEFAULT_BIT;
         headLight.setContactFilter(filter);
         //gameCam.zoom = 2;
 
@@ -319,7 +317,7 @@ public class MenuScreen implements GameScreen {
             player.b2body.setLinearVelocity(new Vector2(player.b2body.getLinearVelocity().x, -20));
         }
         for (Button button : buttons) {
-            button.update(dt, new Vector2((FallingMan.MIN_WORLD_WIDTH / 2f - 320) / FallingMan.PPM, player.b2body.getPosition().y + button.getyPosPlayerDiff() / FallingMan.PPM));
+            button.update(dt, new Vector2(button.getX(), player.b2body.getPosition().y - gamePort.getWorldHeight() / 2 + 64 / FallingMan.PPM));
         }
 
         Array<Cloud> cloudsToRemove = new Array<>();
@@ -333,7 +331,7 @@ public class MenuScreen implements GameScreen {
                             cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY() - firstCloudYPos));
                         }
                     }
-                    currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                    currentScreen = cloud.getScreen();
                     break outerloop;
                 }
                 cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM);
@@ -468,6 +466,18 @@ public class MenuScreen implements GameScreen {
                 dispose();
                 FallingMan.gameScreen = new PlayScreen(game, playerVectors, /*rockPos, rockAnimationTimer,*/ gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 FallingMan.currentScreen = FallingMan.PLAY_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
+                break;
+            case FallingMan.IN_APP_PURCHASES_SCREEN:
+                dispose();
+                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, player.getY(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
+                FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
+                break;
+            case FallingMan.SETTINGS_SCREEN:
+                dispose();
+                FallingMan.gameScreen = new SettingsScreen(game, cloudsPositionForNextScreen, player.getY(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
+                FallingMan.currentScreen = FallingMan.SETTINGS_SCREEN;
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }
@@ -688,5 +698,21 @@ public class MenuScreen implements GameScreen {
         if (sunPos > 99) {
             sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
         }
+    }
+
+    public Array<Cloud> getClouds() {
+        return clouds;
+    }
+
+    public boolean isChangeScreen() {
+        return changeScreen;
+    }
+
+    public void setChangeScreen(boolean changeScreen) {
+        this.changeScreen = changeScreen;
+    }
+
+    public ExtendViewport getGamePort() {
+        return gamePort;
     }
 }

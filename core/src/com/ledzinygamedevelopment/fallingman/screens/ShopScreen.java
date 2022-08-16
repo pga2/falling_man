@@ -1,7 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -29,7 +27,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBa
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.PriceBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
-import com.ledzinygamedevelopment.fallingman.sprites.fallingobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.BuyButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
@@ -368,6 +366,12 @@ public class ShopScreen implements GameScreen {
                         button.notTouched();
                         if (button.isToRemove()) {
                             bodyPartBacklights = new Array<>();
+                            for (Player player : playersInScreenMiddle) {
+                                for (PlayerBodyPart playerBodyPart : player.getBodyParts()) {
+                                    playerBodyPart.setColor(playerBodyPart.getColor().r, playerBodyPart.getColor().g, playerBodyPart.getColor().b, 1);
+                                }
+                                player.setColor(player.getColor().r, player.getColor().g, player.getColor().b, 1);
+                            }
                         }
                     }
                 }
@@ -602,7 +606,7 @@ public class ShopScreen implements GameScreen {
             case FallingMan.IN_APP_PURCHASES_SCREEN:
                 dispose();
                 FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
-                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
+                FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }
@@ -676,13 +680,11 @@ public class ShopScreen implements GameScreen {
     }
 
     private void createFirstPlayers() {
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(FallingMan.ALL_BODY_SPRITES_LENGHT - 2), -FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM / 2, 400 / FallingMan.PPM, false));
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(FallingMan.ALL_BODY_SPRITES_LENGHT - 1), 0, 400 / FallingMan.PPM, false));
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(FallingMan.ALL_BODY_SPRITES_LENGHT), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM / 2, 400 / FallingMan.PPM, false));
+        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(FallingMan.ALL_BODY_SPRITES_LENGHT - 1), -FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, 400 / FallingMan.PPM, false));
+        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(FallingMan.ALL_BODY_SPRITES_LENGHT), 0, 400 / FallingMan.PPM, false));
         players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(0), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, 400 / FallingMan.PPM, false));
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(1), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM * 1.5f, 400 / FallingMan.PPM, false));
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(2), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM * 2f, 400 / FallingMan.PPM, false));
-        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(4), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM * 2.5f, 400 / FallingMan.PPM, false));
+        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(1), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM * 2f, 400 / FallingMan.PPM, false));
+        players.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(2), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM * 3f, 400 / FallingMan.PPM, false));
 
         PrismaticJointDef pJointDef = new PrismaticJointDef();
         DistanceJointDef dJointDef = new DistanceJointDef();
@@ -741,7 +743,7 @@ public class ShopScreen implements GameScreen {
             }
         }
 
-        Player newPlayer = new Player(world, this, mapHeight, createPlayerOneSpriteMap(tempLastPlayer.getHeadSpriteNumber() == FallingMan.ALL_BODY_SPRITES_LENGHT ? 0 : tempLastPlayer.getHeadSpriteNumber() + 1), tempLastPlayer.b2body.getPosition().x + FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM / 2, 400 / FallingMan.PPM, false);
+        Player newPlayer = new Player(world, this, mapHeight, createPlayerOneSpriteMap(tempLastPlayer.getHeadSpriteNumber() == FallingMan.ALL_BODY_SPRITES_LENGHT ? 0 : tempLastPlayer.getHeadSpriteNumber() + 1), tempLastPlayer.b2body.getPosition().x + FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, 400 / FallingMan.PPM, false);
         players.add(newPlayer);
 
         PrismaticJointDef pJointDef = new PrismaticJointDef();
@@ -775,7 +777,7 @@ public class ShopScreen implements GameScreen {
             }
         }
 
-        Player newPlayer = new Player(world, this, mapHeight, createPlayerOneSpriteMap(tempFirstPlayer.getHeadSpriteNumber() == 0 ? FallingMan.ALL_BODY_SPRITES_LENGHT : tempFirstPlayer.getHeadSpriteNumber() - 1), tempFirstPlayer.b2body.getPosition().x - FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM / 2, 400 / FallingMan.PPM, false);
+        Player newPlayer = new Player(world, this, mapHeight, createPlayerOneSpriteMap(tempFirstPlayer.getHeadSpriteNumber() == 0 ? FallingMan.ALL_BODY_SPRITES_LENGHT : tempFirstPlayer.getHeadSpriteNumber() - 1), tempFirstPlayer.b2body.getPosition().x - FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, 400 / FallingMan.PPM, false);
         players.add(newPlayer);
 
         PrismaticJointDef pJointDef = new PrismaticJointDef();

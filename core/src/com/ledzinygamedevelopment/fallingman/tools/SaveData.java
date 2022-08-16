@@ -12,9 +12,15 @@ import java.util.Random;
 public class SaveData {
 
     private Preferences prefs;
+    private boolean sounds;
+    private boolean music;
+    private boolean vibrations;
 
     public SaveData() {
         prefs = Gdx.app.getPreferences("StickManFallingPreferences");
+        sounds = prefs.getBoolean("sounds");
+        music = prefs.getBoolean("music");
+        vibrations = prefs.getBoolean("vibrations");
     }
 
     public void notFirstAppUse() {
@@ -41,6 +47,9 @@ public class SaveData {
             prefs.putBoolean("notFirstAppUse", true);
             prefs.putLong("saveCounter", 0);
             prefs.putBoolean("saveUpdated", true);
+            prefs.putBoolean("sounds", true);
+            prefs.putBoolean("music", true);
+            prefs.putBoolean("vibrations", false);
             prefs.flush();
         }
     }
@@ -211,5 +220,45 @@ public class SaveData {
 
     public String getTestString() {
         return prefs.getString("testString");
+    }
+
+    public boolean getSounds() {
+        return prefs.getBoolean("sounds");
+    }
+    public boolean getMusic() {
+        return prefs.getBoolean("music");
+    }
+    public boolean getVibrations() {
+        return prefs.getBoolean("vibrations");
+    }
+
+    public void setSounds(boolean value) {
+        this.sounds = value;
+        prefs.putBoolean("sounds", value);
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
+    }
+
+    public void setMusic(boolean value) {
+        this.music = value;
+        prefs.putBoolean("music", value);
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
+    }
+
+    public void setVibrations(boolean value) {
+        this.vibrations = value;
+        prefs.putBoolean("vibrations", value);
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
     }
 }

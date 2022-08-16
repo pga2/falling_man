@@ -1,17 +1,12 @@
 package com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Belly extends PlayerBodyPart {
 
@@ -45,7 +40,7 @@ public class Belly extends PlayerBodyPart {
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_BELLY_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                 | FallingMan.PLAYER_ARM_BIT | FallingMan.PLAYER_HEAD_BIT | FallingMan.PLAYER_THIGH_BIT;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this);

@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 public class Foot extends PlayerBodyPart {
 
@@ -39,7 +38,7 @@ public class Foot extends PlayerBodyPart {
 
         fdef.shape = shape;
         fdef.filter.categoryBits = FallingMan.PLAYER_FOOT_BIT;
-        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEAD_MACHINE_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
+        fdef.filter.maskBits = FallingMan.DEFAULT_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT
                  | FallingMan.PLAYER_SHIN_BIT;
         fixture = b2body.createFixture(fdef);
         fixture.setUserData(this);
