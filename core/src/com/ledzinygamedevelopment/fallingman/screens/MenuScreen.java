@@ -27,22 +27,23 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
-import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
-import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
+import com.ledzinygamedevelopment.fallingman.tools.TutorialHandler;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import box2dLight.RayHandler;
 public class MenuScreen implements GameScreen {
 
     private final GameAssetManager assetManager;
+    private TutorialHandler tutorialHandler;
     private TextureAtlas playerAtlas;
     private byte currentScreen;
     private Array<Rock> rocks;
@@ -100,6 +102,7 @@ public class MenuScreen implements GameScreen {
     private float sunPos;
     private RayHandler rayHandler;
     private PointLight headLight;
+    private boolean tutorialOn;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor, boolean newBackground) {
         this.game = game;
@@ -212,6 +215,10 @@ public class MenuScreen implements GameScreen {
         /*if (game.toastCreator != null) {
             game.toastCreator.makeToast("data: \n" + saveData.getTestString());
         }*/
+        tutorialOn = saveData.getTutorial();
+        if (tutorialOn) {
+            tutorialHandler = new TutorialHandler(this, world, FallingMan.MIN_WORLD_HEIGHT / 2f / FallingMan.PPM);
+        }
     }
 
     @Override
@@ -343,6 +350,9 @@ public class MenuScreen implements GameScreen {
         }
         clouds.removeAll(cloudsToRemove, false);
 
+        if (tutorialOn) {
+            tutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
+        }
 
         firstOpenTimer += dt;
     }
@@ -413,7 +423,6 @@ public class MenuScreen implements GameScreen {
             button.draw(game.batch);
         }
 
-
         //preparing font
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
@@ -439,6 +448,10 @@ public class MenuScreen implements GameScreen {
         }
         GlyphLayout glyphLayout = new GlyphLayout(font, "SWIPE UP\nOR\nTOUCH THE SCREEN");
         font.draw(game.batch, "SWIPE UP\nOR\nTOUCH THE SCREEN", 720 / FallingMan.PPM - glyphLayout.width / 2, player.getY() + glyphLayout.height * 2, glyphLayout.width, Align.center, false);
+
+        if (tutorialOn) {
+            tutorialHandler.draw(game.batch);
+        }
 
         for (Cloud cloud : clouds) {
             cloud.draw(game.batch);
@@ -573,7 +586,8 @@ public class MenuScreen implements GameScreen {
     }
 
     @Override
-    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
+    public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String
+            transactionName) {
 
     }
 
@@ -630,6 +644,11 @@ public class MenuScreen implements GameScreen {
     @Override
     public FallingMan getGame() {
         return game;
+    }
+
+    @Override
+    public SaveData getSaveData() {
+        return saveData;
     }
 
     public void generateNewMap() {

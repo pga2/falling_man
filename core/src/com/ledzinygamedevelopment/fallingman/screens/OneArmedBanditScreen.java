@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -184,7 +185,6 @@ public class OneArmedBanditScreen implements GameScreen {
         this.sunPos = sunPos;
         rendererBehind0.getBatch().setColor(rendererColor);
         rendererBehind1.getBatch().setColor(rendererColor);
-
 
         changeToShopScreen = false;
         //gameCam.zoom = 5;
@@ -369,6 +369,9 @@ public class OneArmedBanditScreen implements GameScreen {
         if (baloonButtons.size < 4) {
             Random random = new Random();
             float posY = random.nextInt((int) (gameCam.viewportHeight * FallingMan.PPM) - 640) / FallingMan.PPM;
+            if (posY > gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM - 350 / FallingMan.PPM && posY < gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + 750 / FallingMan.PPM) {
+                posY -= 1000 / FallingMan.PPM;
+            }
             BaloonButton newBaloonButton = new BaloonButton(this, world, random.nextBoolean() ? -256 / FallingMan.PPM : FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, posY, 256 / FallingMan.PPM, 640 / FallingMan.PPM);
             baloonButtons.add(newBaloonButton);
             buttons.add(newBaloonButton);
@@ -460,6 +463,10 @@ public class OneArmedBanditScreen implements GameScreen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
+
+        for (OneArmBandit oneArmBandit : oneArmBandits) {
+            oneArmBandit.getOneArmedBanditBackground().draw(game.batch);
+        }
 
         for (Roll roll : rolls) {
 
@@ -804,6 +811,9 @@ public class OneArmedBanditScreen implements GameScreen {
         baloonButtons = new Array<>();
         for (int i = 0; i < 4; i++) {
             float posY = random.nextInt((int) (gameCam.viewportHeight * FallingMan.PPM) - 640) / FallingMan.PPM;
+            if (posY > gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM - 350 / FallingMan.PPM && posY < gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + 750 / FallingMan.PPM) {
+                posY -= 1000 / FallingMan.PPM;
+            }
             BaloonButton baloonButton = new BaloonButton(this, world, random.nextBoolean() ? -256 / FallingMan.PPM : FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, posY, 256 / FallingMan.PPM, 640 / FallingMan.PPM);
             baloonButtons.add(baloonButton);
             buttons.add(baloonButton);

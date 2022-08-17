@@ -24,6 +24,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.MusicButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.SoundsButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.TutorialButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.VibrationsButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
@@ -340,6 +341,7 @@ public class SettingsScreen implements GameScreen{
         buttons.add(new SoundsButton(this, world, 72 / FallingMan.PPM, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
         buttons.add(new MusicButton(this, world, 72 / FallingMan.PPM * 2 + 384 / FallingMan.PPM, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
         buttons.add(new VibrationsButton(this, world, 72 / FallingMan.PPM * 3 + 384 / FallingMan.PPM * 2, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
+        buttons.add(new TutorialButton(this, world, 72 / FallingMan.PPM, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM * 2 - 384 / FallingMan.PPM * 2, 1296 / FallingMan.PPM, 384 / FallingMan.PPM));
         /*buttons.add(new MicroPaymentButton(this, world, 150 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_10000));
         buttons.add(new MicroPaymentButton(this, world, 530 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_24000));
         buttons.add(new MicroPaymentButton(this, world, 910 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_54000));

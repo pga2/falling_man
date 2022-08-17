@@ -916,6 +916,11 @@ public class ShopScreen implements GameScreen {
         return game;
     }
 
+    @Override
+    public SaveData getSaveData() {
+        return saveData;
+    }
+
     private void prepareDayAndNightCycle() {
         if (sunPos > 54 && sunPos < 62) {
             rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);

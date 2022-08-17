@@ -48,13 +48,13 @@ public abstract class Button extends Sprite {
     }
 
     public void touched() {
-        if (!clicked) {
+        if (!clicked && gameScreen.getSaveData().getVibrations()) {
             Gdx.input.vibrate(50);
         }
     }
 
     public void notTouched() {
-        if (clicked) {
+        if (clicked && gameScreen.getSaveData().getVibrations()) {
             Gdx.input.vibrate(50);
         }
     }

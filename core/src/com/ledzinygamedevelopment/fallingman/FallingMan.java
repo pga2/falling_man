@@ -43,7 +43,7 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static byte currentScreen;
     public static GameScreen gameScreen;
 
-    public static final float SUN_SPEED = 0.05f;
+    public static final float SUN_SPEED = 0.005f;
 
     public static final int MIN_WORLD_WIDTH = 1440;
     public static final int MIN_WORLD_HEIGHT = 2560;

@@ -15,12 +15,14 @@ public class SaveData {
     private boolean sounds;
     private boolean music;
     private boolean vibrations;
+    private boolean tutorial;
 
     public SaveData() {
         prefs = Gdx.app.getPreferences("StickManFallingPreferences");
         sounds = prefs.getBoolean("sounds");
         music = prefs.getBoolean("music");
         vibrations = prefs.getBoolean("vibrations");
+        tutorial = prefs.getBoolean("tutorial");
     }
 
     public void notFirstAppUse() {
@@ -50,6 +52,8 @@ public class SaveData {
             prefs.putBoolean("sounds", true);
             prefs.putBoolean("music", true);
             prefs.putBoolean("vibrations", false);
+            prefs.putBoolean("tutorial", true);
+            prefs.putInteger("tutorialCounter", 0);
             prefs.flush();
         }
     }
@@ -231,6 +235,9 @@ public class SaveData {
     public boolean getVibrations() {
         return prefs.getBoolean("vibrations");
     }
+    public boolean getTutorial() {
+        return prefs.getBoolean("tutorial");
+    }
 
     public void setSounds(boolean value) {
         this.sounds = value;
@@ -255,6 +262,32 @@ public class SaveData {
     public void setVibrations(boolean value) {
         this.vibrations = value;
         prefs.putBoolean("vibrations", value);
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
+    }
+
+    public void setTutorial(boolean value) {
+        this.tutorial = value;
+        prefs.putBoolean("tutorial", value);
+        if (prefs.getInteger("tutorialCounter") <=3) {
+            prefs.putInteger("tutorialCounter", 4);
+        }
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
+    }
+
+    public void addOneToTutorialCounter() {
+        int tutorialCounter = prefs.getInteger("tutorialCounter");
+        prefs.putInteger("tutorialCounter", tutorialCounter + 1);
+        if (tutorialCounter == 3 && tutorial) {
+            prefs.putBoolean("tutorial", false);
+        }
         if (!prefs.getBoolean("saveUpdated")) {
             prefs.putBoolean("saveUpdated", true);
             prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);

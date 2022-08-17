@@ -27,6 +27,6 @@ public class GoldAndHighScoresBackground extends Sprite {
     }
 
     public void update(float dt, Vector2 playerPos, float screenHeight) {
-        setPosition(106 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 360 / FallingMan.PPM);
+        setPosition(106 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 370 / FallingMan.PPM);
     }
 }

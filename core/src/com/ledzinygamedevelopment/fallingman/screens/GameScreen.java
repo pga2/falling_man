@@ -13,6 +13,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjec
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
 import java.util.HashMap;
 
@@ -41,4 +42,5 @@ public interface GameScreen extends Screen {
     public Array<Button> getButtons();
     public void setNewLife(boolean newLife);
     public FallingMan getGame();
+    public SaveData getSaveData();
 }

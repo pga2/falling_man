@@ -64,6 +64,7 @@ import box2dLight.RayHandler;
 
 public class PlayScreen implements GameScreen {
 
+    private boolean tutorialOn;
     private byte currentScreen;
     private SaveData saveData;
     private BitmapFont font;
@@ -141,12 +142,8 @@ public class PlayScreen implements GameScreen {
     private float sunPos;
     private RayHandler rayHandler;
     private PointLight headLight;
-    //private PointLight lHandLight;
-    //private PointLight rHandLight;
-    //private boolean highPerformance;
     private boolean turnOnLights;
     private PlayScreenTutorialHandler playScreenTutorialHandler;
-    //private float vibrationTimer;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -251,8 +248,12 @@ public class PlayScreen implements GameScreen {
         //player.createHeadJoint();
         //player.b2body.applyLinearImpulse(new Vector2(100f, 0f), player.b2body.getWorldCenter(), true);
         turnOnLights = false;
-        playScreenTutorialHandler = new PlayScreenTutorialHandler(this, world, player.b2body.getPosition().y);
-        player.createHeadJoint();
+        tutorialOn = saveData.getTutorial();
+        if (tutorialOn) {
+            playScreenTutorialHandler = new PlayScreenTutorialHandler(this, world, player.b2body.getPosition().y);
+            player.createHeadJoint();
+            saveData.addOneToTutorialCounter();
+        }
 
         //vibrationTimer = 0;
     }
@@ -290,9 +291,11 @@ public class PlayScreen implements GameScreen {
 
             //mobile
             if (Gdx.input.isTouched()) {
-                if (playScreenTutorialHandler.isTutorialOn()) {
-                    player.setRemoveHeadJoint(true);
-                    playScreenTutorialHandler.setTutorialOn(false);
+                if (tutorialOn) {
+                    if (playScreenTutorialHandler.isTutorialOn()) {
+                        player.setRemoveHeadJoint(true);
+                        playScreenTutorialHandler.setTutorialOn(false);
+                    }
                 }
                 // check if buttons click
                 Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
@@ -432,7 +435,7 @@ public class PlayScreen implements GameScreen {
                         rock.getB2body().applyLinearImpulse(new Vector2(0, 3000), rock.getB2body().getWorldCenter(), true);
                     }
                     rock.update(dt, playerPos, true, false);
-                } else if (playScreenTutorialHandler.isTutorialOn()) {
+                } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
                     rock.update(dt, playerPos, true, false);
                 } else {
                     rock.update(dt, playerPos, false, false);
@@ -528,8 +531,9 @@ public class PlayScreen implements GameScreen {
                 buttons.removeAll(buttonsToRemove, false);
                 newLife = false;
             }
-        playScreenTutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
-
+        if (tutorialOn) {
+            playScreenTutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
+        }
 
         Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
     }
@@ -618,9 +622,9 @@ public class PlayScreen implements GameScreen {
             font.setColor(fontMapObject.getColor());
             font.draw(game.batch, fontMapObject.getText(), fontMapObject.getPosX() - glyphLayout.width / 2, fontMapObject.getPosY() + glyphLayout.height * 1.6f);
         }
-
-        playScreenTutorialHandler.draw(game.batch);
-
+        if (tutorialOn) {
+            playScreenTutorialHandler.draw(game.batch);
+        }
 
 //        font.draw(game.batch, "dziala dziala dziala dziala dziala dziala dziala dziala dziala dziala", 0, 8000 / FallingMan.PPM);
 //        font.draw(game.batch, "2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 2115 ", 0, 8100 / FallingMan.PPM);

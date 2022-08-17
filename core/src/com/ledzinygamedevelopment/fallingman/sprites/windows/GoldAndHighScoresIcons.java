@@ -44,7 +44,7 @@ public class GoldAndHighScoresIcons extends Sprite {
     }
 
     public void update(float dt, Vector2 playerPos, float screenHeight) {
-        setPosition(116 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 350 / FallingMan.PPM);
+        setPosition(116 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 360 / FallingMan.PPM);
 
         font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);

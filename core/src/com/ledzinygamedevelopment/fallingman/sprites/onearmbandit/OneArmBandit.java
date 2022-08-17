@@ -15,6 +15,7 @@ public class OneArmBandit extends Sprite {
     private BodyDef bdef;
     private Body b2body;
     private FixtureDef fdef;
+    private Sprite oneArmedBanditBackground;
 
     public OneArmBandit(GameScreen gameScreen, World world, float posY) {
         //super(gameScreen.getAtlas().findRegion("one_armed_bandit"));
@@ -25,8 +26,17 @@ public class OneArmBandit extends Sprite {
 
         setRegion(gameScreen.getDefaultAtlas().findRegion("one_armed_bandit"), 0, 0, 1056, 1040);
         setPosition(192 / FallingMan.PPM, posY);
+
+        oneArmedBanditBackground = new Sprite();
+        oneArmedBanditBackground.setRegion(gameScreen.getDefaultAtlas().findRegion("one_armed_bandit_background"), 0, 0, 909, 266);
+        oneArmedBanditBackground.setBounds(0, 0, 909 / FallingMan.PPM, 266 / FallingMan.PPM);
+        oneArmedBanditBackground.setPosition(getX() + 73.5f / FallingMan.PPM, getY() + 390 / FallingMan.PPM);
         //setOrigin(getWidth() / 2, getHeight() / 2);
         //defineBody();
+    }
+
+    public Sprite getOneArmedBanditBackground() {
+        return oneArmedBanditBackground;
     }
 
     /*public void defineBody() {
