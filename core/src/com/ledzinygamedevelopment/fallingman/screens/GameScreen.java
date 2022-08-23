@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
@@ -43,4 +44,9 @@ public interface GameScreen extends Screen {
     public void setNewLife(boolean newLife);
     public FallingMan getGame();
     public SaveData getSaveData();
+    public void setSmokeToAddPos(Vector2 smokeToAddPos);
+    public Array<Smoke> getSmokes();
+    public boolean isReadyToCreateSmoke();
+    public void setAddSmoke(boolean addSmoke);
+    public TextureAtlas getWindowAtlas();
 }

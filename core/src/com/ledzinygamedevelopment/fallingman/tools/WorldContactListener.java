@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.Spikes;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.WalkingEnemy;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.SpiderWeb;
@@ -128,10 +131,46 @@ public class WorldContactListener implements ContactListener {
             case FallingMan.PLAYER_THIGH_BIT | FallingMan.WALL_INSIDE_TOWER:
             case FallingMan.PLAYER_SHIN_BIT | FallingMan.WALL_INSIDE_TOWER:
                 if (fixA.getFilterData().categoryBits == FallingMan.WALL_INSIDE_TOWER) {
+                    for (Vector2 smokeToAddPos : contact.getWorldManifold().getPoints()) {
+                        if (gameScreen.isReadyToCreateSmoke()) {
+                            gameScreen.getSmokes().add(new Smoke((PlayScreen) gameScreen, smokeToAddPos.x, smokeToAddPos.y));
+                            gameScreen.setAddSmoke(false);
+                        }
+                    }
                     ((PlayerBodyPart) fixB.getUserData()).setTouchWall(true);
                 } else {
+                    for (Vector2 smokeToAddPos : contact.getWorldManifold().getPoints()) {
+                        if (gameScreen.isReadyToCreateSmoke()) {
+                            gameScreen.getSmokes().add(new Smoke((PlayScreen) gameScreen, smokeToAddPos.x, smokeToAddPos.y));
+                            gameScreen.setAddSmoke(false);
+                        }
+                    }
                     ((PlayerBodyPart) fixA.getUserData()).setTouchWall(true);
                 }
+                break;
+            case FallingMan.PLAYER_HEAD_BIT | FallingMan.WALL_INSIDE_TOWER:
+                for (Vector2 smokeToAddPos : contact.getWorldManifold().getPoints()) {
+                    if (gameScreen.isReadyToCreateSmoke()) {
+                        gameScreen.getSmokes().add(new Smoke((PlayScreen) gameScreen, smokeToAddPos.x, smokeToAddPos.y));
+                        gameScreen.setAddSmoke(false);
+                    }
+                }
+                break;
+
+            case FallingMan.PLAYER_FOOT_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_BELLY_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_ARM_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_FORE_ARM_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_HAND_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_THIGH_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_SHIN_BIT | FallingMan.DEFAULT_BIT:
+            case FallingMan.PLAYER_HEAD_BIT | FallingMan.DEFAULT_BIT:
+                    for (Vector2 smokeToAddPos : contact.getWorldManifold().getPoints()) {
+                        if (gameScreen.isReadyToCreateSmoke()) {
+                            gameScreen.getSmokes().add(new Smoke((PlayScreen) gameScreen, smokeToAddPos.x, smokeToAddPos.y));
+                            gameScreen.setAddSmoke(false);
+                        }
+                    }
                 break;
             /*case FallingMan.WALL_INSIDE_TOWER | FallingMan.INTERACTIVE_TILE_OBJECT_BIT:
                 if (fixA.getFilterData().categoryBits == FallingMan.WALL_INSIDE_TOWER) {

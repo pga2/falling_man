@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
@@ -53,13 +54,13 @@ public class WatchAdButton extends Button {
         super.draw(batch);
         if (leftAdIcon.isScaleUp()) {
             if (leftAdIcon.getScaleX() < 1.12f) {
-                leftAdIcon.setScale(leftAdIcon.getScaleX() + 0.03f);
+                leftAdIcon.setScale(leftAdIcon.getScaleX() + 0.03f * 60 * Gdx.graphics.getDeltaTime());
             } else {
                 leftAdIcon.setScaleUp(false);
             }
         } else {
             if (leftAdIcon.getScaleX() > 0.85f) {
-                leftAdIcon.setScale(leftAdIcon.getScaleX() - 0.03f);
+                leftAdIcon.setScale(leftAdIcon.getScaleX() - 0.03f * 60 * Gdx.graphics.getDeltaTime());
             } else {
                 leftAdIcon.setScaleUp(true);
             }

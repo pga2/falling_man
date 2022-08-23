@@ -129,6 +129,15 @@ public class SaveData {
         prefs.flush();
     }
 
+    public void setDayDailyReward(long days) {
+        prefs.putLong("timeDailyReward", days);
+        if (!prefs.getBoolean("saveUpdated")) {
+            prefs.putBoolean("saveUpdated", true);
+            prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
+        }
+        prefs.flush();
+    }
+
     public HashMap<String, Integer> getBodySpritesCurrentlyWear() {
         HashMap<String, Integer> allBodyPartsSprites = new HashMap<>();
         allBodyPartsSprites.put("head", prefs.getInteger("head"));
@@ -202,6 +211,10 @@ public class SaveData {
 
     public long getMillis() {
         return prefs.getLong("time");
+    }
+
+    public long getDayDailyReward() {
+        return prefs.getLong("timeDailyReward");
     }
 
     public Boolean getSaveUpdated() {
@@ -293,5 +306,14 @@ public class SaveData {
             prefs.putLong("saveCounter", prefs.getLong("saveCounter") + 1);
         }
         prefs.flush();
+    }
+
+    public void setDayInRowDailyReward(long value) {
+        prefs.putLong("daysInRow", value);
+        prefs.flush();
+    }
+
+    public long getDaysInRowDailyReward() {
+        return prefs.getLong("daysInRow");
     }
 }

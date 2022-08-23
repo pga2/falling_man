@@ -57,6 +57,11 @@ public class SoundsButton extends Button {
 
     @Override
     public void restoreNotClickedTexture() {
-        //setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+
+        if (soundsOn) {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("sound_on"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        } else {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("sound_off"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        }
     }
 }

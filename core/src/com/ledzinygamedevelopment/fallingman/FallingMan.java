@@ -20,12 +20,10 @@ import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.golfgl.gdxgamesvcs.IGameServiceClient;
 import de.golfgl.gdxgamesvcs.IGameServiceListener;
 import de.golfgl.gdxgamesvcs.NoGameServiceClient;
-import de.golfgl.gdxgamesvcs.gamestate.ISaveGameStateResponseListener;
 
 //import de.golfgl.gdxgamesvcs.IGameServiceClient;
 

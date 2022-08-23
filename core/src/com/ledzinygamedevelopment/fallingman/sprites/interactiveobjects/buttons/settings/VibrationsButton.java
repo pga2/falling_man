@@ -57,6 +57,10 @@ public class VibrationsButton extends Button {
 
     @Override
     public void restoreNotClickedTexture() {
-        //setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        if (vibrationsOn) {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("vibrations_on"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        } else {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("vibrations_off"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        }
     }
 }

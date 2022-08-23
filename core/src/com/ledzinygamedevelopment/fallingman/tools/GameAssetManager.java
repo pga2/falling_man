@@ -71,6 +71,7 @@ public class GameAssetManager {
     public void loadMenuScreen() {
         manager.load(menuScreenDefault, TextureAtlas.class);
         manager.load(menuScreenBigRock, TextureAtlas.class);
+        manager.load(playScreenWindow, TextureAtlas.class);
         manager.load(playerSprite, TextureAtlas.class);
 
         rockTexturesPaths.add("images/menuScreen/rock1.png");

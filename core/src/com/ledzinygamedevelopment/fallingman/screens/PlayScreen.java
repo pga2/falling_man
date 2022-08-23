@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
+import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
@@ -144,6 +145,10 @@ public class PlayScreen implements GameScreen {
     private PointLight headLight;
     private boolean turnOnLights;
     private PlayScreenTutorialHandler playScreenTutorialHandler;
+    private Array<Smoke> smokes;
+    private boolean addSmoke;
+    private Vector2 smokeToAddPos;
+    private Array<Integer> allTouchedPoints;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -255,6 +260,9 @@ public class PlayScreen implements GameScreen {
             saveData.addOneToTutorialCounter();
         }
 
+        smokes = new Array<>();
+        addSmoke = true;
+        allTouchedPoints = new Array<>();
         //vibrationTimer = 0;
     }
 
@@ -271,13 +279,13 @@ public class PlayScreen implements GameScreen {
         if (!hud.isGameOverStage()) {
             //pc
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f, 0.05f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f, 0.03f), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 //player.restoreBodyParts();
@@ -287,6 +295,13 @@ public class PlayScreen implements GameScreen {
             }
             if (Gdx.input.isKeyPressed(Input.Keys.N)) {
                 gameCam.zoom -= 0.01f;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.O)) {
+                player.b2body.setTransform(2000 / FallingMan.PPM, player.b2body.getPosition().y, player.b2body.getAngle());
+                //player.setPosition(player.b2body.getPosition().x + xDist - player.getWidth() / 2, player.getY());
+                for (Body body : player.getBodyPartsAll()) {
+                    body.setTransform(2000 / FallingMan.PPM, body.getPosition().y, body.getAngle());
+                }
             }
 
             //mobile
@@ -310,10 +325,17 @@ public class PlayScreen implements GameScreen {
 
 
                 //moving player
-                if (Gdx.input.getX() < Gdx.graphics.getWidth() / 2f) {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                float xTouchedPos = Gdx.input.getX();
+                for (int i = Gdx.input.getMaxPointers()-1; i >= 0; i--) {
+                    if (Gdx.input.isTouched(i)) {
+                        xTouchedPos = Gdx.input.getX(i);
+                        break;
+                    }
+                }
+                if (xTouchedPos < Gdx.graphics.getWidth() / 2f) {
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
                 } else {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.05f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
                 }
             } else {
                 for (Button button : buttons) {
@@ -368,8 +390,9 @@ public class PlayScreen implements GameScreen {
     }
 
     public void update(float dt) {
+        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+
         handleInput(dt);
-            world.step(1 / 60f, 8, 5);
             if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 63) {
                 if (player.b2body.getLinearVelocity().y > -5) {
                     player.b2body.setLinearVelocity(player.b2body.getLinearVelocity().x, -5);
@@ -422,6 +445,15 @@ public class PlayScreen implements GameScreen {
             sparks.removeAll(sparksToRemove, false);
             player.getSparks().removeAll(sparksToRemove, false);
 
+            //protects player from falling out of tower
+            if (player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) {
+
+                player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
+                for (Body body : player.getBodyPartsAll()) {
+                    body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, body.getPosition().y, body.getAngle());
+                }
+            }
+
             player.update(dt);
 
 
@@ -470,6 +502,20 @@ public class PlayScreen implements GameScreen {
             }
             b2SteeringEntityContainers.removeAll(b2SteeringEntityContainersToRemove, false);
             huntingSpiders.removeAll(huntingSpidersToRemove, false);
+
+            if (!addSmoke) {
+                addSmoke = true;
+            }
+
+            Array<Smoke> smokesToRemove = new Array<>();
+            for (Smoke smoke : smokes) {
+                if (smoke.isToRemove()) {
+                    smokesToRemove.add(smoke);
+                } else {
+                    smoke.update(dt);
+                }
+            }
+            smokes.removeAll(smokesToRemove, false);
 
             //oneArmBandit.update(dt);
         /*for (PlayerBodyPart playerBodyPart : player.getBodyParts()) {
@@ -536,6 +582,8 @@ public class PlayScreen implements GameScreen {
         }
 
         Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        //Gdx.app.log("delta time ", " " + Gdx.graphics.getDeltaTime());
+        //Gdx.app.log("player speed y", " " + player.b2body.getLinearVelocity().y);
     }
 
     @Override
@@ -547,7 +595,7 @@ public class PlayScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED;
+        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -607,6 +655,10 @@ public class PlayScreen implements GameScreen {
 
         for (HuntingSpider huntingSpider : huntingSpiders) {
             huntingSpider.draw(game.batch);
+        }
+
+        for (Smoke smoke : smokes) {
+            smoke.draw(game.batch);
         }
 
         for (Rock rock : rocks) {
@@ -1084,4 +1136,21 @@ public class PlayScreen implements GameScreen {
         }
     }
 
+    public void setSmokeToAddPos(Vector2 smokeToAddPos) {
+        this.smokeToAddPos = smokeToAddPos;
+        addSmoke = true;
+    }
+
+    public Array<Smoke> getSmokes() {
+        return smokes;
+    }
+
+    @Override
+    public boolean isReadyToCreateSmoke() {
+        return addSmoke;
+    }
+
+    public void setAddSmoke(boolean addSmoke) {
+        this.addSmoke = addSmoke;
+    }
 }

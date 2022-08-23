@@ -1,26 +1,21 @@
 package com.ledzinygamedevelopment.fallingman;
 
 import android.app.ActivityManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.pay.Offer;
-import com.badlogic.gdx.pay.OfferType;
-import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -29,7 +24,6 @@ import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import de.golfgl.gdxgamesvcs.GpgsClient;
-import de.golfgl.gdxgamesvcs.IGameServiceClient;
 
 public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener, ToastCreator {
     //Window window;
@@ -57,10 +51,10 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         }
 
-        config.useGyroscope = true;  //default is false
+        config.useGyroscope = false;  //default is false
 
         //you may want to switch off sensors that are on by default if they are no longer needed.
-        config.useAccelerometer = true;
+        config.useAccelerometer = false;
         config.useCompass = false;
 
         config.useImmersiveMode = true;
@@ -68,7 +62,9 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
         fallingMan.purchaseManager = new PurchaseManagerGoogleBilling(this);
 
+        /*NotificationHandler notificationHandler = new AndroidNotificationHandler(getContext());
 
+        notificationHandler.showNotification(new NotificationParameters(12, "this is title", "this is description"));*/
 
         initialize(fallingMan, config);
 
@@ -108,6 +104,19 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
         setContentView(layout);*/
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }*/
+    }
+
+
+
 
     @Override
     public boolean showRewardedVideo(boolean loadOnly) {

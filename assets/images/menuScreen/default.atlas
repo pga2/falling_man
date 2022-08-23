@@ -3,66 +3,115 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+bigChest
+  rotate: false
+  xy: 1, 995
+  size: 960, 960
+  orig: 960, 960
+  offset: 0, 0
+  index: -1
+daily_reward_wide
+  rotate: false
+  xy: 1, 453
+  size: 1120, 540
+  orig: 1120, 540
+  offset: 0, 0
+  index: -1
 cloud
   rotate: false
-  xy: 1, 635
+  xy: 1, 67
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 1, 389
+  xy: 963, 1711
   size: 660, 244
   orig: 660, 244
   offset: 0, 0
   index: -1
+daily_reward
+  rotate: false
+  xy: 963, 1169
+  size: 360, 540
+  orig: 360, 540
+  offset: 0, 0
+  index: -1
 pointing_finger
   rotate: false
-  xy: 963, 419
+  xy: 1325, 1109
   size: 300, 600
   orig: 300, 600
   offset: 0, 0
   index: -1
 in_app_purchases_button
   rotate: false
-  xy: 1, 131
+  xy: 963, 195
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+smallRoll0
+  rotate: false
+  xy: 1625, 1763
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
 in_app_purchases_button_clicked
   rotate: false
-  xy: 1265, 763
+  xy: 1627, 1505
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 settings_button
   rotate: false
-  xy: 259, 131
+  xy: 1627, 1247
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+smallRoll1
+  rotate: false
+  xy: 1819, 1763
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
 settings_button_clicked
   rotate: false
-  xy: 1265, 505
+  xy: 1627, 989
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 663, 409
+  xy: 1885, 1537
   size: 112, 224
   orig: 112, 224
   offset: 0, 0
   index: -1
+smallRoll2
+  rotate: false
+  xy: 963, 1
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
 touched_point
   rotate: false
-  xy: 1, 1
+  xy: 963, 1039
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+smallRoll3
+  rotate: false
+  xy: 1157, 1
+  size: 192, 192
+  orig: 192, 192
   offset: 0, 0
   index: -1

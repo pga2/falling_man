@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -51,7 +52,7 @@ public class Spark extends Sprite {
 
     public void update(float dt) {
         existTime += dt;
-        setPosition(getX() + speedX, getY() + speedY);
+        setPosition(getX() + speedX * 60 * Gdx.graphics.getDeltaTime(), getY() + speedY * 60 * Gdx.graphics.getDeltaTime());
         if (!(existTime < 0.3f)) {
             setColor(new Color(getColor().r, getColor().g, getColor().b, getColor().a - 0.03f));
             if (getColor().a < 0.03f) {

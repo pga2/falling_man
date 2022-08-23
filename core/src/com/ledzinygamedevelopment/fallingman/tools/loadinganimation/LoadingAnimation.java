@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools.loadinganimation;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
@@ -49,6 +50,7 @@ public class LoadingAnimation {
     }
 
     public void update(float dt) {
+        colorChangeSpeed = 12 * 60 * Gdx.graphics.getDeltaTime();
         switch (colorChangeFirstPart) {
             case LT:
                 if (loadingAnimationParts.get(0).getrColor() <= colorChangeSpeed / 255f ) {

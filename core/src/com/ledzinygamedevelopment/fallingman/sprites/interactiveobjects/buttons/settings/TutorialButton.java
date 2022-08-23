@@ -57,6 +57,10 @@ public class TutorialButton extends Button {
 
     @Override
     public void restoreNotClickedTexture() {
-        //setRegion(gameScreen.getDefaultAtlas().findRegion("high_scores"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        if (tutorialOn) {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("tutorial_on"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        } else {
+            setRegion(gameScreen.getDefaultAtlas().findRegion("tutorial_off"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        }
     }
 }

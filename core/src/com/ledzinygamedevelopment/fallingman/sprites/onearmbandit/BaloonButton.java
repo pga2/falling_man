@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.onearmbandit;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -66,7 +67,7 @@ public class BaloonButton extends Button {
     }
 
     public void update(float dt) {
-        posX += speedX;
+        posX += speedX * 60 * Gdx.graphics.getDeltaTime();
         setPosition(posX, posY);
         if (destroyBaloon)
             setRegion(getFrame(dt));

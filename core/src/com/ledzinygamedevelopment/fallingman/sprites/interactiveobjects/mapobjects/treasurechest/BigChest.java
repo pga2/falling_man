@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 
 import java.util.Random;
 
@@ -30,7 +32,8 @@ public class BigChest extends Sprite {
     private boolean drawFont;
     private boolean fontScaleUp;
     private float fontScale;
-
+    private boolean shouldChangePosAccordToPlayer;
+    private float currentPlayerPos;
 
 
     public BigChest(GameScreen gameScreen, float posX, float posY) {
@@ -60,9 +63,13 @@ public class BigChest extends Sprite {
         fontScaleUp = true;
         touchedTimer = 0;
         fontScale = 0.015f;
+        shouldChangePosAccordToPlayer = false;
     }
 
     public void update(float dt) {
+        setPosition(getX(), getY() - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y);
+        posY = posY - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y;
+        currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
         if (growingTime + dt < 2.4f) {
             setScale(0.2f + growingTime / 3);
         } else if (firstStage) {
@@ -116,7 +123,20 @@ public class BigChest extends Sprite {
                 }
                 touchedTimer += dt;
             } else if (Gdx.input.isTouched() && touched) {
-                gameScreen.addOnePartRolls(100, 1);
+                if (shouldChangePosAccordToPlayer) {
+                    if (gameScreen instanceof MenuScreen) {
+                        for (int i = 0; i < 100; i++) {
+                            MenuScreen menuScreen = ((MenuScreen) gameScreen);
+
+                            OnePartRoll tempRoll = new OnePartRoll(menuScreen,  getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                            tempRoll.setAmount(160);
+                            tempRoll.startFlying();
+                            menuScreen.getFlyingRolls().add(tempRoll);
+                        }
+                    }
+                } else {
+                    gameScreen.addOnePartRolls(100, 1);
+                }
                 touched = false;
                 secondStage = false;
                 drawFont = false;
@@ -125,7 +145,11 @@ public class BigChest extends Sprite {
             setScale(1 - thirdStageTimer * 2);
             thirdStageTimer += dt;
         } else {
-            gameScreen.getSpinButton().setLocked(false);
+            if (shouldChangePosAccordToPlayer) {
+
+            } else {
+                gameScreen.getSpinButton().setLocked(false);
+            }
             gameScreen.removeChest(this);
         }
 
@@ -163,5 +187,10 @@ public class BigChest extends Sprite {
             GlyphLayout glyphLayout = new GlyphLayout(font, "TOUCH!");
             font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, worldHeight / 2 - 900 / FallingMan.PPM + glyphLayout.height);
         }
+    }
+
+    public void setShouldChangePosAccordToPlayer(boolean shouldChangePosAccordToPlayer) {
+        this.shouldChangePosAccordToPlayer = shouldChangePosAccordToPlayer;
+        currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
     }
 }

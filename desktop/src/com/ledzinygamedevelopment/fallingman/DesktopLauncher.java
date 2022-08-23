@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Stick Man Falling");
 		config.setWindowSizeLimits(720, 1280, 1000, 2000);
+		//config.setForegroundFPS(60);
 		new Lwjgl3Application(new FallingMan(null, null), config);
 	}
 }

@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
@@ -34,10 +35,12 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
+import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 import com.ledzinygamedevelopment.fallingman.sprites.player.bodyparts.PlayerBodyPart;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.RewardCalendarWindow;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
@@ -46,6 +49,8 @@ import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.TutorialHandler;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -57,6 +62,7 @@ public class MenuScreen implements GameScreen {
     private final GameAssetManager assetManager;
     private TutorialHandler tutorialHandler;
     private TextureAtlas playerAtlas;
+    private TextureAtlas windowAtlas;
     private byte currentScreen;
     private Array<Rock> rocks;
     private OrthographicCamera gameCam;
@@ -103,6 +109,9 @@ public class MenuScreen implements GameScreen {
     private RayHandler rayHandler;
     private PointLight headLight;
     private boolean tutorialOn;
+    private Array<RewardCalendarWindow> rewardCalendarWindows;
+    private Array<OnePartRoll> flyingRolls;
+    private Array<BigChest> bigChests;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor, boolean newBackground) {
         this.game = game;
@@ -112,6 +121,7 @@ public class MenuScreen implements GameScreen {
         assetManager.loadMenuScreen();
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
+        windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
         bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
@@ -210,7 +220,7 @@ public class MenuScreen implements GameScreen {
         filter.categoryBits = FallingMan.PLAYER_HEAD_BIT;
         filter.maskBits = FallingMan.WALL_INSIDE_TOWER | FallingMan.ROCK_BIT | FallingMan.STOP_WALKING_ENEMY_BIT | FallingMan.INTERACTIVE_TILE_OBJECT_BIT | FallingMan.DEFAULT_BIT;
         headLight.setContactFilter(filter);
-        //gameCam.zoom = 2;
+        //gameCam.zoom = 5;
 
         /*if (game.toastCreator != null) {
             game.toastCreator.makeToast("data: \n" + saveData.getTestString());
@@ -219,6 +229,32 @@ public class MenuScreen implements GameScreen {
         if (tutorialOn) {
             tutorialHandler = new TutorialHandler(this, world, FallingMan.MIN_WORLD_HEIGHT / 2f / FallingMan.PPM);
         }
+        rewardCalendarWindows = new Array<>();
+        flyingRolls = new Array<>();
+        GregorianCalendar lastTimeDailyReward = new GregorianCalendar();
+        GregorianCalendar currentTime = new GregorianCalendar();
+        currentTime.setTime(new Date());
+        if (saveData.getDayDailyReward() == 0) {
+            GregorianCalendar prefsCallendar = new GregorianCalendar();
+            prefsCallendar.setTime(new Date());
+            saveData.setDayDailyReward((long) Math.floor(prefsCallendar.getTimeInMillis() / 86400000f));
+            saveData.setDayInRowDailyReward(saveData.getDaysInRowDailyReward() + 1);
+            lastTimeDailyReward.setTimeInMillis(saveData.getDayDailyReward());
+            rewardCalendarWindows.add(new RewardCalendarWindow(this, world, saveData.getDaysInRowDailyReward()));
+        } else {
+            if (saveData.getDayDailyReward() == (long) Math.floor(currentTime.getTimeInMillis() / 86400000f)) {
+                Gdx.app.log("", "d");
+            } else if (saveData.getDayDailyReward() + 1 == (long) Math.floor(currentTime.getTimeInMillis() / 86400000f)) {
+                saveData.setDayInRowDailyReward(saveData.getDaysInRowDailyReward() + 1);
+                saveData.setDayDailyReward((long) Math.floor(currentTime.getTimeInMillis() / 86400000f));
+                rewardCalendarWindows.add(new RewardCalendarWindow(this, world, saveData.getDaysInRowDailyReward()));
+            } else {
+                Gdx.app.log("days diff", String.valueOf((long) Math.floor(currentTime.getTimeInMillis() / 86400000f) - saveData.getDayDailyReward()));
+                saveData.setDayInRowDailyReward(0);
+                saveData.setDayDailyReward((long) Math.floor(currentTime.getTimeInMillis() / 86400000f));
+            }
+        }
+        bigChests = new Array<>();
     }
 
     @Override
@@ -228,43 +264,58 @@ public class MenuScreen implements GameScreen {
 
     public void handleInput(float dt) {
         if (Gdx.input.isTouched()) {
-            if (!newScreenJustOpened) {
-                if (!changeScreen) {
-                    if (firstTouch) {
-                        previousTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-                        firstTouch = false;
-                    }
-                    noButtonTouched = true;
-
-                    // check if buttons click
-                    Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-                    for (Button button : buttons) {
-                        if (button.mouseOver(mouseVector) && !button.isLocked()) {
-                            button.touched();
-                            button.setClicked(true);
-                            noButtonTouched = false;
-                        }
-                    }
-                    //previousTouchPos.x = previousTouchPos.x + player.b2body.getLinearVelocity().x / FallingMan.PPM;
-                    if (playerYBeforeLoop == 0) {
-                        playerYBeforeLoop = player.getY();
-                    }
-                    float playerYAfterLoop = player.getY();
-                    previousTouchPos.y = previousTouchPos.y + playerYAfterLoop - playerYBeforeLoop;
-                    playerYBeforeLoop = player.getY();
-                    lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            if (rewardCalendarWindows.size > 0) {
+                for (RewardCalendarWindow rewardCalendarWindow : rewardCalendarWindows) {
+                    rewardCalendarWindow.getReward();
                 }
+            } else if (bigChests.size > 0) {
 
-                if (lastTouchPos.y - previousTouchPos.y < -200 / FallingMan.PPM) {
+            } else if (!(flyingRolls.size > 0)){
+                if (!newScreenJustOpened) {
                     if (!changeScreen) {
-                        Random random = new Random();
-                        //currentScreen = FallingMan.MENU_SCREEN;
-                        for (int i = 0; i < 3; i++) {
-                            for (int j = 0; j < 26; j++) {
-                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(200)) / FallingMan.PPM, (player.getY() + gamePort.getWorldHeight() / 2) + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
+                        if (firstTouch) {
+                            previousTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                            firstTouch = false;
+                        }
+                        noButtonTouched = true;
+
+                        // check if buttons click
+                        Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                        for (Button button : buttons) {
+                            if (button.mouseOver(mouseVector) && !button.isLocked()) {
+                                button.touched();
+                                button.setClicked(true);
+                                noButtonTouched = false;
+                            } else if (button.isClicked()) {
+                                button.setClicked(false);
+                                button.restoreNotClickedTexture();
                             }
                         }
-                        changeScreen = true;
+                        //previousTouchPos.x = previousTouchPos.x + player.b2body.getLinearVelocity().x / FallingMan.PPM;
+                        if (playerYBeforeLoop == 0) {
+                            playerYBeforeLoop = player.getY();
+                        }
+                        float playerYAfterLoop = player.getY();
+                        previousTouchPos.y = previousTouchPos.y + playerYAfterLoop - playerYBeforeLoop;
+                        playerYBeforeLoop = player.getY();
+                        lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+                    }
+
+                    if (lastTouchPos.y - previousTouchPos.y < -200 / FallingMan.PPM) {
+                        if (!changeScreen) {
+                            Random random = new Random();
+                            //currentScreen = FallingMan.MENU_SCREEN;
+                            for (int i = 0; i < 3; i++) {
+                                for (int j = 0; j < 26; j++) {
+                                    clouds.add(new Cloud(this, ((i * 640) - random.nextInt(200)) / FallingMan.PPM, (player.getY() + gamePort.getWorldHeight() / 2) + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
+                                }
+                            }
+                            for (Button button : buttons) {
+                                button.restoreNotClickedTexture();
+                                button.setClicked(false);
+                            }
+                            changeScreen = true;
+                        }
                     }
                 }
             }
@@ -287,7 +338,7 @@ public class MenuScreen implements GameScreen {
         //game.getAdsController().showRewardedVideo();
 
         handleInput(dt);
-        world.step(1 / 60f, 8, 5);
+        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
         rayHandler.update();
 
         //checking if should generate new map
@@ -341,14 +392,52 @@ public class MenuScreen implements GameScreen {
                     currentScreen = cloud.getScreen();
                     break outerloop;
                 }
-                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM);
+                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM * 60 * Gdx.graphics.getDeltaTime());
             } else if (cloud.getY() > player.getY() + gamePort.getWorldHeight() * 2) {
                 cloudsToRemove.add(cloud);
             } else {
-                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM);
+                if (Gdx.graphics.getDeltaTime() < 0.01666) {
+                    cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM * 60 * Gdx.graphics.getDeltaTime());
+                } else {
+                    cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM);
+                }
             }
         }
         clouds.removeAll(cloudsToRemove, false);
+
+        for (RewardCalendarWindow rewardCalendarWindow : rewardCalendarWindows) {
+            if (rewardCalendarWindow.isToRemoveAnimationEnded()) {
+                rewardCalendarWindows = new Array<>();
+            } else {
+                rewardCalendarWindow.update(dt, player.b2body.getPosition().y);
+            }
+        }
+
+        Array<OnePartRoll> flyingRollsToRemove = new Array<>();
+        for (OnePartRoll onePartRoll : flyingRolls) {
+            if (onePartRoll.isToRemove()) {
+                switch (onePartRoll.getCurrentTextureNumber()) {
+                    case 1:
+                        saveData.addGold((int) onePartRoll.getAmount());
+                        goldAndHighScoresIcons.setGold(saveData.getGold());
+                        flyingRollsToRemove.add(onePartRoll);
+                        goldAndHighScoresIcons.setGoldTextScale(1.5f);
+                        break;
+                    case 0:
+                        saveData.addSpins((int) onePartRoll.getAmount());
+                        flyingRollsToRemove.add(onePartRoll);
+                        goldAndHighScoresIcons.setGoldTextScale(1.5f);
+                        break;
+                }
+            } else {
+                onePartRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4), saveData);
+            }
+        }
+        flyingRolls.removeAll(flyingRollsToRemove, false);
+
+        for (BigChest bigChest : bigChests) {
+            bigChest.update(dt);
+        }
 
         if (tutorialOn) {
             tutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
@@ -366,7 +455,7 @@ public class MenuScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED;
+        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -429,7 +518,7 @@ public class MenuScreen implements GameScreen {
         font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
         if (fontScaleUp) {
             if (fontScale < 0.0066f) {
-                fontScale += 0.00004f;
+                fontScale += 0.00004f * 60 * Gdx.graphics.getDeltaTime();
                 font.getData().setScale(fontScale);
             } else {
                 font.getData().setScale(fontScale);
@@ -438,10 +527,10 @@ public class MenuScreen implements GameScreen {
             }
         } else {
             if (fontScale > 0.0058f) {
-                fontScale -= 0.00004f;
+                fontScale -= 0.00004f * 60 * Gdx.graphics.getDeltaTime();
                 font.getData().setScale(fontScale);
             } else {
-                fontScale -= 0.00004f;
+                fontScale -= 0.00004f * 60 * Gdx.graphics.getDeltaTime();
                 font.getData().setScale(fontScale);
                 fontScaleUp = true;
             }
@@ -451,6 +540,18 @@ public class MenuScreen implements GameScreen {
 
         if (tutorialOn) {
             tutorialHandler.draw(game.batch);
+        }
+
+        for (RewardCalendarWindow rewardCalendarWindow : rewardCalendarWindows) {
+            rewardCalendarWindow.draw(game.batch);
+        }
+
+        for (OnePartRoll onePartRoll : flyingRolls) {
+            onePartRoll.draw(game.batch);
+        }
+
+        for (BigChest bigChest : bigChests) {
+            bigChest.draw(game.batch);
         }
 
         for (Cloud cloud : clouds) {
@@ -593,7 +694,7 @@ public class MenuScreen implements GameScreen {
 
     @Override
     public void removeChest(BigChest bigChest) {
-
+        bigChests.removeValue(bigChest, false);
     }
 
     @Override
@@ -651,6 +752,31 @@ public class MenuScreen implements GameScreen {
         return saveData;
     }
 
+    @Override
+    public void setSmokeToAddPos(Vector2 smokeToAddPos) {
+
+    }
+
+    @Override
+    public Array<Smoke> getSmokes() {
+        return null;
+    }
+
+    @Override
+    public boolean isReadyToCreateSmoke() {
+        return false;
+    }
+
+    @Override
+    public void setAddSmoke(boolean addSmoke) {
+
+    }
+
+    @Override
+    public TextureAtlas getWindowAtlas() {
+        return windowAtlas;
+    }
+
     public void generateNewMap() {
 
         //transforming player position to new map
@@ -662,6 +788,11 @@ public class MenuScreen implements GameScreen {
         //transforming rocks position to new map
         for (Rock rock : rocks) {
             rock.generateMapRockUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
+        }
+
+        for (OnePartRoll onePartRoll : flyingRolls) {
+            onePartRoll.setPosition(onePartRoll.getX(), onePartRoll.getY() + player.b2body.getPosition().y - playerPosPrevious.y);
+            onePartRoll.setPosY(onePartRoll.getPosY() + player.b2body.getPosition().y - playerPosPrevious.y);
         }
 
         for (Cloud cloud : clouds) {
@@ -733,5 +864,13 @@ public class MenuScreen implements GameScreen {
 
     public ExtendViewport getGamePort() {
         return gamePort;
+    }
+
+    public Array<OnePartRoll> getFlyingRolls() {
+        return flyingRolls;
+    }
+
+    public Array<BigChest> getBigChests() {
+        return bigChests;
     }
 }

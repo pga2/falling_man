@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
+import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
@@ -166,6 +167,10 @@ public class InAppPurchasesScreen implements GameScreen {
                                 clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, gamePort.getWorldHeight() + ((140 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.SETTINGS_SCREEN));
                             }
                         }
+                        for (Button button : buttons) {
+                            button.restoreNotClickedTexture();
+                            button.setClicked(false);
+                        }
                         changeScreen = true;
                         changeToInAppPurchasesScreenSettings = true;
                     }
@@ -179,6 +184,10 @@ public class InAppPurchasesScreen implements GameScreen {
                             for (int j = 0; j < 26; j++) {
                                 clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, ((-150 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.SHOP_SCREEN));
                             }
+                        }
+                        for (Button button : buttons) {
+                            button.restoreNotClickedTexture();
+                            button.setClicked(false);
                         }
                         changeScreen = true;
                     }
@@ -201,7 +210,7 @@ public class InAppPurchasesScreen implements GameScreen {
 
     private void update(float dt) {
         handleInput(dt);
-        world.step(1 / 60f, 8, 5);
+        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
 
         if (gamePort.getWorldHeight() / gamePort.getWorldWidth() > 1.8888f) {
             goldAndHighScoresBackground.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
@@ -259,18 +268,26 @@ public class InAppPurchasesScreen implements GameScreen {
                     break outerloop;
                 }
                 if (cloud.getScreen() == FallingMan.SHOP_SCREEN) {
-                    cloud.update(dt, 0, 1.2f);
+                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
                 } else if (cloud.getScreen() == FallingMan.SETTINGS_SCREEN) {
-                    cloud.update(dt, 0, -1.2f);
+                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
                 }
             } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.SHOP_SCREEN) {
                 cloudsToRemove.add(cloud);
             } else if (cloud.getScreen() == FallingMan.SHOP_SCREEN) {
-                cloud.update(dt, 0, -1.2f);
+                if (Gdx.graphics.getDeltaTime() < 0.01666) {
+                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                } else {
+                    cloud.update(dt, 0, -1.2f);
+                }
             } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
                 cloudsToRemove.add(cloud);
             } else {
-                cloud.update(dt, 0, 1.2f);
+                if (Gdx.graphics.getDeltaTime() < 0.01666) {
+                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                } else {
+                    cloud.update(dt, 0, 1.2f);
+                }
             }
         }
         clouds.removeAll(cloudsToRemove, false);
@@ -289,7 +306,7 @@ public class InAppPurchasesScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED;
+        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -374,19 +391,19 @@ public class InAppPurchasesScreen implements GameScreen {
     }
 
     private void generateButtons() {
-        buttons.add(new MicroPaymentButton(this, world, 150 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_10000));
-        buttons.add(new MicroPaymentButton(this, world, 530 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_24000));
-        buttons.add(new MicroPaymentButton(this, world, 910 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_54000));
-        buttons.add(new MicroPaymentButton(this, world, 150 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_120000));
-        buttons.add(new MicroPaymentButton(this, world, 530 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_280000));
-        buttons.add(new MicroPaymentButton(this, world, 910 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_750000));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_10000));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_24000));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 * 3 / FallingMan.PPM + 20 / FallingMan.PPM * 4, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_54000));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_120000));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_280000));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_750000));
 
-        buttons.add(new MicroPaymentButton(this, world, 150 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_10));
-        buttons.add(new MicroPaymentButton(this, world, 530 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_24));
-        buttons.add(new MicroPaymentButton(this, world, 910 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_54));
-        buttons.add(new MicroPaymentButton(this, world, 150 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_120));
-        buttons.add(new MicroPaymentButton(this, world, 530 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_280));
-        buttons.add(new MicroPaymentButton(this, world, 910 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_750));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_10));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_24));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_54));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_120));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_280));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_750));
 
     }
 
@@ -552,6 +569,31 @@ public class InAppPurchasesScreen implements GameScreen {
     @Override
     public SaveData getSaveData() {
         return saveData;
+    }
+
+    @Override
+    public void setSmokeToAddPos(Vector2 smokeToAddPos) {
+
+    }
+
+    @Override
+    public Array<Smoke> getSmokes() {
+        return null;
+    }
+
+    @Override
+    public boolean isReadyToCreateSmoke() {
+        return false;
+    }
+
+    @Override
+    public void setAddSmoke(boolean addSmoke) {
+
+    }
+
+    @Override
+    public TextureAtlas getWindowAtlas() {
+        return null;
     }
 
     private void prepareDayAndNightCycle() {

@@ -99,4 +99,12 @@ public class OnePartRoll extends Sprite {
     public void setAmount(long amount) {
         Amount = amount;
     }
+
+    public void setPosY(float posY) {
+        this.posY = posY;
+    }
+
+    public float getPosY() {
+        return posY;
+    }
 }

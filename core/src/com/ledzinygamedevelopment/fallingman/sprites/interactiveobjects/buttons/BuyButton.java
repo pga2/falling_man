@@ -182,7 +182,14 @@ public class BuyButton extends Button{
 
     @Override
     public void restoreNotClickedTexture() {
-        setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
+        switch (type_of_button) {
+            case BUY:
+                setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
+                break;
+            case SET:
+                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                break;
+        }
 
     }
 
