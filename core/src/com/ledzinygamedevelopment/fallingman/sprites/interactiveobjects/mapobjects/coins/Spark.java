@@ -5,38 +5,38 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 
 import java.util.Random;
 
 public class Spark extends Sprite {
     private TextureRegion sparkTexture;
-    private PlayScreen playScreen;
+    private GameScreen gameScreen;
     private float speedX;
     private float speedY;
     private float existTime;
     private boolean removeSpark;
 
-    public Spark(PlayScreen playScreen, float posX, float posY, byte typeOfSpark) {
-        this.playScreen = playScreen;
+    public Spark(GameScreen gameScreen, float posX, float posY, byte typeOfSpark) {
+        this.gameScreen = gameScreen;
         if (typeOfSpark == 1) { //1 for gold spark
-            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
+            sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
             //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
             setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
             setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);
 
         } else if (typeOfSpark == 2) { //2 for new life spark
-            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark_new_life"), 0, 0, 64, 64);
+            sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark_new_life"), 0, 0, 64, 64);
             //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
             setBounds(0, 0, 64 / FallingMan.PPM, 64 / FallingMan.PPM);
             setPosition(posX - 32 / FallingMan.PPM, posY - 32 / FallingMan.PPM);
         } else if (typeOfSpark == 3) { //2 for new life spark
-            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark_hounting_enemy"), 0, 0, 64, 64);
+            sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark_hounting_enemy"), 0, 0, 64, 64);
             //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
             setBounds(0, 0, 64 / FallingMan.PPM, 64 / FallingMan.PPM);
             setPosition(posX - 32 / FallingMan.PPM, posY - 32 / FallingMan.PPM);
         } else if (typeOfSpark == 4) { //2 for new life spark
-            sparkTexture = new TextureRegion(playScreen.getDefaultAtlas().findRegion("spark_spin"), 0, 0, 32, 32);
+            sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark_spin"), 0, 0, 32, 32);
             //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
             setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
             setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);

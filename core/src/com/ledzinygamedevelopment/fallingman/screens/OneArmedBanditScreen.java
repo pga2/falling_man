@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -20,19 +19,19 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
-import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.BaloonButton;
-import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
-import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
+import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.BaloonButton;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.Roll;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.SpinsAmountLine;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.SpinsBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -51,6 +50,7 @@ public class OneArmedBanditScreen implements GameScreen {
     private FallingMan game;
     private TextureAtlas defaultAtlas;
     private TextureAtlas baloonAtlas;
+    private TextureAtlas playerAtlas;
     private OrthographicCamera gameCam;
     private ExtendViewport gamePort;
     private TmxMapLoader mapLoader;
@@ -116,6 +116,7 @@ public class OneArmedBanditScreen implements GameScreen {
         assetManager.loadOneArmedBandit();
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenDefault());
+        playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         baloonAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenBaloon());
         font = assetManager.getManager().get(assetManager.getFont());
         this.game = game;
@@ -201,6 +202,9 @@ public class OneArmedBanditScreen implements GameScreen {
         if (Gdx.input.isTouched()) {
             if (!newScreenJustOpened) {
                 if (!changeScreen) {
+                    for (BigChest chest : bigChests) {
+                        chest.setBigChestWasTouchedBodyParteAfterStageThree(true);
+                    }
 
                     if (firstTouch) {
                         previousTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
@@ -209,7 +213,7 @@ public class OneArmedBanditScreen implements GameScreen {
                     // check if buttons click
                     Vector2 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
                     for (Button button : buttons) {
-                        if (button.mouseOver(mouseVector) && !button.isLocked()) {
+                        if (button.mouseOver(mouseVector) && !button.isLocked() && bigChests.size == 0) {
                             button.touched();
                             button.setClicked(true);
                         } else if (button.isClicked()) {
@@ -220,7 +224,7 @@ public class OneArmedBanditScreen implements GameScreen {
 
                     lastTouchPos = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
                 }
-                if (!startRolling && !loseOneArmedBandit && !winOneArmedBandit && flyingRolls.size == 0) {
+                if (!startRolling && !loseOneArmedBandit && !winOneArmedBandit && flyingRolls.size == 0 && bigChests.size == 0) {
                     //menuScreen
                     if (lastTouchPos.y - previousTouchPos.y > 200 / FallingMan.PPM) {
                         if (!changeScreen) {
@@ -257,6 +261,12 @@ public class OneArmedBanditScreen implements GameScreen {
                 }
             }
         } else {
+            for (BigChest bigChest : bigChests) {
+                if (bigChest.isBigChestWasTouchedBodyParteAfterStageThree()) {
+                    bigChest.setTouchedWhenRemoveWonBodyPartAllowed(true);
+                    bigChest.setBigChestWasTouchedBodyParteAfterStageThree(false);
+                }
+            }
             newScreenJustOpened = false;
             if (!changeScreen) {
                 for (Button button : buttons) {
@@ -331,46 +341,46 @@ public class OneArmedBanditScreen implements GameScreen {
         Array<Cloud> cloudsToRemove = new Array<>();
         outerloop:
         for (Cloud cloud : clouds) {
-                if (!cloud.isSecondScreen()) {
-                    if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                        for (Cloud cloudGetPos : clouds) {
-                            if (!cloudGetPos.isSecondScreen()) {
-                                cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
-                            }
+            if (!cloud.isSecondScreen()) {
+                if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.MENU_SCREEN) {
+                    for (Cloud cloudGetPos : clouds) {
+                        if (!cloudGetPos.isSecondScreen()) {
+                            cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
                         }
-                        currentScreen = FallingMan.MENU_SCREEN;
-                        break outerloop;
-                    } else if (cloud.getY() < 0 && cloud.getScreen() == FallingMan.SHOP_SCREEN) {
-                        for (Cloud cloudGetPos : clouds) {
-                            if (!cloudGetPos.isSecondScreen()) {
-                                cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
-                            }
+                    }
+                    currentScreen = FallingMan.MENU_SCREEN;
+                    break outerloop;
+                } else if (cloud.getY() < 0 && cloud.getScreen() == FallingMan.SHOP_SCREEN) {
+                    for (Cloud cloudGetPos : clouds) {
+                        if (!cloudGetPos.isSecondScreen()) {
+                            cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
                         }
-                        currentScreen = FallingMan.SHOP_SCREEN;
-                        break outerloop;
                     }
-                    if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                        cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
-                    } else if (cloud.getScreen() == FallingMan.SHOP_SCREEN) {
-                        cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
-                    }
-                } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                    cloudsToRemove.add(cloud);
-                } else if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                    if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                        cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
-                    } else {
-                        cloud.update(dt, 0, -1.2f);
-                    }
-                } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
-                    cloudsToRemove.add(cloud);
-                } else {
-                    if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                        cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
-                    } else {
-                        cloud.update(dt, 0, 1.2f);
-                    }
+                    currentScreen = FallingMan.SHOP_SCREEN;
+                    break outerloop;
                 }
+                if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
+                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                } else if (cloud.getScreen() == FallingMan.SHOP_SCREEN) {
+                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                }
+            } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.MENU_SCREEN) {
+                cloudsToRemove.add(cloud);
+            } else if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
+                if (Gdx.graphics.getDeltaTime() < 0.01666) {
+                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                } else {
+                    cloud.update(dt, 0, -1.2f);
+                }
+            } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
+                cloudsToRemove.add(cloud);
+            } else {
+                if (Gdx.graphics.getDeltaTime() < 0.01666) {
+                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                } else {
+                    cloud.update(dt, 0, 1.2f);
+                }
+            }
         }
         clouds.removeAll(cloudsToRemove, false);
 
@@ -615,11 +625,11 @@ public class OneArmedBanditScreen implements GameScreen {
             if (roll.isRollingCurrently()) {
                 int nextRollPosDiffY;
                 if (rollingTime > 1.6f) {
-                    nextRollPosDiffY =(int) ((Math.round((2.05f - (rollingTime < 2 ? rollingTime : 2f)) * 100)) * 60 * Gdx.graphics.getDeltaTime());
+                    nextRollPosDiffY = (int) ((Math.round((2.05f - (rollingTime < 2 ? rollingTime : 2f)) * 100)) * 60 * Gdx.graphics.getDeltaTime());
                     //nextRollPosDiffY = Math.round(3.1f - rollingTime * 100);
                     rollingTime -= dt / 1.4f;
                 } else {
-                    nextRollPosDiffY =(int) ((random.nextInt(20) + 40) * 60 * Gdx.graphics.getDeltaTime());
+                    nextRollPosDiffY = (int) ((random.nextInt(20) + 40) * 60 * Gdx.graphics.getDeltaTime());
                 }
                 if (roll.getY() - nextRollPosDiffY / FallingMan.PPM > gamePort.getWorldHeight() / 2 - 360 / FallingMan.PPM) {
                     roll.setPosition(roll.getX(), roll.getY() - nextRollPosDiffY / FallingMan.PPM);
@@ -918,6 +928,11 @@ public class OneArmedBanditScreen implements GameScreen {
 
     }
 
+    @Override
+    public void addOnePartRolls(int typeOfRoll, Vector2 pos, String transactionName) {
+
+    }
+
     public void removeChest(BigChest bigChest) {
         bigChests.removeValue(bigChest, false);
     }
@@ -933,7 +948,7 @@ public class OneArmedBanditScreen implements GameScreen {
 
     @Override
     public TextureAtlas getPlayerAtlas() {
-        return null;
+        return playerAtlas;
     }
 
     @Override

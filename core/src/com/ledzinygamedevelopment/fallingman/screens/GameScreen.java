@@ -32,6 +32,7 @@ public interface GameScreen extends Screen {
     public void setCurrentScreen(byte currentScreen);
     public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll);
     public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName);
+    public void addOnePartRolls(int typeOfRoll, Vector2 pos, String transactionName);
     public void removeChest(BigChest bigChest);
     public SpinButton getSpinButton();
     public GameAssetManager getAssetManager();

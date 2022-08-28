@@ -129,3 +129,10 @@ spins_amount_line
   orig: 19, 120
   offset: 0, 0
   index: -1
+spark
+  rotate: false
+  xy: 1970, 1589
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

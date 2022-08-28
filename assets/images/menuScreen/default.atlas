@@ -115,3 +115,10 @@ smallRoll3
   orig: 192, 192
   offset: 0, 0
   index: -1
+spark
+  rotate: false
+  xy: 2013, 1923
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

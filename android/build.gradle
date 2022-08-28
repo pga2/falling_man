@@ -14,7 +14,7 @@ android {
         }
     }
     buildToolsVersion "31.0.0"
-    compileSdkVersion 31
+    compileSdkVersion 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -33,10 +33,10 @@ android {
     defaultConfig {
         applicationId "com.ledzinygamedevelopment.fallingman"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
 
-        versionCode 26
-        versionName "1.026"
+        versionCode 29
+        versionName "1.029"
 
     }
     buildTypes {

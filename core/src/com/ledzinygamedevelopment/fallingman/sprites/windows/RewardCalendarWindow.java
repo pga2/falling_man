@@ -126,7 +126,7 @@ public class RewardCalendarWindow extends Sprite {
 
                 for (int i = 0; i < 20; i++) {
                     OnePartRoll tempRoll = new OnePartRoll(menuScreen,  dailyRewardCurrentDayButton.getX() + dailyRewardCurrentDayButton.getWidth() / 2, dailyRewardCurrentDayButton.getY() + dailyRewardCurrentDayButton.getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 0);
-                    tempRoll.setAmount(2);
+                    tempRoll.setAmount(1);
                     tempRoll.startFlying();
                     menuScreen.getFlyingRolls().add(tempRoll);
                 }

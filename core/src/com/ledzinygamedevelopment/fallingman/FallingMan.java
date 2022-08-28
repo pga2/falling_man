@@ -212,7 +212,7 @@ public class FallingMan extends Game implements IGameServiceListener {
             //checkTransaction(transaction.getIdentifier());
             SaveData saveData = new SaveData();
             if (currentScreen == IN_APP_PURCHASES_SCREEN) {
-                gameScreen.addOnePartRolls(100, transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
+                gameScreen.addOnePartRolls(transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
             } else {
                 if (transaction.getIdentifier().startsWith("spin")) {
                     saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));

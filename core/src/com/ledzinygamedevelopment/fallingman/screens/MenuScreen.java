@@ -238,7 +238,7 @@ public class MenuScreen implements GameScreen {
             GregorianCalendar prefsCallendar = new GregorianCalendar();
             prefsCallendar.setTime(new Date());
             saveData.setDayDailyReward((long) Math.floor(prefsCallendar.getTimeInMillis() / 86400000f));
-            saveData.setDayInRowDailyReward(saveData.getDaysInRowDailyReward() + 1);
+            saveData.setDayInRowDailyReward(1);
             lastTimeDailyReward.setTimeInMillis(saveData.getDayDailyReward());
             rewardCalendarWindows.add(new RewardCalendarWindow(this, world, saveData.getDaysInRowDailyReward()));
         } else {
@@ -250,8 +250,9 @@ public class MenuScreen implements GameScreen {
                 rewardCalendarWindows.add(new RewardCalendarWindow(this, world, saveData.getDaysInRowDailyReward()));
             } else {
                 Gdx.app.log("days diff", String.valueOf((long) Math.floor(currentTime.getTimeInMillis() / 86400000f) - saveData.getDayDailyReward()));
-                saveData.setDayInRowDailyReward(0);
+                saveData.setDayInRowDailyReward(1);
                 saveData.setDayDailyReward((long) Math.floor(currentTime.getTimeInMillis() / 86400000f));
+                rewardCalendarWindows.add(new RewardCalendarWindow(this, world, saveData.getDaysInRowDailyReward()));
             }
         }
         bigChests = new Array<>();
@@ -269,7 +270,9 @@ public class MenuScreen implements GameScreen {
                     rewardCalendarWindow.getReward();
                 }
             } else if (bigChests.size > 0) {
-
+                for (BigChest bigChest : bigChests) {
+                    bigChest.setBigChestWasTouchedBodyParteAfterStageThree(true);
+                }
             } else if (!(flyingRolls.size > 0)){
                 if (!newScreenJustOpened) {
                     if (!changeScreen) {
@@ -320,6 +323,14 @@ public class MenuScreen implements GameScreen {
                 }
             }
         } else {
+            if (bigChests.size > 0) {
+                for (BigChest bigChest : bigChests) {
+                    if (bigChest.isBigChestWasTouchedBodyParteAfterStageThree()) {
+                        bigChest.setTouchedWhenRemoveWonBodyPartAllowed(true);
+                        bigChest.setBigChestWasTouchedBodyParteAfterStageThree(false);
+                    }
+                }
+            }
             newScreenJustOpened = false;
             if (noButtonTouched && !changeScreen) {
                 currentScreen = FallingMan.PLAY_SCREEN;
@@ -551,7 +562,7 @@ public class MenuScreen implements GameScreen {
         }
 
         for (BigChest bigChest : bigChests) {
-            bigChest.draw(game.batch);
+            bigChest.draw(game.batch, 0);
         }
 
         for (Cloud cloud : clouds) {
@@ -689,6 +700,11 @@ public class MenuScreen implements GameScreen {
     @Override
     public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String
             transactionName) {
+
+    }
+
+    @Override
+    public void addOnePartRolls(int typeOfRoll, Vector2 pos, String transactionName) {
 
     }
 

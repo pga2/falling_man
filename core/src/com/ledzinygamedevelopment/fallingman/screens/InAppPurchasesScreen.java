@@ -33,6 +33,7 @@ import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 public class InAppPurchasesScreen implements GameScreen {
@@ -231,16 +232,15 @@ public class InAppPurchasesScreen implements GameScreen {
         for (OnePartRoll flyingRoll : flyingRolls) {
             flyingRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4), saveData);
             if (flyingRoll.isToRemove()) {
-                if (flyingRolls.size - flyingRollsToRemove.size == 100) {
                     if (flyingRoll.getCurrentTextureNumber() == 2) {
                         saveData.addGold(flyingRoll.getAmount());
-                        goldAndHighScoresIcons.setGold(saveData.getGold());
+                        goldAndHighScoresIcons.setGold(flyingRoll.getAmount());
+                        goldAndHighScoresIcons.setGoldTextScale(1.5f);
                     } else if (flyingRoll.getCurrentTextureNumber() == 0) {
                         saveData.addSpins((int) flyingRoll.getAmount());
                     } else {
                         throw new NullPointerException("flying roll had incorrect amount: " + flyingRoll.getAmount());
                     }
-                }
                 flyingRollsToRemove.add(flyingRoll);
             }
         }
@@ -498,14 +498,24 @@ public class InAppPurchasesScreen implements GameScreen {
 
     @Override
     public void addOnePartRolls(int numberOfOnePartRolls, int typeOfRoll, Vector2 pos, String transactionName) {
+
+    }
+
+    @Override
+    public void addOnePartRolls(int typeOfRoll, Vector2 pos, String transactionName) {
+        long amount = 0;
+        int numberOfOnePartRolls = 0;
+        if (transactionName.toLowerCase().startsWith("spin")) {
+            numberOfOnePartRolls = 100;
+            saveData.addSpins(Integer.parseInt(transactionName.substring(5)));
+        } else if (transactionName.toLowerCase().startsWith("gold")){
+            amount = Long.parseLong(transactionName.substring(5)) / 100;
+            numberOfOnePartRolls = 100;
+        }
         for (int i = 0; i < numberOfOnePartRolls; i++) {
-            OnePartRoll tempRoll = new OnePartRoll(this, pos.x, pos.y, 192 / FallingMan.PPM, 192 / FallingMan.PPM, typeOfRoll);
-            tempRoll.startFlying();
-            try {
-                tempRoll.setAmount(Long.parseLong(transactionName.substring(5)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                OnePartRoll tempRoll = new OnePartRoll(this, pos.x, pos.y, 192 / FallingMan.PPM, 192 / FallingMan.PPM, typeOfRoll);
+                tempRoll.startFlying();
+                tempRoll.setAmount(amount);
             flyingRolls.add(tempRoll);
             //bigChests = new Array<>();
         }

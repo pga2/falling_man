@@ -7,11 +7,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spark;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
+import com.ledzinygamedevelopment.fallingman.tools.RandomBodyPart;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class BigChest extends Sprite {
@@ -34,6 +38,16 @@ public class BigChest extends Sprite {
     private float fontScale;
     private boolean shouldChangePosAccordToPlayer;
     private float currentPlayerPos;
+    private final int rewardTypeBodyPart = 2;
+    private int rewardType;
+    private Sprite bodyPart;
+    private boolean drawBodyPart;
+    private boolean drawChest;
+    private boolean bodyPartScaleUp;
+    private Array<Spark> sparks;
+    private boolean touchedWhenRemoveWonBodyPartAllowed;
+    private boolean wonBodyParteAfterStageThree;
+    private boolean bigChestWasTouchedBodyParteAfterStageThree;
 
 
     public BigChest(GameScreen gameScreen, float posX, float posY) {
@@ -64,12 +78,20 @@ public class BigChest extends Sprite {
         touchedTimer = 0;
         fontScale = 0.015f;
         shouldChangePosAccordToPlayer = false;
+        drawBodyPart = false;
+        drawChest = true;
+        bodyPartScaleUp = true;
+        sparks = new Array<>();
+        touchedWhenRemoveWonBodyPartAllowed = false;
+        wonBodyParteAfterStageThree = false;
     }
 
     public void update(float dt) {
-        setPosition(getX(), getY() - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y);
-        posY = posY - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y;
-        currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
+        if (gameScreen.getPlayer() != null) {
+            setPosition(getX(), getY() - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y);
+            posY = posY - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y;
+            currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
+        }
         if (growingTime + dt < 2.4f) {
             setScale(0.2f + growingTime / 3);
         } else if (firstStage) {
@@ -123,27 +145,96 @@ public class BigChest extends Sprite {
                 }
                 touchedTimer += dt;
             } else if (Gdx.input.isTouched() && touched) {
-                if (shouldChangePosAccordToPlayer) {
-                    if (gameScreen instanceof MenuScreen) {
-                        for (int i = 0; i < 100; i++) {
-                            MenuScreen menuScreen = ((MenuScreen) gameScreen);
-
-                            OnePartRoll tempRoll = new OnePartRoll(menuScreen,  getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                            tempRoll.setAmount(160);
-                            tempRoll.startFlying();
-                            menuScreen.getFlyingRolls().add(tempRoll);
-                        }
-                    }
+                rewardType = new Random().nextInt(3);
+                if (rewardType == rewardTypeBodyPart) {
+                    String bodyPartNumberAndName = RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData());
+                    String bodyPartNumber = RandomBodyPart.extractNumber(bodyPartNumberAndName);
+                    String bodyPartName = bodyPartNumberAndName.replace(bodyPartNumber, "");
+                    HashMap<String, Boolean> bodySpritesOwned = gameScreen.getSaveData().getBodySpritesOwned();
+                    bodySpritesOwned.put("owned" + bodyPartNumber + bodyPartName, true);
+                    gameScreen.getSaveData().saveBodySpritesOwned(bodySpritesOwned);
+                    bodyPart = new Sprite();
+                    int texturePos = getSpritePosFromName(bodyPartName);
+                    Gdx.app.log("body part number: ", bodyPartNumber);
+                    Gdx.app.log("body part name: ", bodyPartName);
+                    bodyPart.setRegion(new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + bodyPartNumber), 160 * texturePos, 0, 160, 160));
+                    bodyPart.setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
+                    bodyPart.setOrigin(bodyPart.getWidth() / 2, bodyPart.getHeight() / 2);
+                    drawBodyPart = true;
                 } else {
-                    gameScreen.addOnePartRolls(100, 1);
+                    if (shouldChangePosAccordToPlayer) {
+                        if (gameScreen instanceof MenuScreen) {
+                            for (int i = 0; i < 100; i++) {
+                                MenuScreen menuScreen = ((MenuScreen) gameScreen);
+
+                                OnePartRoll tempRoll = new OnePartRoll(menuScreen, getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                tempRoll.setAmount(160);
+                                tempRoll.startFlying();
+                                menuScreen.getFlyingRolls().add(tempRoll);
+                            }
+                        }
+                    } else {
+                        gameScreen.addOnePartRolls(100, 1);
+                    }
                 }
                 touched = false;
                 secondStage = false;
                 drawFont = false;
             }
-        } else if (thirdStageTimer < 0.5f){
+        } else if (thirdStageTimer < 0.5f && rewardType != rewardTypeBodyPart){
             setScale(1 - thirdStageTimer * 2);
             thirdStageTimer += dt;
+        } else if (rewardType != rewardTypeBodyPart){
+            if (shouldChangePosAccordToPlayer) {
+
+            } else {
+                gameScreen.getSpinButton().setLocked(false);
+            }
+            gameScreen.removeChest(this);
+        } else if (rewardType == rewardTypeBodyPart && !wonBodyParteAfterStageThree) {
+            if (thirdStageTimer < 1) {
+                setScale(1 - thirdStageTimer);
+                thirdStageTimer += dt;
+                bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
+                if (bodyPartScaleUp) {
+                    if (bodyPart.getScaleX() < 4) {
+                        bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
+                    } else {
+                        bodyPartScaleUp = false;
+                    }
+                } else {
+                    if (bodyPart.getScaleX() > 3) {
+                        bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
+                    } else {
+                        bodyPartScaleUp = true;
+                    }
+                }
+                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+            } else {
+                drawChest = false;
+                wonBodyParteAfterStageThree = true;
+            }
+        } else if (!touchedWhenRemoveWonBodyPartAllowed && wonBodyParteAfterStageThree){
+            thirdStageTimer += dt;
+            bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
+            if (bodyPartScaleUp) {
+                if (bodyPart.getScaleX() < 4) {
+                    bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
+                } else {
+                    bodyPartScaleUp = false;
+                }
+            } else {
+                if (bodyPart.getScaleX() > 3) {
+                    bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
+                } else {
+                    bodyPartScaleUp = true;
+                }
+            }
+            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
         } else {
             if (shouldChangePosAccordToPlayer) {
 
@@ -153,13 +244,25 @@ public class BigChest extends Sprite {
             gameScreen.removeChest(this);
         }
 
+        Array<Spark> sparksToRemove = new Array<>();
+        for (int i = 0; i < sparks.size; i++) {
+            Spark spark = sparks.get(i);
+            spark.update(dt);
+            if (spark.isRemoveSpark()) {
+                sparksToRemove.add(spark);
+            }
+        }
+        sparks.removeAll(sparksToRemove, false);
+
 
             growingTime += dt;
     }
 
     @Override
     public void draw(Batch batch, float worldHeight) {
-        super.draw(batch);
+        if (drawChest) {
+            super.draw(batch);
+        }
 
         font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -185,12 +288,86 @@ public class BigChest extends Sprite {
                 }
             }
             GlyphLayout glyphLayout = new GlyphLayout(font, "TOUCH!");
-            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, worldHeight / 2 - 900 / FallingMan.PPM + glyphLayout.height);
+            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, getY() - 800 / FallingMan.PPM + glyphLayout.height);
+        }
+        if (drawBodyPart) {
+            for (Spark spark : sparks) {
+                spark.draw(batch);
+            }
+            bodyPart.draw(batch);
         }
     }
 
     public void setShouldChangePosAccordToPlayer(boolean shouldChangePosAccordToPlayer) {
         this.shouldChangePosAccordToPlayer = shouldChangePosAccordToPlayer;
         currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
+    }
+
+    public boolean isTouchedWhenRemoveWonBodyPartAllowed() {
+        return touchedWhenRemoveWonBodyPartAllowed;
+    }
+
+    public void setTouchedWhenRemoveWonBodyPartAllowed(boolean touchedWhenRemoveWonBodyPartAllowed) {
+        if (wonBodyParteAfterStageThree) {
+            this.touchedWhenRemoveWonBodyPartAllowed = touchedWhenRemoveWonBodyPartAllowed;
+        }
+    }
+
+    public boolean isBigChestWasTouchedBodyParteAfterStageThree() {
+        return bigChestWasTouchedBodyParteAfterStageThree;
+    }
+
+    public void setBigChestWasTouchedBodyParteAfterStageThree(boolean bigChestWasTouchedBodyParteAfterStageThree) {
+        this.bigChestWasTouchedBodyParteAfterStageThree = bigChestWasTouchedBodyParteAfterStageThree;
+    }
+
+    public static int getSpritePosFromName(String name) {
+        int spritePos;
+        if (name.equals("head")) {
+            spritePos = 0;
+        } else if (name.equals("belly")) {
+            spritePos = 1;
+
+        } else if (name.equals("armL")) {
+            spritePos = 2;
+
+        } else if (name.equals("foreArmL")) {
+            spritePos = 3;
+
+        } else if (name.equals("handL")) {
+            spritePos = 4;
+
+        } else if (name.equals("armR")) {
+            spritePos =2 ;
+
+        } else if (name.equals("foreArmR")) {
+            spritePos = 3;
+
+        } else if (name.equals("handR")) {
+            spritePos = 4;
+
+        } else if (name.equals("thighL")) {
+            spritePos = 5;
+
+        } else if (name.equals("shinL")) {
+            spritePos = 6;
+
+        } else if (name.equals("footL")) {
+            spritePos = 7;
+
+        } else if (name.equals("thighR")) {
+            spritePos = 5;
+
+        } else if (name.equals("shinR")) {
+            spritePos = 6;
+
+        } else if (name.equals("footR")) {
+            spritePos = 7;
+
+        } else {
+            spritePos = 0;
+
+        }
+        return spritePos;
     }
 }

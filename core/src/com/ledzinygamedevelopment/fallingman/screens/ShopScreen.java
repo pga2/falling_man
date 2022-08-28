@@ -864,6 +864,11 @@ public class ShopScreen implements GameScreen {
     }
 
     @Override
+    public void addOnePartRolls(int typeOfRoll, Vector2 pos, String transactionName) {
+
+    }
+
+    @Override
     public void removeChest(BigChest bigChest) {
 
     }
