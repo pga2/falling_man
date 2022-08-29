@@ -204,11 +204,6 @@ public class MenuScreen implements GameScreen {
         }
 
         //GsClientUtils.saveData(game.gsClient, 1);
-        if (saveData.getSaveUpdated()) {
-            saveData.setSaveUpdated(false);
-            GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
-            //GsClientUtils.loadData(game.gsClient, this);
-        }
         GsClientUtils.loadData(game.gsClient, this);
 
         rayHandler = new RayHandler(world);

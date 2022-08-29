@@ -3,39 +3,39 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-tutorial_off
+rate_button
   rotate: false
   xy: 1, 1545
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
-tutorial_off_clicked
+rate_button_clicked
   rotate: false
   xy: 1, 1159
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
-tutorial_on
+tutorial_off
   rotate: false
   xy: 1, 773
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
-tutorial_on_clicked
+tutorial_off_clicked
   rotate: false
   xy: 1, 387
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
-cloud
+tutorial_on
   rotate: false
   xy: 1, 1
-  size: 960, 384
-  orig: 960, 384
+  size: 1296, 384
+  orig: 1296, 384
   offset: 0, 0
   index: -1
 gold_and_high_score_background
@@ -68,14 +68,7 @@ music_on
   index: -1
 music_on_clicked
   rotate: false
-  xy: 963, 1
-  size: 384, 384
-  orig: 384, 384
-  offset: 0, 0
-  index: -1
-sound_off
-  rotate: false
-  xy: 1349, 141
+  xy: 1299, 141
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
@@ -92,51 +85,72 @@ default2.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+tutorial_on_clicked
+  rotate: false
+  xy: 1, 1545
+  size: 1296, 384
+  orig: 1296, 384
+  offset: 0, 0
+  index: -1
+cloud
+  rotate: false
+  xy: 1, 1159
+  size: 960, 384
+  orig: 960, 384
+  offset: 0, 0
+  index: -1
+sound_off
+  rotate: false
+  xy: 1299, 1545
+  size: 384, 384
+  orig: 384, 384
+  offset: 0, 0
+  index: -1
 sound_off_clicked
   rotate: false
-  xy: 1, 387
+  xy: 1, 773
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 sound_on
   rotate: false
-  xy: 1, 1
+  xy: 963, 1159
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 sound_on_clicked
   rotate: false
-  xy: 387, 387
+  xy: 1, 387
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 vibrations_off
   rotate: false
-  xy: 387, 1
+  xy: 387, 773
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 vibrations_off_clicked
   rotate: false
-  xy: 773, 387
+  xy: 1, 1
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 vibrations_on
   rotate: false
-  xy: 773, 1
+  xy: 387, 387
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 vibrations_on_clicked
   rotate: false
-  xy: 1159, 387
+  xy: 773, 773
   size: 384, 384
   orig: 384, 384
   offset: 0, 0

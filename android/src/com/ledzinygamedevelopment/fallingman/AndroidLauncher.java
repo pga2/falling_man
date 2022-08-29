@@ -21,6 +21,8 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
+import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
+import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import de.golfgl.gdxgamesvcs.GpgsClient;
@@ -107,6 +109,12 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     protected void onStop() {
+        SaveData saveData = new SaveData();
+        if (saveData.getSaveUpdated()) {
+            saveData.setSaveUpdated(false);
+            GsClientUtils.saveData(fallingMan.gsClient, saveData.getSaveCounter());
+            //GsClientUtils.loadData(game.gsClient, this);
+        }
         super.onStop();
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);

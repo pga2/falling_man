@@ -48,6 +48,10 @@ public class BigChest extends Sprite {
     private boolean touchedWhenRemoveWonBodyPartAllowed;
     private boolean wonBodyParteAfterStageThree;
     private boolean bigChestWasTouchedBodyParteAfterStageThree;
+    private enum CURRENT_STATE {FIRST_STAGE_GROWING, FIRST_STAGE_END, SECOND_STAGE, THIRD_STAGE_GOLD, FOURTH_STAGE_GOLD, THIRD_STAGE_BODY_PART, FOURTH_STAGE_BODY_PART, FIFTH_STAGE_BODY_PART, SIXTH_STAGE_BODY_PART};
+    private CURRENT_STATE currentState;
+    private float removeBodyPartTimer;
+    private float scaleWhenGettingIntoStageSixthBodyPart;
 
 
     public BigChest(GameScreen gameScreen, float posX, float posY) {
@@ -84,6 +88,8 @@ public class BigChest extends Sprite {
         sparks = new Array<>();
         touchedWhenRemoveWonBodyPartAllowed = false;
         wonBodyParteAfterStageThree = false;
+        removeBodyPartTimer = 0;
+        currentState = CURRENT_STATE.FIRST_STAGE_GROWING;
     }
 
     public void update(float dt) {
@@ -92,156 +98,186 @@ public class BigChest extends Sprite {
             posY = posY - currentPlayerPos + gameScreen.getPlayer().b2body.getPosition().y;
             currentPlayerPos = gameScreen.getPlayer().b2body.getPosition().y;
         }
-        if (growingTime + dt < 2.4f) {
-            setScale(0.2f + growingTime / 3);
-        } else if (firstStage) {
-            firstStage = false;
-            posX = getX();
-            posY = getY();
-            setScale(1);
-        } else if (secondStage){
-            drawFont = true;
-            if (Gdx.input.isTouched() && touchedTimer < 2) {
-                touched = true;
-                Random random = new Random();
-                if (rightDirection) {
-                    if (getX() - posX < 1) {
-                        setPosition(getX() + 0.2f, getY());
-                    } else {
-                        rightDirection = false;
-                    }
+        switch (currentState) {
+            case FIRST_STAGE_GROWING:
+                if (growingTime + dt < 2.4f) {
+                    setScale(0.2f + growingTime / 3);
                 } else {
-                    if (posX - getX() < 1) {
-                        setPosition(getX() - 0.2f, getY());
-                    } else {
-                        rightDirection = true;
-                    }
+                    currentState = CURRENT_STATE.FIRST_STAGE_END;
                 }
-                if (topDirection) {
-                    if (getY() - posY < 1) {
-                        setPosition(getX(), getY() + (random.nextFloat() / 4 + 0.2f));
-                    } else {
-                        topDirection = false;
-                    }
-                } else {
-                    if (posY - getY() < 1) {
-                        setPosition(getX(), getY() - (random.nextFloat() / 4 + 0.2f));
-                    } else {
-                        topDirection = true;
-                    }
-                }
-                if (sizeDown) {
-                    if (getScaleY() > 0.8f) {
-                        setScale(getScaleX(), getScaleY() - 0.03f);
-                    } else {
-                        sizeDown = false;
-                    }
-                } else {
-                    if (getScaleY() < 1.1f) {
-                        setScale(getScaleX(), getScaleY() + 0.03f);
-                    } else {
-                        sizeDown = true;
-                    }
-                }
-                touchedTimer += dt;
-            } else if (Gdx.input.isTouched() && touched) {
-                rewardType = new Random().nextInt(3);
-                if (rewardType == rewardTypeBodyPart) {
-                    String bodyPartNumberAndName = RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData());
-                    String bodyPartNumber = RandomBodyPart.extractNumber(bodyPartNumberAndName);
-                    String bodyPartName = bodyPartNumberAndName.replace(bodyPartNumber, "");
-                    HashMap<String, Boolean> bodySpritesOwned = gameScreen.getSaveData().getBodySpritesOwned();
-                    bodySpritesOwned.put("owned" + bodyPartNumber + bodyPartName, true);
-                    gameScreen.getSaveData().saveBodySpritesOwned(bodySpritesOwned);
-                    bodyPart = new Sprite();
-                    int texturePos = getSpritePosFromName(bodyPartName);
-                    Gdx.app.log("body part number: ", bodyPartNumber);
-                    Gdx.app.log("body part name: ", bodyPartName);
-                    bodyPart.setRegion(new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + bodyPartNumber), 160 * texturePos, 0, 160, 160));
-                    bodyPart.setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
-                    bodyPart.setOrigin(bodyPart.getWidth() / 2, bodyPart.getHeight() / 2);
-                    drawBodyPart = true;
-                } else {
-                    if (shouldChangePosAccordToPlayer) {
-                        if (gameScreen instanceof MenuScreen) {
-                            for (int i = 0; i < 100; i++) {
-                                MenuScreen menuScreen = ((MenuScreen) gameScreen);
-
-                                OnePartRoll tempRoll = new OnePartRoll(menuScreen, getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                                tempRoll.setAmount(160);
-                                tempRoll.startFlying();
-                                menuScreen.getFlyingRolls().add(tempRoll);
-                            }
+                break;
+            case FIRST_STAGE_END:
+                posX = getX();
+                posY = getY();
+                setScale(1);
+                currentState = CURRENT_STATE.SECOND_STAGE;
+                break;
+            case SECOND_STAGE:
+                drawFont = true;
+                if (Gdx.input.isTouched() && touchedTimer < 2) {
+                    touched = true;
+                    Random random = new Random();
+                    if (rightDirection) {
+                        if (getX() - posX < 1) {
+                            setPosition(getX() + 0.2f, getY());
+                        } else {
+                            rightDirection = false;
                         }
                     } else {
-                        gameScreen.addOnePartRolls(100, 1);
+                        if (posX - getX() < 1) {
+                            setPosition(getX() - 0.2f, getY());
+                        } else {
+                            rightDirection = true;
+                        }
                     }
-                }
-                touched = false;
-                secondStage = false;
-                drawFont = false;
-            }
-        } else if (thirdStageTimer < 0.5f && rewardType != rewardTypeBodyPart){
-            setScale(1 - thirdStageTimer * 2);
-            thirdStageTimer += dt;
-        } else if (rewardType != rewardTypeBodyPart){
-            if (shouldChangePosAccordToPlayer) {
-
-            } else {
-                gameScreen.getSpinButton().setLocked(false);
-            }
-            gameScreen.removeChest(this);
-        } else if (rewardType == rewardTypeBodyPart && !wonBodyParteAfterStageThree) {
-            if (thirdStageTimer < 1) {
-                setScale(1 - thirdStageTimer);
-                thirdStageTimer += dt;
-                bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
-                if (bodyPartScaleUp) {
-                    if (bodyPart.getScaleX() < 4) {
-                        bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
+                    if (topDirection) {
+                        if (getY() - posY < 1) {
+                            setPosition(getX(), getY() + (random.nextFloat() / 4 + 0.2f));
+                        } else {
+                            topDirection = false;
+                        }
                     } else {
-                        bodyPartScaleUp = false;
+                        if (posY - getY() < 1) {
+                            setPosition(getX(), getY() - (random.nextFloat() / 4 + 0.2f));
+                        } else {
+                            topDirection = true;
+                        }
                     }
-                } else {
-                    if (bodyPart.getScaleX() > 3) {
-                        bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
+                    if (sizeDown) {
+                        if (getScaleY() > 0.8f) {
+                            setScale(getScaleX(), getScaleY() - 0.03f);
+                        } else {
+                            sizeDown = false;
+                        }
                     } else {
-                        bodyPartScaleUp = true;
+                        if (getScaleY() < 1.1f) {
+                            setScale(getScaleX(), getScaleY() + 0.03f);
+                        } else {
+                            sizeDown = true;
+                        }
                     }
-                }
-                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-            } else {
-                drawChest = false;
-                wonBodyParteAfterStageThree = true;
-            }
-        } else if (!touchedWhenRemoveWonBodyPartAllowed && wonBodyParteAfterStageThree){
-            thirdStageTimer += dt;
-            bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
-            if (bodyPartScaleUp) {
-                if (bodyPart.getScaleX() < 4) {
-                    bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
-                } else {
-                    bodyPartScaleUp = false;
-                }
-            } else {
-                if (bodyPart.getScaleX() > 3) {
-                    bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
-                } else {
-                    bodyPartScaleUp = true;
-                }
-            }
-            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-            sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-        } else {
-            if (shouldChangePosAccordToPlayer) {
+                    touchedTimer += dt;
+                } else if (Gdx.input.isTouched() && touched) {
+                    rewardType = new Random().nextInt(3);
+                    rewardType = 2;
+                    if (rewardType == rewardTypeBodyPart) {
+                        String bodyPartNumberAndName = RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData());
+                        String bodyPartNumber = RandomBodyPart.extractNumber(bodyPartNumberAndName);
+                        String bodyPartName = bodyPartNumberAndName.replace(bodyPartNumber, "");
+                        HashMap<String, Boolean> bodySpritesOwned = gameScreen.getSaveData().getBodySpritesOwned();
+                        bodySpritesOwned.put("owned" + bodyPartNumber + bodyPartName, true);
+                        gameScreen.getSaveData().saveBodySpritesOwned(bodySpritesOwned);
+                        bodyPart = new Sprite();
+                        int texturePos = getSpritePosFromName(bodyPartName);
+                        Gdx.app.log("body part number: ", bodyPartNumber);
+                        Gdx.app.log("body part name: ", bodyPartName);
+                        bodyPart.setRegion(new TextureRegion(gameScreen.getPlayerAtlas().findRegion("player" + bodyPartNumber), 160 * texturePos, 0, 160, 160));
+                        bodyPart.setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
+                        bodyPart.setOrigin(bodyPart.getWidth() / 2, bodyPart.getHeight() / 2);
+                        drawBodyPart = true;
+                        currentState = CURRENT_STATE.THIRD_STAGE_BODY_PART;
+                    } else {
+                        if (shouldChangePosAccordToPlayer) {
+                            if (gameScreen instanceof MenuScreen) {
+                                for (int i = 0; i < 100; i++) {
+                                    MenuScreen menuScreen = ((MenuScreen) gameScreen);
 
-            } else {
-                gameScreen.getSpinButton().setLocked(false);
-            }
-            gameScreen.removeChest(this);
+                                    OnePartRoll tempRoll = new OnePartRoll(menuScreen, getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
+                                    tempRoll.setAmount(160);
+                                    tempRoll.startFlying();
+                                    menuScreen.getFlyingRolls().add(tempRoll);
+                                }
+                            }
+                        } else {
+                            gameScreen.addOnePartRolls(100, 1);
+                        }
+                        currentState = CURRENT_STATE.THIRD_STAGE_GOLD;
+                    }
+                    touched = false;
+                    secondStage = false;
+                    drawFont = false;
+                }
+                break;
+            case THIRD_STAGE_GOLD:
+                if (thirdStageTimer < 0.5f) {
+                    setScale(1 - thirdStageTimer * 2);
+                    thirdStageTimer += dt;
+                } else {
+                    currentState = CURRENT_STATE.FOURTH_STAGE_GOLD;
+                }
+                break;
+            case THIRD_STAGE_BODY_PART:
+                if (!wonBodyParteAfterStageThree) {
+                    if (thirdStageTimer < 1) {
+                        setScale(1 - thirdStageTimer);
+                        thirdStageTimer += dt;
+                        bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
+                        if (bodyPartScaleUp) {
+                            if (bodyPart.getScaleX() < 4) {
+                                bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
+                            } else {
+                                bodyPartScaleUp = false;
+                            }
+                        } else {
+                            if (bodyPart.getScaleX() > 3) {
+                                bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
+                            } else {
+                                bodyPartScaleUp = true;
+                            }
+                        }
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                    } else {
+                        drawChest = false;
+                        wonBodyParteAfterStageThree = true;
+                    }
+                } else {
+                    currentState = CURRENT_STATE.FOURTH_STAGE_BODY_PART;
+                }
+                break;
+            case FOURTH_STAGE_BODY_PART:
+                if (!touchedWhenRemoveWonBodyPartAllowed && wonBodyParteAfterStageThree) {
+                    thirdStageTimer += dt;
+                    bodyPart.setPosition(getX() + getWidth() / 2 - bodyPart.getWidth() / 2, getY() + getHeight() / 2 - bodyPart.getHeight() / 2);
+                    if (bodyPartScaleUp) {
+                        if (bodyPart.getScaleX() < 4) {
+                            bodyPart.setScale(bodyPart.getScaleX() + 0.1f);
+                        } else {
+                            bodyPartScaleUp = false;
+                        }
+                    } else {
+                        if (bodyPart.getScaleX() > 3) {
+                            bodyPart.setScale(bodyPart.getScaleX() - 0.1f);
+                        } else {
+                            bodyPartScaleUp = true;
+                        }
+                    }
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                } else {
+                    currentState = CURRENT_STATE.FIFTH_STAGE_BODY_PART;
+                    scaleWhenGettingIntoStageSixthBodyPart = bodyPart.getScaleX();
+                }
+                break;
+            case FIFTH_STAGE_BODY_PART:
+                if (removeBodyPartTimer < 0.5) {
+                    bodyPart.setScale(scaleWhenGettingIntoStageSixthBodyPart - removeBodyPartTimer * 2 * scaleWhenGettingIntoStageSixthBodyPart);
+                    removeBodyPartTimer += dt;
+                } else {
+                    currentState = CURRENT_STATE.SIXTH_STAGE_BODY_PART;
+                }
+                break;
+            case FOURTH_STAGE_GOLD:
+            case SIXTH_STAGE_BODY_PART:
+                if (shouldChangePosAccordToPlayer) {
+
+                } else {
+                    gameScreen.getSpinButton().setLocked(false);
+                }
+                gameScreen.removeChest(this);
+                break;
         }
 
         Array<Spark> sparksToRemove = new Array<>();
@@ -288,7 +324,7 @@ public class BigChest extends Sprite {
                 }
             }
             GlyphLayout glyphLayout = new GlyphLayout(font, "TOUCH!");
-            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, getY() - 800 / FallingMan.PPM + glyphLayout.height);
+            font.draw(batch, "TOUCH!", 720 / FallingMan.PPM - glyphLayout.width / 2, getY() - 650 / FallingMan.PPM + glyphLayout.height);
         }
         if (drawBodyPart) {
             for (Spark spark : sparks) {
