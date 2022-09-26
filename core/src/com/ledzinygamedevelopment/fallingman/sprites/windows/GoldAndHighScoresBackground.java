@@ -23,7 +23,6 @@ public class GoldAndHighScoresBackground extends Sprite {
         setBounds(0, 0, width, height);
         setRegion(gameScreen.getDefaultAtlas().findRegion("gold_and_high_score_background"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         //setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, gameScreen.getPlayer().b2body.getPosition().y - height / 2);
-
     }
 
     public void update(float dt, Vector2 playerPos, float screenHeight) {

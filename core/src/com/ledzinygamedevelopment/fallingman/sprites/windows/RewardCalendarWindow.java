@@ -37,13 +37,13 @@ public class RewardCalendarWindow extends Sprite {
         setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, menuScreen.getPlayer().b2body.getPosition().y - height / 2);
 
         dailyRewardButtons = new Array<>();
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "1"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 540 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "2"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 920 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "3"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, 0 - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "4"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 540 / FallingMan.PPM, 0 - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "5"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 920 / FallingMan.PPM, 0 - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "6"));
-        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, -540 / FallingMan.PPM - 20 / FallingMan.PPM - 270 / FallingMan.PPM, 1120 / FallingMan.PPM, 540 / FallingMan.PPM, "7"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, 390 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "1"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 540 / FallingMan.PPM, 390 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "2"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 920 / FallingMan.PPM, 390 / FallingMan.PPM + 20 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "3"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, -150 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "4"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 540 / FallingMan.PPM, -150 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "5"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 920 / FallingMan.PPM, -150 / FallingMan.PPM - 270 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, "6"));
+        dailyRewardButtons.add(new DailyRewardButton(menuScreen, 160 / FallingMan.PPM, -690 / FallingMan.PPM - 20 / FallingMan.PPM - 270 / FallingMan.PPM, 1120 / FallingMan.PPM, 540 / FallingMan.PPM, "7"));
         toRemove = false;
         toRemoveAnimationEnded = false;
         toRemoveAnimationTimer = 0;

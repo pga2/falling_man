@@ -42,9 +42,9 @@ public class MicroPaymentButton extends Button{
             tempText = skuInfo.getLocalName() == null || skuInfo.getLocalName().equals("") ? skuInfo.getLocalPricing() == null || skuInfo.getLocalPricing().equals("") ? "unavailable" : skuInfo.getLocalPricing() : skuInfo.getLocalPricing();
         }
         if (typeOfButton.startsWith("gold")) {
-            onePartRoll = new OnePartRoll(gameScreen, getX() + getWidth() / 2 - 192 / 2f / FallingMan.PPM, getY() + 80 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 2);
+            onePartRoll = new OnePartRoll(gameScreen, getX() + getWidth() / 2 - 192 / 2f / FallingMan.PPM, getY() + 190 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 2);
         } else if (typeOfButton.startsWith("spin")){
-            onePartRoll = new OnePartRoll(gameScreen, getX() + getWidth() / 2 - 192 / 2f / FallingMan.PPM, getY() + 80 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 0);
+            onePartRoll = new OnePartRoll(gameScreen, getX() + getWidth() / 2 - 192 / 2f / FallingMan.PPM, getY() + 190 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 0);
         }
 
         font.getData().setScale(0.003f);
@@ -99,7 +99,7 @@ public class MicroPaymentButton extends Button{
             font.getData().setScale(0.0025f);
             GlyphLayout glyphLayout = new GlyphLayout(font, skuInfo.getPriceAsDouble() + skuInfo.getPriceCurrencyCode());
             font.getData().setScale(glyphLayout.width > getWidth() ? (getWidth() - 100 / FallingMan.PPM) / glyphLayout.width * 0.0025f : 0.0025f, font.getData().scaleY);
-            font.draw(batch, skuInfo.getPriceAsDouble() + skuInfo.getPriceCurrencyCode(), getX(), getY() + glyphLayout.height + 20 / FallingMan.PPM, getWidth(), Align.center, false);
+            font.draw(batch, skuInfo.getPriceAsDouble() + skuInfo.getPriceCurrencyCode(), getX(), getY() + glyphLayout.height + 40 / FallingMan.PPM, getWidth(), Align.center, false);
 
             if (skuInfo.getPriceAsDouble() != null) {
                 int extraCoins = 0;
@@ -111,7 +111,7 @@ public class MicroPaymentButton extends Button{
                 if (extraCoins != 0) {
                     font.getData().setScale(0.0024f);
                     glyphLayout = new GlyphLayout(font, extraCoins + "% more");
-                    font.draw(batch, extraCoins + "% more", getX(), getY() + getHeight() - 190 / FallingMan.PPM, getWidth(), Align.center, false);
+                    font.draw(batch, extraCoins + "% more", getX(), getY() + getHeight() - 355 / FallingMan.PPM, getWidth(), Align.center, false);
                 }
             }
 

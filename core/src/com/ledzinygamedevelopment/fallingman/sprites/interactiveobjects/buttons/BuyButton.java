@@ -93,7 +93,7 @@ public class BuyButton extends Button{
         if (regionChange) {
             switch (type_of_button) {
                 case SET:
-                    setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                    setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                     break;
                 case BUY:
                     setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
@@ -114,10 +114,10 @@ public class BuyButton extends Button{
                             if (playerBodyPart.getSpriteNumber() == spriteNumber && !boughtOrSetNew) {
                                 drawAlreadySetSprite = true;
                                 drawAlreadySetSpriteTimer = 0;
-                                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                                setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                             } else {
                                 boughtOrSetNew = true;
-                                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                                setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                                 saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
                                 playerBodyPart.setTexture(spriteNumber);
                             }
@@ -127,10 +127,10 @@ public class BuyButton extends Button{
                         if (gameScreen.getPlayer().getHeadSpriteNumber() == spriteNumber && !boughtOrSetNew) {
                             drawAlreadySetSprite = true;
                             drawAlreadySetSpriteTimer = 0;
-                            setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                            setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                         } else {
                             boughtOrSetNew = true;
-                            setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                            setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                             gameScreen.getPlayer().setTexture(spriteNumber);
                             saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
                         }
@@ -187,7 +187,7 @@ public class BuyButton extends Button{
                 setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
                 break;
             case SET:
-                setRegion(gameScreen.getDefaultAtlas().findRegion("set_sprite_button"), 0, 0, 544, 192);
+                setRegion(gameScreen.getDefaultAtlas().findRegion("select_button"), 0, 0, 544, 192);
                 break;
         }
 

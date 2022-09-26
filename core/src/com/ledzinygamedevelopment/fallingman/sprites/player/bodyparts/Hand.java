@@ -25,8 +25,8 @@ public class Hand extends PlayerBodyPart {
         fdef.restitution = 0.01f;
 
         PolygonShape shape = new PolygonShape();
-            float[] shapeVertices = {-12 / FallingMan.PPM, 7 / FallingMan.PPM, 12 / FallingMan.PPM, 7 / FallingMan.PPM,
-                    -12 / FallingMan.PPM, -7 / FallingMan.PPM, 12 / FallingMan.PPM, -7 / FallingMan.PPM};
+            float[] shapeVertices = {-12 / FallingMan.PPM, 21 / FallingMan.PPM, 12 / FallingMan.PPM, 21 / FallingMan.PPM,
+                    -12 / FallingMan.PPM, -21 / FallingMan.PPM, 12 / FallingMan.PPM, -21 / FallingMan.PPM};
             shape.set(shapeVertices);
 
         fdef.shape = shape;

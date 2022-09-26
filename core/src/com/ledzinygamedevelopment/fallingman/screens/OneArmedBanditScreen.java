@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -108,6 +109,7 @@ public class OneArmedBanditScreen implements GameScreen {
     private float sunPos;
     private float gameCamBehindPositionFront;
     private Array<BaloonButton> baloonButtons;
+    private Sprite background;
 
 
     public OneArmedBanditScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
@@ -119,6 +121,10 @@ public class OneArmedBanditScreen implements GameScreen {
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         baloonAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenBaloon());
         font = assetManager.getManager().get(assetManager.getFont());
+        background = new Sprite();
+        background.setRegion((Texture) assetManager.getManager().get(assetManager.getBackgroundImage()));
+        background.setBounds(0, 0, 1440 / FallingMan.PPM, 3360 / FallingMan.PPM);
+        background.setPosition(0, 0);
         this.game = game;
         this.changeToShopScreen = changeToShopScreen;
         this.gameCamBehindPositionBack = gameCamBehindPositionBack;
@@ -445,7 +451,7 @@ public class OneArmedBanditScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        /*sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -480,7 +486,8 @@ public class OneArmedBanditScreen implements GameScreen {
         gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         gameCam.update();
         rendererBehind1.setView(gameCam);
-        rendererBehind1.render(new int[]{3});
+        rendererBehind1.render(new int[]{3});*/
+
 
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         gameCam.update();
@@ -489,6 +496,7 @@ public class OneArmedBanditScreen implements GameScreen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
+        background.draw(game.batch);
 
         for (OneArmBandit oneArmBandit : oneArmBandits) {
             oneArmBandit.getOneArmedBanditBackground().draw(game.batch);
@@ -513,16 +521,16 @@ public class OneArmedBanditScreen implements GameScreen {
 
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
-        font.setColor(238 / 256f, 188 / 256f, 29 / 256f, 1);
+        font.setColor(Color.WHITE);
         font.getData().setScale(0.0045f);
         if (saveData.getNumberOfSpins() > 50) {
             int numberOfSpins = saveData.getNumberOfSpins();
             GlyphLayout glyphLayout = new GlyphLayout(font, "+" + (numberOfSpins - 50) + " spins");
-            font.draw(game.batch, "+" + (numberOfSpins - 50) + " spins", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+            font.draw(game.batch, "+" + (numberOfSpins - 50) + " spins", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 320 / FallingMan.PPM + glyphLayout.height * 1.3f);
             startCountingDateAgain = true;
         } else if (saveData.getNumberOfSpins() == 50) {
             GlyphLayout glyphLayout = new GlyphLayout(font, "FULL");
-            font.draw(game.batch, "FULL", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+            font.draw(game.batch, "FULL", 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 320 / FallingMan.PPM + glyphLayout.height * 1.3f);
             startCountingDateAgain = true;
         } else {
 
@@ -533,7 +541,7 @@ public class OneArmedBanditScreen implements GameScreen {
                 startCountingDateAgain = false;
             }
             GlyphLayout glyphLayout = new GlyphLayout(font, "5 spins in: " + (60 - minutesTillNextSpins) + " min");
-            font.draw(game.batch, String.valueOf("5 spins in: " + (60 - minutesTillNextSpins) + " min"), 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM + glyphLayout.height * 1.3f);
+            font.draw(game.batch, String.valueOf("5 spins in: " + (60 - minutesTillNextSpins) + " min"), 720 / FallingMan.PPM - glyphLayout.width / 2, gamePort.getWorldHeight() / 2 - 320 / FallingMan.PPM + glyphLayout.height * 1.3f);
         }
 
         int spinsInAmountLineNumber = saveData.getNumberOfSpins() < 50 ? saveData.getNumberOfSpins() : 50;
@@ -701,9 +709,9 @@ public class OneArmedBanditScreen implements GameScreen {
                                     }
                                     spinButton.setLocked(true);
                                     winOneArmedBandit = true;
-                                    smallRolls.add(new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                    smallRolls.add(new OnePartRoll(this, 360 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                     smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
-                                    smallRolls.add(new OnePartRoll(this, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                    smallRolls.add(new OnePartRoll(this, 890 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                     rolls = new Array<>();
                                 } else {
                                     for (Roll roll1 : rolls) {
@@ -806,8 +814,8 @@ public class OneArmedBanditScreen implements GameScreen {
 
     public void createOneArmedBanditObjects() {
         oneArmBandits.add(new OneArmBandit(this, world, gamePort.getWorldHeight() / 2 - 400 / FallingMan.PPM));
-        spinsBackgrounds.add(new SpinsBackground(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM));
-        spinsAmountLines.add(new SpinsAmountLine(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 103 / FallingMan.PPM));
+        spinsBackgrounds.add(new SpinsBackground(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 193 / FallingMan.PPM));
+        spinsAmountLines.add(new SpinsAmountLine(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 193 / FallingMan.PPM));
         spinsAmountLines.get(0).setScale((float) (Math.min(saveData.getNumberOfSpins(), 50)) * 1.0057f, 1);
         buttons = new Array<>();
         spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 360 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
@@ -816,9 +824,9 @@ public class OneArmedBanditScreen implements GameScreen {
         rollingTime = 0;
         Gdx.app.log("world height", String.valueOf(
                 gameCam.viewportHeight));
-        Roll roll1 = new Roll(this, world, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll1 = new Roll(this, world, 360 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         Roll roll2 = new Roll(this, world, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
-        Roll roll3 = new Roll(this, world, 950 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll3 = new Roll(this, world, 890 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         rolls = new Array<>();
         rolls.add(roll1);
         rolls.add(roll2);

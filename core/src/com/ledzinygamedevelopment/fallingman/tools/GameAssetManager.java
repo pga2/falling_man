@@ -40,8 +40,9 @@ public class GameAssetManager {
     private final String settingsDefault = "images/settingsScreen/default.atlas";
 
     //all screens
-    private final String font = "test_font/FSM.fnt";
+    private final String font = "font/LilitaOne.fnt";
     private final String playerSprite = "images/playerSprites/player.atlas";
+    private final String backgroundImage = "images/background/background.png";
 
     public void loadPlayScreen() {
         manager.load(playScreenDefault, TextureAtlas.class);
@@ -89,6 +90,7 @@ public class GameAssetManager {
         }
 
         manager.load(font, BitmapFont.class);
+        //manager.load(backgroundImage, Texture.class);
     }
 
     public void loadOneArmedBandit() {
@@ -97,6 +99,7 @@ public class GameAssetManager {
         manager.load(playerSprite, TextureAtlas.class);
 
         manager.load(font, BitmapFont.class);
+        manager.load(backgroundImage, Texture.class);
     }
 
     public void loadShopScreen() {
@@ -105,6 +108,7 @@ public class GameAssetManager {
         manager.load(shopScreenMap, TiledMap.class);
         manager.load(playerSprite, TextureAtlas.class);
         manager.load(shopScreenDefault, TextureAtlas.class);
+        manager.load(backgroundImage, Texture.class);
     }
 
     public void loadInAppPurchasesScreen() {
@@ -112,6 +116,7 @@ public class GameAssetManager {
         manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         manager.load(inAppPurchasesMap, TiledMap.class);
         manager.load(inAppPurchasesDefault, TextureAtlas.class);
+        manager.load(backgroundImage, Texture.class);
     }
 
     public void loadSettingsScreen() {
@@ -119,6 +124,7 @@ public class GameAssetManager {
         manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         manager.load(inAppPurchasesMap, TiledMap.class);
         manager.load(settingsDefault, TextureAtlas.class);
+        manager.load(backgroundImage, Texture.class);
     }
 
     public AssetManager getManager() {
@@ -191,5 +197,9 @@ public class GameAssetManager {
 
     public String getSettingsDefault() {
         return settingsDefault;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
     }
 }

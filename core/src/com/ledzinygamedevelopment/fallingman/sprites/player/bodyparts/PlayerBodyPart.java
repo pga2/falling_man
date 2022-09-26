@@ -68,7 +68,15 @@ public abstract class PlayerBodyPart extends Sprite {
 
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRotation((float) Math.toDegrees(b2body.getAngle()));
+        if (bodyPartName.equals("handR")) {
+            setFlip(true, true);
+            setRotation((float) Math.toDegrees(b2body.getAngle()) - 90);
+        } else if (bodyPartName.equals("handL")){
+            setFlip(true, false);
+            setRotation((float) Math.toDegrees(b2body.getAngle()) - 90);
+        } else {
+            setRotation((float) Math.toDegrees(b2body.getAngle()));
+        }
         DecimalFormat df = new DecimalFormat("#.######");
         if (!this.getClass().equals(Belly.class)) {
             for (int i = 0; i < joints.size; i++) {

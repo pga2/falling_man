@@ -31,7 +31,7 @@ buy_button_clicked
   orig: 544, 192
   offset: 0, 0
   index: -1
-set_sprite_button
+select_button
   rotate: false
   xy: 1, 1
   size: 544, 192
@@ -64,5 +64,12 @@ gold_and_high_score_icons
   xy: 547, 163
   size: 112, 224
   orig: 112, 224
+  offset: 0, 0
+  index: -1
+price_background_coin
+  rotate: false
+  xy: 663, 483
+  size: 150, 150
+  orig: 150, 150
   offset: 0, 0
   index: -1

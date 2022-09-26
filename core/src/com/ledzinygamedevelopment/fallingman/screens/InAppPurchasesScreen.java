@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -74,6 +76,7 @@ public class InAppPurchasesScreen implements GameScreen {
     private float gameCamBehindPositionBack;
     private float sunPos;
     private float gameCamBehindPositionFront;
+    private Sprite background;
 
     public InAppPurchasesScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToInAppPurchasesScreenSettings, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         this.game = game;
@@ -87,6 +90,10 @@ public class InAppPurchasesScreen implements GameScreen {
         defaultAtlas = assetManager.getManager().get(assetManager.getInAppPurchasesDefault());
         map = assetManager.getManager().get(assetManager.getInAppPurchasesMap());
         font = assetManager.getManager().get(assetManager.getFont());
+        background = new Sprite();
+        background.setRegion((Texture) assetManager.getManager().get(assetManager.getBackgroundImage()));
+        background.setBounds(0, 0, 1440 / FallingMan.PPM, 3360 / FallingMan.PPM);
+        background.setPosition(0, 0);
         saveData = new SaveData();
         gameCam = new OrthographicCamera();
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
@@ -306,7 +313,7 @@ public class InAppPurchasesScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        /*sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -341,7 +348,7 @@ public class InAppPurchasesScreen implements GameScreen {
         gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         gameCam.update();
         rendererBehind1.setView(gameCam);
-        rendererBehind1.render(new int[]{3});
+        rendererBehind1.render(new int[]{3});*/
 
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
         gameCam.update();
@@ -351,6 +358,7 @@ public class InAppPurchasesScreen implements GameScreen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
+        background.draw(game.batch);
 
         goldAndHighScoresBackground.draw(game.batch);
         goldAndHighScoresIcons.draw(game.batch);

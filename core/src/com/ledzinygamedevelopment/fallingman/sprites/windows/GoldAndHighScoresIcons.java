@@ -40,11 +40,11 @@ public class GoldAndHighScoresIcons extends Sprite {
         setRegion(gameScreen.getDefaultAtlas().findRegion("gold_and_high_score_icons"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         //setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, gameScreen.getPlayer().b2body.getPosition().y - height / 2);
         goldTextScale = 1;
-
+        setScale(getScaleX(), 1.2f);
     }
 
     public void update(float dt, Vector2 playerPos, float screenHeight) {
-        setPosition(116 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 360 / FallingMan.PPM);
+        setPosition(40 / FallingMan.PPM, playerPos.y + screenHeight / 2 - 382 / FallingMan.PPM);
 
         font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -76,7 +76,7 @@ public class GoldAndHighScoresIcons extends Sprite {
         float beforeHeight = glyphLayoutBeforeScaling.height;
         font.getData().setScale(goldTextScale * 0.007f);
         GlyphLayout glyphLayoutAfterScaling = new GlyphLayout(font, String.valueOf(gold));
-        font.draw(batch, String.valueOf(gold), getX() + 150 / FallingMan.PPM - (glyphLayoutAfterScaling.width / 2 - beforeWidth / 2), getY() + 218 / FallingMan.PPM + (glyphLayoutAfterScaling.height / 2 - beforeHeight / 2));
+        font.draw(batch, String.valueOf(gold), getX() + 150 / FallingMan.PPM - (glyphLayoutAfterScaling.width / 2 - beforeWidth / 2), getY() + 240 / FallingMan.PPM + (glyphLayoutAfterScaling.height / 2 - beforeHeight / 2));
         if (goldTextScale -0.05f > 1) {
             goldTextScale -= 0.05f;
         } else {
@@ -84,7 +84,7 @@ public class GoldAndHighScoresIcons extends Sprite {
         }
         font.getData().setScale(0.007f);
         font.setColor(Color.BLACK);
-        font.draw(batch, String.valueOf(highScore), getX() + 150 / FallingMan.PPM, getY() + 106 / FallingMan.PPM);
+        font.draw(batch, String.valueOf(highScore), getX() + 150 / FallingMan.PPM, getY() + 128 / FallingMan.PPM);
     }
 
     public void setGold(long gold) {
