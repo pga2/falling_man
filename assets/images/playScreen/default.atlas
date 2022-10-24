@@ -171,14 +171,14 @@ loading_animationRB
   orig: 96, 96
   offset: 0, 0
   index: -1
-coin1
+body_restorer
   rotate: false
   xy: 1, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin2
+coin1
   rotate: false
   xy: 963, 387
   size: 64, 64
@@ -192,65 +192,114 @@ loading_animationRT
   orig: 96, 96
   offset: 0, 0
   index: -1
-coin3
+spider_map1
+  rotate: false
+  xy: 1027, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map6
+  rotate: false
+  xy: 1027, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map7
+  rotate: false
+  xy: 1027, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map8
+  rotate: false
+  xy: 1027, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map2
+  rotate: false
+  xy: 1027, 159
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map3
+  rotate: false
+  xy: 1127, 355
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map4
+  rotate: false
+  xy: 1125, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map5
+  rotate: false
+  xy: 1125, 257
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+coin2
   rotate: false
   xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin4
+coin3
   rotate: false
-  xy: 1127, 387
+  xy: 1125, 191
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin5
+coin4
   rotate: false
   xy: 133, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-coin6
-  rotate: false
-  xy: 1027, 289
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-coin7
-  rotate: false
-  xy: 1027, 223
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-coin8
-  rotate: false
-  xy: 1027, 157
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-spark_hounting_enemy
+coin5
   rotate: false
   xy: 199, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-spark_new_life
+coin6
   rotate: false
-  xy: 1027, 91
+  xy: 1027, 93
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-spin1
+coin7
   rotate: false
   xy: 1979, 1372
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+coin8
+  rotate: false
+  xy: 1979, 1306
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spark_hounting_enemy
+  rotate: false
+  xy: 1975, 1240
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -269,51 +318,65 @@ spark_spin
   orig: 32, 32
   offset: 0, 0
   index: -1
+spark_new_life
+  rotate: false
+  xy: 1575, 1099
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spin1
+  rotate: false
+  xy: 1225, 421
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 spin2
   rotate: false
-  xy: 1979, 1306
+  xy: 1225, 355
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin3
   rotate: false
-  xy: 1975, 1240
+  xy: 1223, 289
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin4
   rotate: false
-  xy: 1221, 421
+  xy: 1291, 421
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin5
   rotate: false
-  xy: 1287, 421
+  xy: 1291, 355
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin6
   rotate: false
-  xy: 1353, 421
+  xy: 1289, 289
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin7
   rotate: false
-  xy: 1419, 421
+  xy: 1357, 421
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin8
   rotate: false
-  xy: 1485, 421
+  xy: 1357, 355
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

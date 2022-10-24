@@ -680,7 +680,6 @@ public class Player extends Sprite {
             belly.setBodyPartName("belly");
 
             thighLeft = new Thigh(world, gameScreen, 5, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("thighL"));
-            bodyParts.add(thighLeft);
             createBodyJoints(belly.getB2body(), thighLeft.getB2body(), belly.getWidth() / 5f / 1.6666f, (-belly.getHeight() - 24 / FallingMan.PPM) / 1.5f + 60 / FallingMan.PPM,
                     0, 50 / FallingMan.PPM, thighLeft);
             for (Body body : thighLeft.getB2bodies()) {
@@ -689,7 +688,7 @@ public class Player extends Sprite {
             thighLeft.setBodyPartName("thighL");
 
             thighRight = new Thigh(world, gameScreen, 5, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("thighR"));
-            bodyParts.add(thighRight);
+
             createBodyJoints(belly.getB2body(), thighRight.getB2body(), -belly.getWidth() / 5f / 1.6666f, (-belly.getHeight() - 24 / FallingMan.PPM) / 1.5f + 60 / FallingMan.PPM,
                     0, 50 / FallingMan.PPM, thighRight);
             for (Body body : thighRight.getB2bodies()) {
@@ -697,10 +696,10 @@ public class Player extends Sprite {
             }
             thighRight.setBodyPartName("thighR");
 
-            bodyParts.add(belly);
+
 
             shinLeft = new Shin(world, gameScreen, 6, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("shinL"));
-            bodyParts.add(shinLeft);
+
             createBodyJoints(thighLeft.getB2body(), shinLeft.getB2body(), 0, -50 / FallingMan.PPM,
                     0, 35 / FallingMan.PPM, shinLeft);
             for (Body body : shinLeft.getB2bodies()) {
@@ -709,7 +708,7 @@ public class Player extends Sprite {
             shinLeft.setBodyPartName("shinL");
 
             shinRight = new Shin(world, gameScreen, 6, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("shinR"));
-            bodyParts.add(shinRight);
+
             createBodyJoints(thighRight.getB2body(), shinRight.getB2body(), 0, -50 / FallingMan.PPM,
                     0, 35 / FallingMan.PPM, shinRight);
             for (Body body : shinRight.getB2bodies()) {
@@ -718,7 +717,7 @@ public class Player extends Sprite {
             shinRight.setBodyPartName("shinR");
 
             footLeft = new Foot(world, gameScreen, 7, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("footL"));
-            bodyParts.add(footLeft);
+
             createBodyJoints(shinLeft.getB2body(), footLeft.getB2body(), 0, -35 / FallingMan.PPM,
                     0, 7.5f / FallingMan.PPM, footLeft);
             for (Body body : footLeft.getB2bodies()) {
@@ -727,7 +726,7 @@ public class Player extends Sprite {
             footLeft.setBodyPartName("footL");
 
             footRight = new Foot(world, gameScreen, 7, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("footR"));
-            bodyParts.add(footRight);
+
             createBodyJoints(shinRight.getB2body(), footRight.getB2body(), 0, -35 / FallingMan.PPM,
                     0, 7.5f / FallingMan.PPM, footRight);
             for (Body body : footRight.getB2bodies()) {
@@ -739,7 +738,7 @@ public class Player extends Sprite {
             //footRight.getB2body().applyLinearImpulse(new Vector2(10, 0), footLeft.getB2body().getWorldCenter(), true);
 
             armLeft = new Arm(world, gameScreen, 2, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("armL"));
-            bodyParts.add(armLeft);
+
             createBodyJoints(belly.getB2body(), armLeft.getB2body(), belly.getWidth() / 2.8f / 1.6666f, belly.getWidth() / 3.05f,
                     0, 45 / FallingMan.PPM, armLeft);
             for (Body body : armLeft.getB2bodies()) {
@@ -748,7 +747,7 @@ public class Player extends Sprite {
             armLeft.setBodyPartName("armL");
 
             armRight = new Arm(world, gameScreen, 2, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("armR"));
-            bodyParts.add(armRight);
+
             createBodyJoints(belly.getB2body(), armRight.getB2body(), -belly.getWidth() / 2.8f / 1.6666f, belly.getHeight() / 3.05f,
                     0, 45 / FallingMan.PPM, armRight);
             for (Body body : armRight.getB2bodies()) {
@@ -773,7 +772,7 @@ public class Player extends Sprite {
             foreArmRight.setBodyPartName("foreArmR");
 
             handLeft = new Hand(world, gameScreen, 4, LEFT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("handL"));
-            bodyParts.add(handLeft);
+
             createBodyJoints(foreArmLeft.getB2body(), handLeft.getB2body(), 0, -40 / FallingMan.PPM,
                     0, 21 / FallingMan.PPM, handLeft);
             for (Body body : handLeft.getB2bodies()) {
@@ -782,7 +781,7 @@ public class Player extends Sprite {
             handLeft.setBodyPartName("handL");
 
             handRight = new Hand(world, gameScreen, 4, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("handR"));
-            bodyParts.add(handRight);
+
             createBodyJoints(foreArmRight.getB2body(), handRight.getB2body(), 0, -40 / FallingMan.PPM,
                     0, 21 / FallingMan.PPM, handRight);
             for (Body body : handRight.getB2bodies()) {
@@ -791,8 +790,21 @@ public class Player extends Sprite {
             handRight.setBodyPartName("handR");
 
 
+
+
+            bodyParts.add(footLeft);
+            bodyParts.add(footRight);
+            bodyParts.add(shinLeft);
+            bodyParts.add(shinRight);
+            bodyParts.add(thighLeft);
+            bodyParts.add(thighRight);
+            bodyParts.add(handLeft);
+            bodyParts.add(handRight);
             bodyParts.add(foreArmLeft);
             bodyParts.add(foreArmRight);
+            bodyParts.add(armLeft);
+            bodyParts.add(armRight);
+            bodyParts.add(belly);
         }
         //handLeft.getB2body().applyLinearImpulse(new Vector2(10, 0), handLeft.getB2body().getWorldCenter(), true);
         //handRight.getB2body().applyLinearImpulse(new Vector2(-10, 0), handRight.getB2body().getWorldCenter(), true);

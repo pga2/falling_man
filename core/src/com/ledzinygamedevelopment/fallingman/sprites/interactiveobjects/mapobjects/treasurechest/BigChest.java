@@ -160,7 +160,7 @@ public class BigChest extends Sprite {
                 } else if (Gdx.input.isTouched() && touched) {
                     rewardType = new Random().nextInt(3);
                     rewardType = 2;
-                    if (rewardType == rewardTypeBodyPart) {
+                    if (rewardType == rewardTypeBodyPart && !RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData()).equals("allOwned")) {
                         String bodyPartNumberAndName = RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData());
                         String bodyPartNumber = RandomBodyPart.extractNumber(bodyPartNumberAndName);
                         String bodyPartName = bodyPartNumberAndName.replace(bodyPartNumber, "");

@@ -15,7 +15,13 @@ public class RandomBodyPart {
                 bodyPartsNotOwned.add(name.replace("owned", ""));
             }
         }
-        int randomBodyPart = random.nextInt(bodyPartsNotOwned.size());
+        int randomBodyPart;
+        if (bodyPartsNotOwned.size() <= 0) {
+            randomBodyPart = 0;
+            return "allOwned";
+        } else {
+            randomBodyPart = random.nextInt(bodyPartsNotOwned.size());
+        }
 
         return bodyPartsNotOwned.get(randomBodyPart);
     }
@@ -40,7 +46,13 @@ public class RandomBodyPart {
                 }
             }
         }
-        int randomBodyPart = random.nextInt(bodyPartsNotOwned.size());
+        int randomBodyPart;
+        if (bodyPartsNotOwned.size() <= 0) {
+            randomBodyPart = 0;
+            return "allOwned";
+        } else {
+            randomBodyPart = random.nextInt(bodyPartsNotOwned.size());
+        }
 
         return bodyPartsNotOwned.get(randomBodyPart);
     }
