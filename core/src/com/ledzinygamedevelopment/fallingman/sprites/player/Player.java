@@ -518,7 +518,7 @@ public class Player extends Sprite {
             footRight = new Foot(world, gameScreen, 7, RIGHT_BODY_PART, mapHeight, bodyPartsSpriteNumber.get("footR"));
             bodyParts.add(footRight);
             for (Body body : footRight.getB2bodies()) {
-                body.setTransform(headPos.x - 0.28530788f * 4, headPos.y - 3.5463333f * 2.3f, 0.10148369f);
+                body.setTransform(headPos.x - 0.28530788f * 4, headPos.y - 3.5463333f * 2.3f , 0.10148369f);
             }
             footRight.setBodyPartName("footR");
             bdef = new BodyDef();

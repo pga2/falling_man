@@ -110,7 +110,7 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
             }
         }*/
         for (int i = 0; i < 24; i++) {
-            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 1));
+            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 5));
         }
 
         playScreen.getHud().setGold(playScreen.getHud().getGold() + amountOfGold);

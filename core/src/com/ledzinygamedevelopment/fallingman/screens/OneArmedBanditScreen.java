@@ -709,9 +709,9 @@ public class OneArmedBanditScreen implements GameScreen {
                                     }
                                     spinButton.setLocked(true);
                                     winOneArmedBandit = true;
-                                    smallRolls.add(new OnePartRoll(this, 360 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                    smallRolls.add(new OnePartRoll(this, 350 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                     smallRolls.add(new OnePartRoll(this, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
-                                    smallRolls.add(new OnePartRoll(this, 890 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
+                                    smallRolls.add(new OnePartRoll(this, 900 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, rolls.get(0).getCurrentTextureNumber()));
                                     rolls = new Array<>();
                                 } else {
                                     for (Roll roll1 : rolls) {
@@ -818,15 +818,15 @@ public class OneArmedBanditScreen implements GameScreen {
         spinsAmountLines.add(new SpinsAmountLine(this, world, oneArmBandits.get(0).getX() + 50 / FallingMan.PPM, oneArmBandits.get(0).getY() + 193 / FallingMan.PPM));
         spinsAmountLines.get(0).setScale((float) (Math.min(saveData.getNumberOfSpins(), 50)) * 1.0057f, 1);
         buttons = new Array<>();
-        spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 360 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
+        spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 420 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
         buttons.add(spinButton);
         startRolling = false;
         rollingTime = 0;
         Gdx.app.log("world height", String.valueOf(
                 gameCam.viewportHeight));
-        Roll roll1 = new Roll(this, world, 360 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll1 = new Roll(this, world, 350 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         Roll roll2 = new Roll(this, world, 620 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
-        Roll roll3 = new Roll(this, world, 890 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
+        Roll roll3 = new Roll(this, world, 900 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 576 / FallingMan.PPM);
         rolls = new Array<>();
         rolls.add(roll1);
         rolls.add(roll2);

@@ -311,9 +311,16 @@ spark
   orig: 32, 32
   offset: 0, 0
   index: -1
-spark_spin
+spark_coin
   rotate: false
   xy: 1477, 1191
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+spark_spin
+  rotate: false
+  xy: 2015, 1959
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

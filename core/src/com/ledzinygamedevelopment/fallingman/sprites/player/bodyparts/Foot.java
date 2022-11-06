@@ -27,12 +27,12 @@ public class Foot extends PlayerBodyPart {
 
         PolygonShape shape = new PolygonShape();
         if(sideOfBodyPart == 0) {
-            float[] shapeVertices = {-18 / FallingMan.PPM, 7 / FallingMan.PPM, 18 / FallingMan.PPM, 8 / FallingMan.PPM,
-                    -18 / FallingMan.PPM, -7 / FallingMan.PPM, 18 / FallingMan.PPM, -7 / FallingMan.PPM};
+            float[] shapeVertices = {-11 / FallingMan.PPM, 13 / FallingMan.PPM, 11 / FallingMan.PPM, 14 / FallingMan.PPM,
+                    -11 / FallingMan.PPM, -13 / FallingMan.PPM, 11 / FallingMan.PPM, -13 / FallingMan.PPM};
             shape.set(shapeVertices);
         } else {
-            float[] shapeVertices = {-18 / FallingMan.PPM, 8 / FallingMan.PPM, 18 / FallingMan.PPM, 7 / FallingMan.PPM,
-                    -18 / FallingMan.PPM, -7 / FallingMan.PPM, 18 / FallingMan.PPM, -7 / FallingMan.PPM};
+            float[] shapeVertices = {-11 / FallingMan.PPM, 14 / FallingMan.PPM, 11 / FallingMan.PPM, 13 / FallingMan.PPM,
+                    -11 / FallingMan.PPM, -13 / FallingMan.PPM, 11 / FallingMan.PPM, -13 / FallingMan.PPM};
             shape.set(shapeVertices);
         }
 

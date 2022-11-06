@@ -615,6 +615,9 @@ public class ShopScreen implements GameScreen {
             cloud.draw(game.batch);
         }
 
+        //render box2d debug renderer
+        //b2dr.render(world, gameCam.combined);
+
         game.batch.end();
 
         switch (currentScreen) {
@@ -631,8 +634,6 @@ public class ShopScreen implements GameScreen {
                 break;
         }
 
-        //render box2d debug renderer
-        //b2dr.render(world, gameCam.combined);
     }
 
 

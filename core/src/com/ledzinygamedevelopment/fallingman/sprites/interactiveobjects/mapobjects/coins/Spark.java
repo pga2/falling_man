@@ -40,7 +40,13 @@ public class Spark extends Sprite {
             //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
             setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
             setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);
+        } else if (typeOfSpark == 5) { //1 for gold spark
+            sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark_coin"), 0, 0, 32, 32);
+            //sparkTexture = new TextureRegion(getTexture(), 1315, 2035, 32, 32);
+            setBounds(0, 0, 32 / FallingMan.PPM, 32 / FallingMan.PPM);
+            setPosition(posX - 16 / FallingMan.PPM, posY - 16 / FallingMan.PPM);
         }
+
         setRegion(sparkTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
         Random random = new Random();

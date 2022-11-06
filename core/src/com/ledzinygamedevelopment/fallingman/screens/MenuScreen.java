@@ -501,8 +501,7 @@ public class MenuScreen implements GameScreen {
         renderer.setView(gameCam);
         //renderer.render();
 
-        //render box2d debug renderer
-        //b2dr.render(world, gameCam.combined);
+
         game.batch.setProjectionMatrix(gameCam.combined);
         rayHandler.setCombinedMatrix(gameCam);
         //game.batch.setProjectionMatrix(gameCamBehind.combined);
@@ -566,6 +565,8 @@ public class MenuScreen implements GameScreen {
             cloud.draw(game.batch);
         }
 
+        //render box2d debug renderer
+        //b2dr.render(world, gameCam.combined);
 
         game.batch.end();
 
