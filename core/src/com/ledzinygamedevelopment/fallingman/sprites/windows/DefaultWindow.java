@@ -69,9 +69,9 @@ public class DefaultWindow extends Sprite {
         watchAdToGetSecondLifeReady = false;
         playScreen.getGame().gsClient.submitToLeaderboard("CgkI-N6Fv6wJEAIQAg", playScreen.getHud().getWholeDistance(), "someTag");
 
-        scoreWindow = new ScoreWindow(playScreen, world, getY() + 950 / FallingMan.PPM, playScreen.getHud().getWholeDistance() > playScreen.getSaveData().getHighScore());
-        goldWindow = new GoldWindow(playScreen, world, getY() + 1460 / FallingMan.PPM);
-        playScreen.getButtons().add(new ShowLeaderboardButton(playScreen, world, getX() + getWidth() / 2, getY() + 750 / FallingMan.PPM));
+        scoreWindow = new ScoreWindow(playScreen, world, getY() + 760 / FallingMan.PPM, playScreen.getHud().getWholeDistance() > playScreen.getSaveData().getHighScore());
+        goldWindow = new GoldWindow(playScreen, world, getY() + 1300 / FallingMan.PPM);
+        playScreen.getButtons().add(new ShowLeaderboardButton(playScreen, world, getX() + getWidth() / 2, getY() + 590 / FallingMan.PPM));
     }
 
     public void update(float dt, HUD hud, Vector2 playerPos){
@@ -91,7 +91,7 @@ public class DefaultWindow extends Sprite {
             adLoadingAnimation.update(dt);
         } else {
             if (!isRewardedVideoAdLoaded) {
-                playScreen.getButtons().add(new WatchAdButton(playScreen, world, getX() + getWidth() / 2, getY() + getHeight() / 4.3f));
+                playScreen.getButtons().add(new WatchAdButton(playScreen, world, getX() + getWidth() / 2, getY() + getHeight() / 4.3f - 160 / FallingMan.PPM));
             }
             watchAdToGetSecondLifeReady = true;
             isRewardedVideoAdLoaded = true;
@@ -105,13 +105,19 @@ public class DefaultWindow extends Sprite {
         if (!isRewardedVideoAdLoaded) {
             adLoadingAnimation.draw(batch);
         }
+
+        font.getData().setScale(0.0075f);
+        font.setColor(Color.BLACK);
+        GlyphLayout glyphLayoutGold = new GlyphLayout(font, String.valueOf(gold));
+        font.draw(batch, "GAME OVER", goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, getY() + getHeight() - 140 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
+
+
         goldWindow.draw(batch);
         scoreWindow.draw(batch);
         font.getData().setScale(0.0058f);
         font.setColor(Color.BLACK);
         //font.draw(batch, "Gold:", getX() + 120 / FallingMan.PPM, getY() + 1900 / FallingMan.PPM);
-        GlyphLayout glyphLayoutGold = new GlyphLayout(font, String.valueOf(gold));
-        font.draw(batch, String.valueOf(gold), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 134 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
+        font.draw(batch, String.valueOf(gold), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 189 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
 
         font.getData().setScale(0.008f);
         font.setColor(Color.BLACK);
@@ -143,7 +149,7 @@ public class DefaultWindow extends Sprite {
             font.getData().setScale(scale);
             font.setColor(Color.CHARTREUSE);
             GlyphLayout glyphLayoutTap = new GlyphLayout(font, String.valueOf((int) Math.ceil(3 - timer)));
-            font.draw(batch, String.valueOf((int) Math.ceil(3 - timer)), getX() + 656 / FallingMan.PPM, getY() + 200 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
+            font.draw(batch, String.valueOf((int) Math.ceil(3 - timer)), getX() + 656 / FallingMan.PPM, getY() + 110 / FallingMan.PPM + glyphLayoutTap.height / 2, 0, Align.center, false);
         }
        // }
     }

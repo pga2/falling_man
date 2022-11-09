@@ -20,9 +20,9 @@ public class GoldWindow extends Sprite {
         this.playScreen = playScreen;
         this.world = world;
         //oneArmedBanditTexture = new TextureRegion(getTexture(), 1315, 3033, 1056, 1040);
-        setRegion(playScreen.getWindowAtlas().findRegion("gold"), 0, 0, 732, 350);
+        setRegion(playScreen.getWindowAtlas().findRegion("gold"), 0, 0, 732, 400);
 
-        setBounds(0, 0, 732 / FallingMan.PPM, 350 / FallingMan.PPM);
+        setBounds(0, 0, 732 / FallingMan.PPM, 400 / FallingMan.PPM);
 
         setPosition(354 / FallingMan.PPM, posY);
     }
