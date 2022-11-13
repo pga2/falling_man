@@ -28,19 +28,20 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
     private Fixture fixture;
     private FixtureDef fdef;
     private boolean touched;
-    private Animation animation;
-    private float animationTimer;
+    //private Animation animation;
+    //private float animationTimer;
     private boolean draw;
+    private boolean rotationRight;
 
     public HuntingEnemyCreator(World world, TiledMap map, Rectangle bounds, int mapLayer, PlayScreen playScreen) {
 
-        Array<TextureRegion> textureRegions = new Array<>();
+        /*Array<TextureRegion> textureRegions = new Array<>();
         for (int i = 1; i < 9; i++) {
             textureRegions.add(new TextureRegion(playScreen.getDefaultAtlas().findRegion("spider_map" + i), 0, 0, 96, 96));
-        }
+        }*/
 
-        animation = new Animation(0.1f, textureRegions);
-        animationTimer = 0.0001f;
+        //animation = new Animation(0.1f, textureRegions);
+        //animationTimer = 0.0001f;
 
         BodyDef bdef = new BodyDef();
         fdef = new FixtureDef();
@@ -64,6 +65,7 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
         setOrigin(getWidth() / 2, getHeight() / 2);
 
          draw = true;
+         rotationRight = true;
     }
 
     @Override
@@ -76,7 +78,8 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
     @Override
     public void update(float dt) {
         if (draw) {
-            setRegion(getFrame(dt));
+            //setRegion(getFrame(dt));
+            setRotation(getRotation() + 180 * dt);
         }
     }
 
@@ -124,10 +127,10 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
     }
 
 
-    private TextureRegion getFrame(float dt) {
+    /*private TextureRegion getFrame(float dt) {
         animationTimer += dt;
         return (TextureRegion) animation.getKeyFrame(animationTimer, true);
-    }
+    }*/
 
 
     public void setCategoryFilter(short filterBit) {

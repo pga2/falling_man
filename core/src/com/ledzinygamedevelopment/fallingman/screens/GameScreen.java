@@ -50,4 +50,5 @@ public interface GameScreen extends Screen {
     public boolean isReadyToCreateSmoke();
     public void setAddSmoke(boolean addSmoke);
     public TextureAtlas getWindowAtlas();
+    public void setGoldX2(boolean goldX2);
 }

@@ -36,6 +36,7 @@ public class DefaultWindow extends Sprite {
     private boolean watchAdToGetSecondLifeReady;
     private ScoreWindow scoreWindow;
     private GoldWindow goldWindow;
+    private Sprite scoreAndGoldBackground;
     /*private boolean clicked;
     private boolean locked;*/
 
@@ -52,6 +53,13 @@ public class DefaultWindow extends Sprite {
         setBounds(0, 0, width, height);
         setRegion(playScreen.getWindowAtlas().findRegion("window"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - width) / 2, playScreen.getPlayer().b2body.getPosition().y - height / 2);
+
+        scoreAndGoldBackground = new Sprite();
+        float scoreAndGoldBackgroundWidth = 1024 / FallingMan.PPM;
+        float scoreAndGoldBackgroundHeight = 975 / FallingMan.PPM;
+        scoreAndGoldBackground.setBounds(0, 0, scoreAndGoldBackgroundWidth, scoreAndGoldBackgroundHeight);
+        scoreAndGoldBackground.setRegion(playScreen.getWindowAtlas().findRegion("score_and_gold_background"), 0, 0, (int) (scoreAndGoldBackgroundWidth * FallingMan.PPM), (int) (scoreAndGoldBackgroundHeight * FallingMan.PPM));
+        scoreAndGoldBackground.setPosition((FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM - scoreAndGoldBackgroundWidth) / 2, getY() + 742 / FallingMan.PPM);
 
         font = playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getFont());
         //font = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
@@ -102,6 +110,7 @@ public class DefaultWindow extends Sprite {
     @Override
     public void draw(Batch batch) {
         super.draw(batch);
+        scoreAndGoldBackground.draw(batch);
         if (!isRewardedVideoAdLoaded) {
             adLoadingAnimation.draw(batch);
         }

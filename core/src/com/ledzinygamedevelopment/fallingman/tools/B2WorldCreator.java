@@ -94,6 +94,7 @@ public class B2WorldCreator {
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / FallingMan.PPM, (rect.getY() + rect.getHeight() / 2) / FallingMan.PPM);
             body = world.createBody(bdef);
             shape.setAsBox((rect.getWidth() / 2) / FallingMan.PPM, (rect.getHeight() / 2) / FallingMan.PPM);
+            fdef = new FixtureDef();
             fdef.shape = shape;
             if (object.getProperties().get("t") != null) {
                 fdef.filter.categoryBits = FallingMan.WALL_INSIDE_TOWER;
@@ -103,26 +104,16 @@ public class B2WorldCreator {
             }
             body.createFixture(fdef);
             b2bodies.add(body);
+            fdef = new FixtureDef();
         }
 
         //coins
         coins = new Array<>();
         for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            if (object.getProperties().get("tp") != null) {
-                InteractiveObjectInterface teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
-                b2bodies.add(teleport.getBody());
-                interactiveTileObjects.add(teleport);
-            } else if (object.getProperties().get("tp_target") != null) {
-                InteractiveObjectInterface teleportTarget = new TeleportTarget(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp_target"))));
-                b2bodies.add(teleportTarget.getBody());
-                interactiveTileObjects.add(teleportTarget);
-                teleportsTarget.add((TeleportTarget) teleportTarget);
-            } else {
                 InteractiveObjectInterface coin = new Coin(world, map, rect, 2, playScreen);
                 b2bodies.add(coin.getBody());
                 interactiveTileObjects.add(coin);
-            }
         }
 
         //deadly things
@@ -226,6 +217,21 @@ public class B2WorldCreator {
             InteractiveObjectInterface spiderWeb = new SpiderWeb(playScreen, world, map, rect, 3);
             b2bodies.add(spiderWeb.getBody());
             interactiveTileObjects.add(spiderWeb);
+        }
+
+        //teleports
+        for (MapObject object : map.getLayers().get(16).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            if (object.getProperties().get("tp") != null) {
+                InteractiveObjectInterface teleport = new Teleport(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp"))));
+                b2bodies.add(teleport.getBody());
+                interactiveTileObjects.add(teleport);
+            } else if (object.getProperties().get("tp_target") != null) {
+                InteractiveObjectInterface teleportTarget = new TeleportTarget(world, map, rect, 2, playScreen, Integer.parseInt(String.valueOf(object.getProperties().get("tp_target"))));
+                b2bodies.add(teleportTarget.getBody());
+                interactiveTileObjects.add(teleportTarget);
+                teleportsTarget.add((TeleportTarget) teleportTarget);
+            }
         }
 
         /*//one-armed bandit spin button

@@ -9,8 +9,8 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 
 public class WatchAdButton extends Button {
 
-    AdIcon leftAdIcon;
-    AdIcon rightAdIcon;
+    //AdIcon leftAdIcon;
+    //AdIcon rightAdIcon;
 
     public WatchAdButton(GameScreen gameScreen, World world, float posX, float posY) {
         super(gameScreen, world, posX, posY);
@@ -23,8 +23,8 @@ public class WatchAdButton extends Button {
         setPosition(posX - getWidth() / 2, posY - getHeight() / 2);
         this.posX = getX();
         this.posY = getY();
-        leftAdIcon = new AdIcon(gameScreen, getX() + 128 / FallingMan.PPM, getY() + getHeight() / 2);
-        rightAdIcon = new AdIcon(gameScreen, getX() + getWidth() - 128 / FallingMan.PPM, getY() + getHeight() / 2);
+        //leftAdIcon = new AdIcon(gameScreen, getX() + 128 / FallingMan.PPM, getY() + getHeight() / 2);
+        //rightAdIcon = new AdIcon(gameScreen, getX() + getWidth() - 128 / FallingMan.PPM, getY() + getHeight() / 2);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WatchAdButton extends Button {
     @Override
     public void draw(Batch batch) {
         super.draw(batch);
-        if (leftAdIcon.isScaleUp()) {
+        /*if (leftAdIcon.isScaleUp()) {
             if (leftAdIcon.getScaleX() < 1.12f) {
                 leftAdIcon.setScale(leftAdIcon.getScaleX() + 0.03f * 60 * Gdx.graphics.getDeltaTime());
             } else {
@@ -67,6 +67,6 @@ public class WatchAdButton extends Button {
         }
         rightAdIcon.setScale(leftAdIcon.getScaleX());
         leftAdIcon.draw(batch);
-        rightAdIcon.draw(batch);
+        rightAdIcon.draw(batch);*/
     }
 }

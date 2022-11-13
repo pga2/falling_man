@@ -217,6 +217,7 @@ public class SaveData {
         return prefs.getLong("timeDailyReward");
     }
 
+    //is set to true every time save file was updated
     public Boolean getSaveUpdated() {
         return prefs.getBoolean("saveUpdated");
     }
@@ -225,6 +226,7 @@ public class SaveData {
         return prefs.getLong("saveCounter");
     }
 
+    //is set to true every time save file was updated, set to false after uploading save to cloud
     public void setSaveUpdated(Boolean saveUpdated) {
         prefs.putBoolean("saveUpdated", saveUpdated);
         prefs.flush();

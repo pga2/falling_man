@@ -122,8 +122,8 @@ public class ShopScreen implements GameScreen {
         mapLoader = new TmxMapLoader();
         //map = mapLoader.load("menu_map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
-        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
-        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
+        mapBehind0 = mapLoader.load("maps/menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("maps/menu_map_behind.tmx");
         rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
         rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
         //gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2) / FallingMan.PPM, (gamePort.getWorldHeight() * FallingMan.PPM / 2) / FallingMan.PPM, 0);
@@ -970,6 +970,11 @@ public class ShopScreen implements GameScreen {
     @Override
     public TextureAtlas getWindowAtlas() {
         return null;
+    }
+
+    @Override
+    public void setGoldX2(boolean goldX2) {
+
     }
 
     private void prepareDayAndNightCycle() {

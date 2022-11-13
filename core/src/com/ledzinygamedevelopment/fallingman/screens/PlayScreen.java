@@ -149,6 +149,8 @@ public class PlayScreen implements GameScreen {
     private boolean addSmoke;
     private Vector2 smokeToAddPos;
     private Array<Integer> allTouchedPoints;
+    private boolean goldX2;
+    private boolean newMapAlreadyGenerated = false;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -171,9 +173,9 @@ public class PlayScreen implements GameScreen {
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("start_map0.tmx");
-        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
-        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
+        map = mapLoader.load("maps/start_map_test.tmx");
+        mapBehind0 = mapLoader.load("maps/menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("maps/menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
         rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
         rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
@@ -260,6 +262,8 @@ public class PlayScreen implements GameScreen {
             saveData.addOneToTutorialCounter();
         }
 
+        goldX2 = false;
+
         smokes = new Array<>();
         addSmoke = true;
         allTouchedPoints = new Array<>();
@@ -278,6 +282,7 @@ public class PlayScreen implements GameScreen {
     public void handleInput(float dt) {
         if (!hud.isGameOverStage()) {
             //pc
+            //To remove in production version
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
             }
@@ -296,6 +301,7 @@ public class PlayScreen implements GameScreen {
             if (Gdx.input.isKeyPressed(Input.Keys.N)) {
                 gameCam.zoom -= 0.01f;
             }
+
             if (Gdx.input.isKeyPressed(Input.Keys.O)) {
                 player.b2body.setTransform(2000 / FallingMan.PPM, player.b2body.getPosition().y, player.b2body.getAngle());
                 //player.setPosition(player.b2body.getPosition().x + xDist - player.getWidth() / 2, player.getY());
@@ -303,6 +309,7 @@ public class PlayScreen implements GameScreen {
                     body.setTransform(2000 / FallingMan.PPM, body.getPosition().y, body.getAngle());
                 }
             }
+            //To remove in production version
 
             //mobile
             if (Gdx.input.isTouched()) {
@@ -354,6 +361,11 @@ public class PlayScreen implements GameScreen {
                 }
             }
         } else {
+            //To remove in production version
+            if (Gdx.input.isKeyPressed(Input.Keys.R)) {
+                newLife=true;
+            }
+            //To remove in production version
             if (Gdx.input.isTouched()) {
                 gameOverScreenTouched = true;
                 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
@@ -400,6 +412,9 @@ public class PlayScreen implements GameScreen {
             }
             if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
                 generateNewMap();
+                newMapAlreadyGenerated = true;
+            } else if (newMapAlreadyGenerated) {
+                newMapAlreadyGenerated = false;
             }
 
             Array<InteractiveObjectInterface> drawableInteractiveObjectToRemove = new Array<>();
@@ -576,6 +591,8 @@ public class PlayScreen implements GameScreen {
                 }
                 buttons.removeAll(buttonsToRemove, false);
                 newLife = false;
+            } else if (goldX2) {
+
             }
         if (tutorialOn) {
             playScreenTutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
@@ -698,7 +715,7 @@ public class PlayScreen implements GameScreen {
         game.batch.end();
 
         //render box2d debug renderer
-        //b2dr.render(world, gameCam.combined);
+        b2dr.render(world, gameCam.combined);
 
         game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.draw();
@@ -709,7 +726,11 @@ public class PlayScreen implements GameScreen {
                 game.setScreen(new PlayScreen(game, new PlayerVectors(player, false), null, null));
                 break;*/
             case FallingMan.MENU_SCREEN:
-                saveData.addGold(hud.getGold());
+                if (goldX2) {
+                    saveData.addGold(hud.getGold() * 2);
+                } else {
+                    saveData.addGold(hud.getGold());
+                }
                 saveData.setHighScore(hud.getWholeDistance());
                 dispose();
                 FallingMan.gameScreen = new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
@@ -763,8 +784,9 @@ public class PlayScreen implements GameScreen {
         dontStopAtNotStraightWalls = false;
 
         //generating new map
-        String mapName = "untitled" + new Random().nextInt(3) + ".tmx";
-        //String mapName = "untitled2.tmx";
+        //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
+
+        String mapName = getRandomMap(hud.getWholeDistance());
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
         }
@@ -1048,6 +1070,8 @@ public class PlayScreen implements GameScreen {
         this.newLife = newLife;
     }
 
+    public void setGoldX2(boolean goldX2) {this.goldX2 = goldX2;};
+
     public ArrayList<FontMapObject> getFontMapObjects() {
         return fontMapObjects;
     }
@@ -1139,6 +1163,70 @@ public class PlayScreen implements GameScreen {
         if (sunPos > 99) {
             sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
         }
+    }
+
+    public String getRandomMap(Long score) {
+        StringBuilder mapNameBuilder = new StringBuilder();
+        Random random = new Random();
+        mapNameBuilder.append("maps/");
+        if (score < 10) {
+            mapNameBuilder.insert(mapNameBuilder.length(), "maps_1/");
+            if(random.nextInt(10) == 0) {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(2));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            } else {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            }
+        } else if (score < 20) {
+            mapNameBuilder.insert(mapNameBuilder.length(), "maps_2/");
+            if(random.nextInt(12) == 0) {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(3));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            } else {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            }
+        } else if (score < 30) {
+            mapNameBuilder.insert(mapNameBuilder.length(), "maps_3/");
+            if(random.nextInt(14) == 0) {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(4));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            } else {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            }
+        } else if (score < 40) {
+            mapNameBuilder.insert(mapNameBuilder.length(), "maps_4/");
+            if(random.nextInt(16) == 0) {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(5));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            } else {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            }
+        } else {
+            mapNameBuilder.insert(mapNameBuilder.length(), "maps_5/");
+            if(random.nextInt(16) == 0) {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(6));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            } else {
+                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
+                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
+                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
+            }
+        }
+
+        return mapNameBuilder.toString();
     }
 
     public void setSmokeToAddPos(Vector2 smokeToAddPos) {

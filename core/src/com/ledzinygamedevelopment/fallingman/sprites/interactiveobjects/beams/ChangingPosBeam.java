@@ -25,7 +25,7 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
     private boolean toRemove;
     private int beamNumber;
     private Vector2 endMovingPos;
-    private Vector2 startMovingPos;
+    private final Vector2 startMovingPos;
     private BeamRoute beamRoute;
 
     public ChangingPosBeam(World world, Rectangle bounds, PlayScreen playScreen, int beamNumber) {
@@ -113,8 +113,10 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
         }
 
 
+
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRotation((float) Math.toDegrees(body.getAngle()));
+        updateSpeed(dt);
     }
 
     @Override
@@ -137,14 +139,21 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
 
     public void setEndMovingPos(Vector2 endMovingPos) {
         this.endMovingPos = endMovingPos;
-        body.setLinearVelocity(new Vector2(
-                (getEndMovingPos().x - startMovingPos.x) / 100,
-                (getEndMovingPos().y - startMovingPos.y) / 100
-        ));
         beamRoute = new BeamRoute(playScreen,
                 startMovingPos,
                 endMovingPos,
                 new Vector2(getX(), getY()),
                 getScaleX());
+        body.setLinearVelocity(new Vector2(
+                ((endMovingPos.x - startMovingPos.x) / 100),
+                ((endMovingPos.y - startMovingPos.y) / 100)
+        ));
+    }
+
+    public void updateSpeed(float dt) {
+        body.setLinearVelocity(new Vector2(
+                body.getLinearVelocity().x < 0 ? -Math.abs(((endMovingPos.x - startMovingPos.x) / 100) * 60 * dt) : Math.abs(((endMovingPos.x - startMovingPos.x) / 100) * 60 * dt),
+                body.getLinearVelocity().y < 0 ? -Math.abs(((endMovingPos.y - startMovingPos.y) / 100) * 60 * dt) : Math.abs(((endMovingPos.y - startMovingPos.y) / 100) * 60 * dt)
+        ));
     }
 }

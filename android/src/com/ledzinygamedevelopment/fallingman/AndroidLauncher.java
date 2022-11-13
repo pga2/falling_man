@@ -109,12 +109,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     protected void onStop() {
-        SaveData saveData = new SaveData();
-        if (saveData.getSaveUpdated()) {
-            saveData.setSaveUpdated(false);
-            GsClientUtils.saveData(fallingMan.gsClient, saveData.getSaveCounter());
-            //GsClientUtils.loadData(game.gsClient, this);
-        }
+
         super.onStop();
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);
@@ -175,7 +170,8 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     @Override
     public void onRewarded(RewardItem rewardItem) {
         Toast.makeText(this, "Reward:", rewardItem.getAmount()).show();
-        FallingMan.getGameScreen().setNewLife(true);
+        //FallingMan.getGameScreen().setNewLife(true);
+        FallingMan.getGameScreen().setGoldX2(true);
     }
 
     @Override

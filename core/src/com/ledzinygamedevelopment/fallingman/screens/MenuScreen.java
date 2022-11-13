@@ -133,9 +133,9 @@ public class MenuScreen implements GameScreen {
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("menu_map.tmx");
-        mapBehind0 = mapLoader.load("menu_map_behind.tmx");
-        mapBehind1 = mapLoader.load("menu_map_behind.tmx");
+        map = mapLoader.load("maps/menu_map.tmx");
+        mapBehind0 = mapLoader.load("maps/menu_map_behind.tmx");
+        mapBehind1 = mapLoader.load("maps/menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
         rendererBehind0 = new OrthogonalTiledMapRenderer(mapBehind0, 1 / FallingMan.PPM);
         rendererBehind1 = new OrthogonalTiledMapRenderer(mapBehind1, 1 / FallingMan.PPM);
@@ -205,7 +205,15 @@ public class MenuScreen implements GameScreen {
         }
 
         //GsClientUtils.saveData(game.gsClient, 1);
-        GsClientUtils.loadData(game.gsClient, this);
+        //GsClientUtils.loadData(game.gsClient, this);
+        SaveData saveData = new SaveData();
+        if (saveData.getSaveUpdated()) {
+            saveData.setSaveUpdated(false);
+            GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
+
+        } else {
+            GsClientUtils.loadData(game.gsClient, this);
+        }
 
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
@@ -252,6 +260,7 @@ public class MenuScreen implements GameScreen {
             }
         }
         bigChests = new Array<>();
+
     }
 
     @Override
@@ -265,6 +274,8 @@ public class MenuScreen implements GameScreen {
                 for (RewardCalendarWindow rewardCalendarWindow : rewardCalendarWindows) {
                     rewardCalendarWindow.getReward();
                 }
+                saveData.setSaveUpdated(false);
+                GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
             } else if (bigChests.size > 0) {
                 for (BigChest bigChest : bigChests) {
                     bigChest.setBigChestWasTouchedBodyParteAfterStageThree(true);
@@ -789,6 +800,11 @@ public class MenuScreen implements GameScreen {
     @Override
     public TextureAtlas getWindowAtlas() {
         return windowAtlas;
+    }
+
+    @Override
+    public void setGoldX2(boolean goldX2) {
+
     }
 
     public void generateNewMap() {

@@ -31,3 +31,15 @@ gold
   orig: 732, 400
   offset: 0, 0
   index: -1
+
+window2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+score_and_gold_background
+  rotate: false
+  xy: 1, 1
+  size: 1024, 975
+  orig: 1024, 975
+  offset: 0, 0
+  index: -1
