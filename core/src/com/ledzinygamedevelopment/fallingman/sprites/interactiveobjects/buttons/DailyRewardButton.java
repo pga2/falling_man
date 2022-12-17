@@ -40,7 +40,7 @@ public class DailyRewardButton extends Sprite{
             case "1":
                 typeOfReward = 1; //coin
                 buttonImage.setRegion(gameScreen.getDefaultAtlas().findRegion("smallRoll" + 1), 0, 0, 192, 192);
-                amount = "1000 coins";
+                amount = "200 coins";
                 break;
             case "2":
                 typeOfReward = 2; //spin
@@ -50,7 +50,7 @@ public class DailyRewardButton extends Sprite{
             case "3":
                 typeOfReward = 3; //coin
                 buttonImage.setRegion(gameScreen.getDefaultAtlas().findRegion("smallRoll" + 1), 0, 0, 192, 192);
-                amount = "2000 coins";
+                amount = "400 coins";
                 break;
             case "4":
                 typeOfReward = 4; //spin
@@ -60,12 +60,12 @@ public class DailyRewardButton extends Sprite{
             case "5":
                 typeOfReward = 5; //gold chest
                 buttonImage.setRegion(gameScreen.getDefaultAtlas().findRegion("smallRoll" + 2), 0, 0, 192, 192);
-                amount = "4000 coins";
+                amount = "800 coins";
                 break;
             case "6":
                 typeOfReward = 6; //gold chest
                 buttonImage.setRegion(gameScreen.getDefaultAtlas().findRegion("smallRoll" + 2), 0, 0, 192, 192);
-                amount = "8000 coins";
+                amount = "1600 coins";
                 break;
             case "7":
                 typeOfReward = 7; //chest

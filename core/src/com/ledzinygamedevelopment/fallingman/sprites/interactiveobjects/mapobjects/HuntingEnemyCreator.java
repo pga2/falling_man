@@ -102,7 +102,7 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
     public void touched() {
         draw = false;
         for (int i = 0; i < 50; i++) {
-            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 3));
+            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 3, false));
         }
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         /*for(TiledMapTileLayer.Cell cell : getCells()) {

@@ -1,5 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -158,8 +160,10 @@ public class BigChest extends Sprite {
                     }
                     touchedTimer += dt;
                 } else if (Gdx.input.isTouched() && touched) {
-                    rewardType = new Random().nextInt(3);
-                    rewardType = 2;
+                    rewardType = new Random().nextInt(4);
+                    // to remove in production version
+                    //rewardType = 2;
+                    // end
                     if (rewardType == rewardTypeBodyPart && !RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData()).equals("allOwned")) {
                         String bodyPartNumberAndName = RandomBodyPart.getRandomBodyPart(gameScreen.getSaveData());
                         String bodyPartNumber = RandomBodyPart.extractNumber(bodyPartNumberAndName);
@@ -183,7 +187,7 @@ public class BigChest extends Sprite {
                                     MenuScreen menuScreen = ((MenuScreen) gameScreen);
 
                                     OnePartRoll tempRoll = new OnePartRoll(menuScreen, getX() + getWidth() / 2, getY() + getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                                    tempRoll.setAmount(160);
+                                    tempRoll.setAmount(random.nextInt(6) + 5);
                                     tempRoll.startFlying();
                                     menuScreen.getFlyingRolls().add(tempRoll);
                                 }
@@ -225,9 +229,9 @@ public class BigChest extends Sprite {
                                 bodyPartScaleUp = true;
                             }
                         }
-                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
+                        sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
                     } else {
                         drawChest = false;
                         wonBodyParteAfterStageThree = true;
@@ -253,9 +257,9 @@ public class BigChest extends Sprite {
                             bodyPartScaleUp = true;
                         }
                     }
-                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
-                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1));
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
+                    sparks.add(new Spark(gameScreen, bodyPart.getX() + bodyPart.getWidth() / 2, bodyPart.getY() + bodyPart.getHeight() / 2, (byte) 1, false));
                 } else {
                     currentState = CURRENT_STATE.FIFTH_STAGE_BODY_PART;
                     scaleWhenGettingIntoStageSixthBodyPart = bodyPart.getScaleX();

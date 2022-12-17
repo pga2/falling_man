@@ -5,168 +5,175 @@ filter: Nearest,Nearest
 repeat: none
 teleportation_effect
   rotate: false
-  xy: 1, 745
+  xy: 1, 746
   size: 1280, 1280
   orig: 1280, 1280
   offset: 0, 0
   index: -1
-cloud
+hud
   rotate: false
-  xy: 1, 359
-  size: 960, 384
-  orig: 960, 384
+  xy: 1, 487
+  size: 1057, 257
+  orig: 1057, 257
   offset: 0, 0
   index: -1
 show_leaderboard_button
   rotate: false
-  xy: 1, 101
+  xy: 1, 229
   size: 1024, 256
   orig: 1024, 256
   offset: 0, 0
   index: -1
 play_screen_tutorial_rect
   rotate: false
-  xy: 1283, 1225
+  xy: 1283, 1226
   size: 226, 800
   orig: 226, 800
   offset: 0, 0
   index: -1
 thumb_tutorial
   rotate: false
-  xy: 1511, 1425
+  xy: 1511, 1426
   size: 300, 600
   orig: 300, 600
   offset: 0, 0
   index: -1
 walking_enemy
   rotate: false
-  xy: 1813, 1540
+  xy: 1813, 1541
   size: 200, 485
   orig: 200, 485
   offset: 0, 0
   index: -1
-show_leaderboard_button_clicked
-  rotate: false
-  xy: 963, 487
-  size: 1024, 256
-  orig: 1024, 256
-  offset: 0, 0
-  index: -1
 ad_icon
   rotate: false
-  xy: 1283, 1031
+  xy: 1060, 552
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 blank160
   rotate: false
-  xy: 1511, 1263
+  xy: 1, 67
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 beam_route
   rotate: false
-  xy: 1, 67
+  xy: 1511, 1392
   size: 256, 32
   orig: 256, 32
   offset: 0, 0
   index: -1
 moving_beam
   rotate: false
-  xy: 963, 453
+  xy: 163, 195
   size: 256, 32
   orig: 256, 32
   offset: 0, 0
   index: -1
 spider
   rotate: false
-  xy: 1283, 901
+  xy: 1283, 1096
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 smoke1
   rotate: false
-  xy: 1813, 1438
+  xy: 1813, 1439
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke2
   rotate: false
-  xy: 1673, 1323
+  xy: 1511, 1290
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke3
   rotate: false
-  xy: 1283, 799
+  xy: 163, 93
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke4
   rotate: false
-  xy: 1915, 1438
+  xy: 1283, 994
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke5
   rotate: false
-  xy: 1413, 929
+  xy: 1613, 1290
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke6
   rotate: false
-  xy: 1673, 1221
+  xy: 265, 93
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke7
   rotate: false
-  xy: 1775, 1323
+  xy: 1283, 892
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke8
   rotate: false
-  xy: 1775, 1221
+  xy: 1283, 790
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke9
   rotate: false
-  xy: 1877, 1336
+  xy: 1915, 1439
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 loading_animationLB
   rotate: false
-  xy: 1877, 1238
+  xy: 1413, 1128
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationLT
   rotate: false
-  xy: 1511, 1165
+  xy: 1511, 1192
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationRB
   rotate: false
-  xy: 1477, 1067
+  xy: 1609, 1192
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+loading_animationRT
+  rotate: false
+  xy: 1060, 454
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+spider_map1
+  rotate: false
+  xy: 1158, 454
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -180,161 +187,147 @@ body_restorer
   index: -1
 coin1
   rotate: false
-  xy: 963, 387
+  xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-loading_animationRT
-  rotate: false
-  xy: 1029, 355
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-spider_map1
-  rotate: false
-  xy: 1027, 257
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
 coin2
   rotate: false
-  xy: 67, 1
+  xy: 1511, 1126
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin3
   rotate: false
-  xy: 1127, 387
+  xy: 1577, 1126
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin4
   rotate: false
-  xy: 1027, 191
+  xy: 1643, 1126
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin5
   rotate: false
-  xy: 133, 1
+  xy: 1715, 1326
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin6
   rotate: false
-  xy: 1027, 125
+  xy: 367, 129
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin7
   rotate: false
-  xy: 199, 1
+  xy: 1283, 724
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin8
   rotate: false
-  xy: 1979, 1372
+  xy: 1254, 658
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+spark_hounting_enemy
+  rotate: false
+  xy: 1254, 592
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark
   rotate: false
-  xy: 2015, 1993
+  xy: 2015, 1994
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 spark_coin
   rotate: false
-  xy: 1477, 1191
+  xy: 2015, 1960
   size: 32, 32
   orig: 32, 32
-  offset: 0, 0
-  index: -1
-spark_hounting_enemy
-  rotate: false
-  xy: 1979, 1306
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 spark_new_life
   rotate: false
-  xy: 1975, 1240
+  xy: 1715, 1260
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-spark_spin
-  rotate: false
-  xy: 2015, 1959
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 spin1
   rotate: false
-  xy: 1221, 421
+  xy: 1707, 1194
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin2
   rotate: false
-  xy: 1287, 421
+  xy: 1709, 1128
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
+spark_spin
+  rotate: false
+  xy: 2015, 1926
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 spin3
   rotate: false
-  xy: 1353, 421
+  xy: 367, 63
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin4
   rotate: false
-  xy: 1419, 421
+  xy: 1349, 724
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin5
   rotate: false
-  xy: 1485, 421
+  xy: 1320, 658
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin6
   rotate: false
-  xy: 1551, 421
+  xy: 1320, 592
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin7
   rotate: false
-  xy: 1617, 421
+  xy: 1027, 388
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin8
   rotate: false
-  xy: 1683, 421
+  xy: 1027, 322
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -344,6 +337,13 @@ default2.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+show_leaderboard_button_clicked
+  rotate: false
+  xy: 1, 517
+  size: 1024, 256
+  orig: 1024, 256
+  offset: 0, 0
+  index: -1
 watch_ad_button
   rotate: false
   xy: 1, 259

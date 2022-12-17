@@ -3,6 +3,7 @@ package com.ledzinygamedevelopment.fallingman;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.pay.Offer;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.pay.PurchaseObserver;
 import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
@@ -31,7 +33,8 @@ public class FallingMan extends Game implements IGameServiceListener {
 
     private final AdsController adsController;
 
-    public SpriteBatch batch;
+    public Batch batch;
+    public TwoColorPolygonBatch twoColorPolygonBatch;
 
     public IGameServiceClient gsClient;
 
@@ -85,12 +88,12 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static final String gold_120000 = "gold_120000";
     public static final String gold_280000 = "gold_280000";
     public static final String gold_750000 = "gold_750000";
-    public static final String spin_10 = "spin_10";
-    public static final String spin_24 = "spin_24";
-    public static final String spin_54 = "spin_54";
-    public static final String spin_120 = "spin_120";
-    public static final String spin_280 = "spin_280";
-    public static final String spin_750 = "spin_750";
+    public static final String spin_250 = "spin_250";
+    public static final String spin_550 = "spin_550";
+    public static final String spin_1350 = "spin_1350";
+    public static final String spin_3000 = "spin_3000";
+    public static final String spin_7000 = "spin_7000";
+    public static final String spin_20000 = "spin_20000";
 
 
     public FallingMan(AdsController adsController, ToastCreator toastCreator) {
@@ -116,7 +119,8 @@ public class FallingMan extends Game implements IGameServiceListener {
 
         //gsClient.unlockAchievement("CgkI-N6Fv6wJEAIQAQ");
 
-        batch = new SpriteBatch();
+        batch = new TwoColorPolygonBatch();
+        //twoColorPolygonBatch = new TwoColorPolygonBatch();
         //setScreen(new PlayScreen(this));
         //setScreen(new MenuScreen(this, new Array<Vector2>(), 0));
         //setScreen(new ShopScreen(this, null, 0));
@@ -154,12 +158,12 @@ public class FallingMan extends Game implements IGameServiceListener {
         pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(gold_120000));
         pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(gold_280000));
         pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(gold_750000));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_10));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_24));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_54));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_120));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_280));
-        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_750));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_250));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_550));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_1350));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_3000));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_7000));
+        pmc.addOffer(new Offer().setType(OfferType.CONSUMABLE).setIdentifier(spin_20000));
         //pmc.addOffer(new Offer().setType(OfferType.SUBSCRIPTION).setIdentifier(YOUR_ITEM_SKU));
         // some payment services might need special parameters, see documentation
         //pmc.addStoreParam(storename, param)
@@ -184,9 +188,9 @@ public class FallingMan extends Game implements IGameServiceListener {
         public void handleRestore(Transaction[] transactions) {
             SaveData saveData = new SaveData();
             for (Transaction transaction : transactions) {
-                if (currentScreen == IN_APP_PURCHASES_SCREEN) {
+                /*if (currentScreen == IN_APP_PURCHASES_SCREEN) {
                     gameScreen.addOnePartRolls(100, transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
-                } else {
+                } else {*/
                     if (transaction.getIdentifier().startsWith("spin")) {
                         saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
                     } else if (transaction.getIdentifier().startsWith("gold")) {
@@ -195,9 +199,9 @@ public class FallingMan extends Game implements IGameServiceListener {
                             gameScreen.getGoldAndHighScoresIcons().setGold(saveData.getGold());
                         }
                     } else {
-                        throw new NullPointerException("transaction identifier incorrect");
+                        throw new NullPointerException("transaction identifier incorrect" + transaction.getOrderId());
                     }
-                }
+                //}
             }
         }
 
@@ -251,12 +255,12 @@ public class FallingMan extends Game implements IGameServiceListener {
         allTypesOfPurchases.add(gold_120000);
         allTypesOfPurchases.add(gold_280000);
         allTypesOfPurchases.add(gold_750000);
-        allTypesOfPurchases.add(spin_10);
-        allTypesOfPurchases.add(spin_24);
-        allTypesOfPurchases.add(spin_54);
-        allTypesOfPurchases.add(spin_120);
-        allTypesOfPurchases.add(spin_280);
-        allTypesOfPurchases.add(spin_750);
+        allTypesOfPurchases.add(spin_250);
+        allTypesOfPurchases.add(spin_550);
+        allTypesOfPurchases.add(spin_1350);
+        allTypesOfPurchases.add(spin_3000);
+        allTypesOfPurchases.add(spin_7000);
+        allTypesOfPurchases.add(spin_20000);
 
         return allTypesOfPurchases;
     }

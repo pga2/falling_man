@@ -106,7 +106,7 @@ public class MicroPaymentButton extends Button{
                 if (typeOfPurchase.startsWith("gold")) {
                     extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (10000f * (skuInfo.getPriceAsDouble() / 9))) * 100) - 100;
                 } else if (typeOfPurchase.startsWith("spin")) {
-                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (10f * (skuInfo.getPriceAsDouble() / 9))) * 100) - 100;
+                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (250f * (skuInfo.getPriceAsDouble() / 9))) * 100) - 100;
                 }
                 if (extraCoins != 0) {
                     font.getData().setScale(0.0024f);

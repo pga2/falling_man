@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -34,9 +35,11 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
     private boolean touched;
     private Animation animation;
     private float animationTimer;
+    private boolean animationReversed;
 
     private PlayScreen playScreen;
     private boolean toRemove;
+    private boolean flip;
 
     public Coin(World world, TiledMap map, Rectangle bounds, int mapLayer, PlayScreen playScreen) {
         this.world = world;
@@ -52,7 +55,7 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
             textureRegions.add(new TextureRegion(playScreen.getDefaultAtlas().findRegion("coin" + i), 0, 0, 64, 64));
         }
 
-        animation = new Animation(0.1f, textureRegions);
+        animation = new Animation(0.07f, textureRegions);
         animationTimer = 0.0001f;
 
         BodyDef bdef = new BodyDef();
@@ -75,10 +78,13 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
         setRegion(new TextureRegion(playScreen.getDefaultAtlas().findRegion("coin1"), 0, 0, 64, 64));
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
+        animationReversed = false;
+        flip = false;
     }
 
     public void update(float dt) {
         setRegion(getFrame(dt));
+        setFlip(flip, false);
     }
 
     @Override
@@ -92,14 +98,31 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
     }
 
     private TextureRegion getFrame(float dt) {
-        animationTimer += dt;
-        return (TextureRegion) animation.getKeyFrame(animationTimer, true);
+        if (!animationReversed) {
+            if (animationTimer + dt > animation.getAnimationDuration()) {
+                animationReversed = true;
+                flip = true;
+            } else {
+                animationTimer += dt;
+                flip = false;
+            }
+        } else {
+            if (animationTimer - dt < 0) {
+                animationReversed = false;
+                flip = false;
+            } else {
+                animationTimer -= dt;
+                flip = true;
+            }
+        }
+        //Gdx.app.log("index: ", String.valueOf(animation.getKeyFrameIndex(animationTimer)));
+        return (TextureRegion) animation.getKeyFrame(animationTimer);
     }
 
     public void touched() {
         Random random = new Random();
-        int amountOfGold = random.nextInt(320) + 240;
-        int amountOfAllGold = 0;
+        int amountOfGold = random.nextInt(6) + 5;
+        //int amountOfAllGold = 0;
 
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         /*for(TiledMapTileLayer.Cell cell : getCells()) {
@@ -110,7 +133,7 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
             }
         }*/
         for (int i = 0; i < 24; i++) {
-            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 5));
+            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 5, false));
         }
 
         playScreen.getHud().setGold(playScreen.getHud().getGold() + amountOfGold);

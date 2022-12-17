@@ -16,8 +16,9 @@ public class Spark extends Sprite {
     private float speedY;
     private float existTime;
     private boolean removeSpark;
+    private boolean sparkOverGameOverWindow;
 
-    public Spark(GameScreen gameScreen, float posX, float posY, byte typeOfSpark) {
+    public Spark(GameScreen gameScreen, float posX, float posY, byte typeOfSpark, boolean sparkOverGameOverWindow) {
         this.gameScreen = gameScreen;
         if (typeOfSpark == 1) { //1 for gold spark
             sparkTexture = new TextureRegion(gameScreen.getDefaultAtlas().findRegion("spark"), 0, 0, 32, 32);
@@ -54,6 +55,7 @@ public class Spark extends Sprite {
         speedX = (random.nextFloat() - 0.5f) / 5;
         speedY = (random.nextFloat() - 0.5f) / 5;
         removeSpark = false;
+        this.sparkOverGameOverWindow = sparkOverGameOverWindow;
     }
 
     public void update(float dt) {
@@ -69,5 +71,9 @@ public class Spark extends Sprite {
 
     public boolean isRemoveSpark() {
         return removeSpark;
+    }
+
+    public boolean isSparkOverGameOverWindow() {
+        return sparkOverGameOverWindow;
     }
 }

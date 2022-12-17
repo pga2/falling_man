@@ -3,122 +3,134 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+logo
+  rotate: false
+  xy: 1, 1087
+  size: 1000, 948
+  orig: 1000, 948
+  offset: 0, 0
+  index: -1
 bigChest
   rotate: false
-  xy: 1, 995
+  xy: 1003, 1075
   size: 960, 960
   orig: 960, 960
   offset: 0, 0
   index: -1
-daily_reward_wide
+spark
   rotate: false
-  xy: 1, 453
-  size: 1120, 540
-  orig: 1120, 540
+  xy: 1965, 2003
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 cloud
   rotate: false
-  xy: 1, 67
+  xy: 1, 701
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
+daily_reward_wide
+  rotate: false
+  xy: 1, 159
+  size: 1120, 540
+  orig: 1120, 540
+  offset: 0, 0
+  index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 963, 1711
+  xy: 963, 829
   size: 660, 244
   orig: 660, 244
   offset: 0, 0
   index: -1
 daily_reward
   rotate: false
-  xy: 963, 1169
+  xy: 1625, 533
   size: 360, 540
   orig: 360, 540
   offset: 0, 0
   index: -1
 pointing_finger
   rotate: false
-  xy: 1325, 1109
+  xy: 1123, 227
   size: 300, 600
   orig: 300, 600
   offset: 0, 0
   index: -1
+smallRoll0
+  rotate: false
+  xy: 1425, 635
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll1
+  rotate: false
+  xy: 1425, 441
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
 in_app_purchases_button
   rotate: false
-  xy: 963, 195
+  xy: 1619, 275
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
-smallRoll0
+smallRoll2
   rotate: false
-  xy: 1625, 1763
+  xy: 1425, 247
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 in_app_purchases_button_clicked
   rotate: false
-  xy: 1627, 1505
+  xy: 1619, 17
   size: 256, 256
   orig: 256, 256
-  offset: 0, 0
-  index: -1
-settings_button
-  rotate: false
-  xy: 1627, 1247
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-smallRoll1
-  rotate: false
-  xy: 1819, 1763
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-settings_button_clicked
-  rotate: false
-  xy: 1627, 989
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-gold_and_high_score_icons
-  rotate: false
-  xy: 1885, 1537
-  size: 112, 224
-  orig: 112, 224
-  offset: 0, 0
-  index: -1
-smallRoll2
-  rotate: false
-  xy: 963, 1
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-touched_point
-  rotate: false
-  xy: 963, 1039
-  size: 128, 128
-  orig: 128, 128
   offset: 0, 0
   index: -1
 smallRoll3
   rotate: false
-  xy: 1157, 1
+  xy: 1425, 53
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
-spark
+gold_and_high_score_icons
   rotate: false
-  xy: 2013, 1923
-  size: 32, 32
-  orig: 32, 32
+  xy: 1123, 1
+  size: 112, 224
+  orig: 112, 224
+  offset: 0, 0
+  index: -1
+touched_point
+  rotate: false
+  xy: 1237, 97
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+
+default2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+settings_button
+  rotate: false
+  xy: 1, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+settings_button_clicked
+  rotate: false
+  xy: 259, 1
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1

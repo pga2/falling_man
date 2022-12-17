@@ -77,6 +77,10 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
         return body;
     }
 
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
     @Override
     public void draw(Batch batch) {
         beamRoute.draw(batch);
@@ -92,6 +96,7 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
             playScreen.getB2WorldCreator().getInteractiveTileObjects().removeValue(this, false);
             playScreen.getB2WorldCreator().getB2bodies().removeValue(body, false);
             world.destroyBody(body);
+            body = null;
         } else {
             if (body.getLinearVelocity().x < 0) {
                 if (body.getPosition().x - ((256 / FallingMan.PPM) * getScaleX()) / 2 < (Math.min(endMovingPos.x / FallingMan.PPM, startMovingPos.x / FallingMan.PPM))) {
@@ -113,10 +118,11 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
         }
 
 
-
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRotation((float) Math.toDegrees(body.getAngle()));
-        updateSpeed(dt);
+        if (!playScreen.isGameOver()) {
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+            setRotation((float) Math.toDegrees(body.getAngle()));
+            updateSpeed(dt);
+        }
     }
 
     @Override

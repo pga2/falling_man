@@ -3,73 +3,87 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+player_background
+  rotate: false
+  xy: 1, 83
+  size: 550, 940
+  orig: 550, 940
+  offset: 0, 0
+  index: -1
 cloud
   rotate: false
-  xy: 1, 635
+  xy: 553, 639
   size: 960, 384
   orig: 960, 384
   offset: 0, 0
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 1, 389
+  xy: 553, 393
   size: 660, 244
   orig: 660, 244
   offset: 0, 0
   index: -1
 buy_button
   rotate: false
-  xy: 963, 827
+  xy: 553, 199
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 buy_button_clicked
   rotate: false
-  xy: 1, 195
-  size: 544, 192
-  orig: 544, 192
-  offset: 0, 0
-  index: -1
-select_button
-  rotate: false
-  xy: 1, 1
-  size: 544, 192
-  orig: 544, 192
-  offset: 0, 0
-  index: -1
-set_sprite_button_clicked
-  rotate: false
-  xy: 963, 633
+  xy: 553, 5
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 price_background
   rotate: false
-  xy: 1509, 887
+  xy: 1515, 891
   size: 500, 132
   orig: 500, 132
   offset: 0, 0
   index: -1
 body_part_backlight
   rotate: false
-  xy: 1509, 629
+  xy: 1515, 633
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+select_button
+  rotate: false
+  xy: 1215, 439
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
+set_sprite_button_clicked
+  rotate: false
+  xy: 1215, 245
+  size: 544, 192
+  orig: 544, 192
+  offset: 0, 0
+  index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 547, 163
+  xy: 1773, 665
   size: 112, 224
   orig: 112, 224
   offset: 0, 0
   index: -1
 price_background_coin
   rotate: false
-  xy: 663, 483
+  xy: 1887, 739
   size: 150, 150
   orig: 150, 150
+  offset: 0, 0
+  index: -1
+head_holder
+  rotate: false
+  xy: 1, 1
+  size: 9, 80
+  orig: 9, 80
   offset: 0, 0
   index: -1

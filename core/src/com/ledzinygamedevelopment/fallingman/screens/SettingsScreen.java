@@ -25,6 +25,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.MicroPaymentButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.MusicButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.RateUsButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.SoundsButton;
@@ -416,10 +417,6 @@ public class SettingsScreen implements GameScreen{
         return defaultAtlas;
     }
 
-    @Override
-    public TextureAtlas getBigRockAtlas() {
-        return null;
-    }
 
     @Override
     public Player getPlayer() {
@@ -523,6 +520,11 @@ public class SettingsScreen implements GameScreen{
 
     @Override
     public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public void watchAdButtonClicked(WatchAdButton watchAdButton) {
 
     }
 

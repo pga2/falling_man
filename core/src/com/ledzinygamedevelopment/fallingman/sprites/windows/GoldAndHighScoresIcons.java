@@ -76,7 +76,7 @@ public class GoldAndHighScoresIcons extends Sprite {
         float beforeHeight = glyphLayoutBeforeScaling.height;
         font.getData().setScale(goldTextScale * 0.007f);
         GlyphLayout glyphLayoutAfterScaling = new GlyphLayout(font, String.valueOf(gold));
-        font.draw(batch, String.valueOf(gold), getX() + 150 / FallingMan.PPM - (glyphLayoutAfterScaling.width / 2 - beforeWidth / 2), getY() + 240 / FallingMan.PPM + (glyphLayoutAfterScaling.height / 2 - beforeHeight / 2));
+        font.draw(batch, String.valueOf(gold), getX() + 150 / FallingMan.PPM - (glyphLayoutAfterScaling.width / 2 - beforeWidth / 2), getY() + 248 / FallingMan.PPM + (glyphLayoutAfterScaling.height / 2 - beforeHeight / 2));
         if (goldTextScale -0.05f > 1) {
             goldTextScale -= 0.05f;
         } else {
@@ -84,7 +84,7 @@ public class GoldAndHighScoresIcons extends Sprite {
         }
         font.getData().setScale(0.007f);
         font.setColor(Color.BLACK);
-        font.draw(batch, String.valueOf(highScore), getX() + 150 / FallingMan.PPM, getY() + 128 / FallingMan.PPM);
+        font.draw(batch, String.valueOf(highScore), getX() + 150 / FallingMan.PPM, getY() + 120 / FallingMan.PPM);
     }
 
     public void setGold(long gold) {

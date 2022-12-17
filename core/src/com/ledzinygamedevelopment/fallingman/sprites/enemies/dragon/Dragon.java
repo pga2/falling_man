@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,6 +16,12 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.esotericsoftware.spine.AnimationState;
+import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Bone;
+import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonJson;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
@@ -42,6 +49,9 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
     private boolean fireExist;
     private FixtureDef fireFdef;
 
+    private Skeleton skeleton;
+    private AnimationState animationState;
+
     public Dragon(World world, Rectangle bounds, PlayScreen playScreen, boolean rightSideFire) {
         this.world = world;
         this.bounds = bounds;
@@ -53,23 +63,36 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
         setCategoryFilter(FallingMan.INTERACTIVE_TILE_OBJECT_BIT);
 
         setBounds(0, 0, 256 / FallingMan.PPM, 256 / FallingMan.PPM);
-        setRegion((Texture) playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getPlayScreenDragon()));
+        //setRegion((Texture) playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getPlayScreenDragon()));
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
 
-        if (!rightSideFire) {
-            setFlip(true, false);
-            dragonFire = new DragonFire(playScreen, getX() - 112 / FallingMan.PPM - getWidth() / 2, getY() + 47 / FallingMan.PPM);
-            dragonFire.setFlip(true, false);
-        } else {
-            dragonFire = new DragonFire(playScreen, getX() + 112 / FallingMan.PPM + getWidth() * 3 / 2, getY() + 47 / FallingMan.PPM);
-        }
+
 
         animationTimer = 0;
 
         toRemove = false;
         fireExist = true;
 
+        TextureAtlas dragonAtlas = playScreen.getDragonAtlas();
+        SkeletonJson json = new SkeletonJson(dragonAtlas);
+        json.setScale(1 / FallingMan.PPM);
+        SkeletonData dragonSkeletonData = json.readSkeletonData(Gdx.files.internal("spine_animations/dragon.json"));
+
+        AnimationStateData rockAnimationStateData = new AnimationStateData(dragonSkeletonData);
+        skeleton = new Skeleton(dragonSkeletonData);
+        skeleton.setPosition(body.getPosition().x, body.getPosition().y - getHeight() / 2);
+        animationState = new AnimationState(rockAnimationStateData);
+        animationState.setAnimation(0, "idle fire", true);
+
+        if (!rightSideFire) {
+            setFlip(true, false);
+            dragonFire = new DragonFire(playScreen, getX() - 112 / FallingMan.PPM - getWidth() / 2, getY() + 47 / FallingMan.PPM);
+            dragonFire.setFlip(true, false);
+            skeleton.setScaleX(-1);
+        } else {
+            dragonFire = new DragonFire(playScreen, getX() + 112 / FallingMan.PPM + getWidth() * 3 / 2, getY() + 47 / FallingMan.PPM);
+        }
     }
 
     @Override
@@ -79,15 +102,19 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
             if (!fireExist) {
                 setCategoryFilter(FallingMan.INTERACTIVE_TILE_OBJECT_BIT, fireFixture);
                 fireExist = true;
+                animationState.setAnimation(0, "idle fire", true);
             }
         } else if (animationTimer < 6) {
             if (fireExist) {
                 setCategoryFilter(FallingMan.DESTROYED_BIT, fireFixture);
                 fireExist = false;
+                animationState.setAnimation(0, "idle", true);
             }
         } else {
             animationTimer = 0;
         }
+        animationState.update(dt);
+        animationState.apply(skeleton);
     }
 
     @Override
@@ -187,9 +214,12 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
 
     @Override
     public void draw(Batch batch) {
-        super.draw(batch);
+        //super.draw(batch);
         if (fireExist)
             dragonFire.draw(batch);
+        skeleton.updateWorldTransform();
+
+        playScreen.getSkeletonRenderer().draw(batch, skeleton);
     }
 
 

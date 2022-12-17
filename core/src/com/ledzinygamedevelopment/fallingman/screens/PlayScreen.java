@@ -22,11 +22,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.esotericsoftware.spine.SkeletonRenderer;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
-import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
+import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.SpiderWeb;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
@@ -48,6 +49,7 @@ import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
+import com.ledzinygamedevelopment.fallingman.tools.MapGenUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayScreenTutorialHandler;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -65,6 +67,7 @@ import box2dLight.RayHandler;
 
 public class PlayScreen implements GameScreen {
 
+
     private boolean tutorialOn;
     private byte currentScreen;
     private SaveData saveData;
@@ -74,6 +77,9 @@ public class PlayScreen implements GameScreen {
     private TextureAtlas defaultAtlas;
     private TextureAtlas windowAtlas;
     private TextureAtlas bigRockAtlas;
+    private TextureAtlas spiderAtlas;
+    private TextureAtlas warriorAtlas;
+    private TextureAtlas dragonAtlas;
     private GameAssetManager assetManager;
     private TextureAtlas playerAtlas;
 
@@ -151,6 +157,7 @@ public class PlayScreen implements GameScreen {
     private Array<Integer> allTouchedPoints;
     private boolean goldX2;
     private boolean newMapAlreadyGenerated = false;
+    private SkeletonRenderer skeletonRenderer;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -158,7 +165,10 @@ public class PlayScreen implements GameScreen {
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getPlayScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
-        bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRock());
+        bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRockSpine());
+        spiderAtlas = assetManager.getManager().get(assetManager.getPlayScreenSpiderSpine());
+        dragonAtlas = assetManager.getManager().get(assetManager.getPlayScreenDragonSpine());
+        warriorAtlas = assetManager.getManager().get(assetManager.getPlayScreenWarriorSpine());
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
 
@@ -173,7 +183,7 @@ public class PlayScreen implements GameScreen {
         gamePort = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, gameCam);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("maps/start_map_test.tmx");
+        map = mapLoader.load("maps/start_maps/start_map" + new Random().nextInt(5) + ".tmx");
         mapBehind0 = mapLoader.load("maps/menu_map_behind.tmx");
         mapBehind1 = mapLoader.load("maps/menu_map_behind.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FallingMan.PPM);
@@ -182,6 +192,7 @@ public class PlayScreen implements GameScreen {
         gameCam.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
         gameCamBehind0.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
         gameCamBehind1.position.set((FallingMan.MIN_WORLD_WIDTH / 2f) / FallingMan.PPM, (FallingMan.MIN_WORLD_HEIGHT / 2f) / FallingMan.PPM, 0);
+        skeletonRenderer = new SkeletonRenderer();
 
         world = new World(new Vector2(0, -3f), true);
         b2dr = new Box2DDebugRenderer();
@@ -208,11 +219,12 @@ public class PlayScreen implements GameScreen {
         /*for (int i = 0; i < 50; i++) {
             rocks.add(new Rock(this, world));
         }*/
-        Array<Texture> rockTextures = new Array<>();
+        /*Array<Texture> rockTextures = new Array<>();
         for (String path : assetManager.getRockTexturesPaths()) {
             rockTextures.add((Texture) assetManager.getManager().get(path));
         }
-        Rock rock = new Rock(this, world, true, rockTextures);
+        Rock rock = new Rock(this, world, true, rockTextures);*/
+        Rock rock = new Rock(this, world, true);
         //rock.getB2body().setTransform(rockPos.x, rockPos.y + player.b2body.getPosition().y, rockPos.z);
         //rock.setAnimationTimer(rockAnimationTimer);
 
@@ -235,7 +247,7 @@ public class PlayScreen implements GameScreen {
         newLife = false;
         goldFromPreviousLife = 0;
         distFromPreviousLife = 0;
-        //-gameCam.zoom = 2f;
+        //gameCam.zoom = 12f;
         dontStopAtNotStraightWalls = true;
         this.sunPos = sunPos;
         rendererBehind0.getBatch().setColor(rendererColor);
@@ -333,7 +345,7 @@ public class PlayScreen implements GameScreen {
 
                 //moving player
                 float xTouchedPos = Gdx.input.getX();
-                for (int i = Gdx.input.getMaxPointers()-1; i >= 0; i--) {
+                for (int i = Gdx.input.getMaxPointers() - 1; i >= 0; i--) {
                     if (Gdx.input.isTouched(i)) {
                         xTouchedPos = Gdx.input.getX(i);
                         break;
@@ -341,10 +353,20 @@ public class PlayScreen implements GameScreen {
                 }
                 if (xTouchedPos < Gdx.graphics.getWidth() / 2f) {
                     player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                    for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
+                        spiderWeb.setLeftScreenSideTouched(true);
+                    }
                 } else {
                     player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                    for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
+                        spiderWeb.setRightScreenSideTouched(true);
+                    }
                 }
             } else {
+                for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
+                    spiderWeb.setLeftScreenSideTouched(false);
+                    spiderWeb.setRightScreenSideTouched(false);
+                }
                 for (Button button : buttons) {
                     if (button.isClicked() && !button.isLocked()) {
                         //player.setRemoveHeadJointsAndButton(true);
@@ -363,7 +385,7 @@ public class PlayScreen implements GameScreen {
         } else {
             //To remove in production version
             if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-                newLife=true;
+                newLife = true;
             }
             //To remove in production version
             if (Gdx.input.isTouched()) {
@@ -405,31 +427,40 @@ public class PlayScreen implements GameScreen {
         world.step(Gdx.graphics.getDeltaTime(), 8, 5);
 
         handleInput(dt);
-            if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 63) {
-                if (player.b2body.getLinearVelocity().y > -5) {
-                    player.b2body.setLinearVelocity(player.b2body.getLinearVelocity().x, -5);
-                }
-            }
-            if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
-                generateNewMap();
-                newMapAlreadyGenerated = true;
-            } else if (newMapAlreadyGenerated) {
-                newMapAlreadyGenerated = false;
-            }
 
-            Array<InteractiveObjectInterface> drawableInteractiveObjectToRemove = new Array<>();
-            for (InteractiveObjectInterface interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
-                interactiveTileObject.update(dt);
-                if (interactiveTileObject.isTouched()) {
-                    interactiveTileObject.touched();
-                    if (!(interactiveTileObject instanceof SpiderWeb))
-                        interactiveTileObject.setTouched(false);
-                    if (interactiveTileObject.isToRemove()) {
-                        drawableInteractiveObjectToRemove.add(interactiveTileObject);
-                    }
+        Array<Button> buttonsToRemove = new Array<>();
+        for (Button button : buttons) {
+            if (button.isToRemove()) {
+                buttonsToRemove.add(button);
+            }
+        }
+        buttons.removeAll(buttonsToRemove, false);
+
+        if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 63) {
+            if (player.b2body.getLinearVelocity().y > -5) {
+                player.b2body.setLinearVelocity(player.b2body.getLinearVelocity().x, -5);
+            }
+        }
+        if (player.b2body.getPosition().y < (FallingMan.MAX_WORLD_HEIGHT / 2f) / FallingMan.PPM + 30 / FallingMan.PPM) {
+            generateNewMap();
+            newMapAlreadyGenerated = true;
+        } else if (newMapAlreadyGenerated) {
+            newMapAlreadyGenerated = false;
+        }
+
+        Array<InteractiveObjectInterface> drawableInteractiveObjectToRemove = new Array<>();
+        for (InteractiveObjectInterface interactiveTileObject : b2WorldCreator.getInteractiveTileObjects()) {
+            interactiveTileObject.update(dt);
+            if (interactiveTileObject.isTouched()) {
+                interactiveTileObject.touched();
+                if (!(interactiveTileObject instanceof SpiderWeb))
+                    interactiveTileObject.setTouched(false);
+                if (interactiveTileObject.isToRemove()) {
+                    drawableInteractiveObjectToRemove.add(interactiveTileObject);
                 }
             }
-            b2WorldCreator.getInteractiveTileObjects().removeAll(drawableInteractiveObjectToRemove, false);
+        }
+        b2WorldCreator.getInteractiveTileObjects().removeAll(drawableInteractiveObjectToRemove, false);
         /*if (startRolling) {
             spinButton.setLocked(true);
             startRolling(dt);
@@ -443,96 +474,97 @@ public class PlayScreen implements GameScreen {
                 loseOneArmedBandit = false;
             }
         }*/
-            Array<Spark> sparksToRemove = new Array<>();
-            for (int i = 0; i < sparks.size; i++) {
-                Spark spark = sparks.get(i);
-                spark.update(dt);
-                if (spark.isRemoveSpark()) {
-                    sparksToRemove.add(spark);
-                }
+        Array<Spark> sparksToRemove = new Array<>();
+        for (int i = 0; i < sparks.size; i++) {
+            Spark spark = sparks.get(i);
+            spark.update(dt);
+            if (spark.isRemoveSpark()) {
+                sparksToRemove.add(spark);
             }
-            for (Spark spark : player.getSparks()) {
-                spark.update(dt);
-                if (spark.isRemoveSpark()) {
-                    sparksToRemove.add(spark);
-                }
+        }
+        for (Spark spark : player.getSparks()) {
+            spark.update(dt);
+            if (spark.isRemoveSpark()) {
+                sparksToRemove.add(spark);
             }
-            sparks.removeAll(sparksToRemove, false);
-            player.getSparks().removeAll(sparksToRemove, false);
+        }
+        sparks.removeAll(sparksToRemove, false);
+        player.getSparks().removeAll(sparksToRemove, false);
 
-            //protects player from falling out of tower
-            if (player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) {
+        //protects player from falling out of tower
+        if (player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) {
 
-                player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
-                for (Body body : player.getBodyPartsAll()) {
-                    body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, body.getPosition().y, body.getAngle());
-                }
+            player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
+            for (Body body : player.getBodyPartsAll()) {
+                body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, body.getPosition().y, body.getAngle());
             }
+        }
 
-            player.update(dt);
+        player.update(dt);
 
 
-            MapProperties mapProp = map.getProperties();
-            hud.update(dt, player.b2body.getPosition().y, mapProp.get("height", Integer.class) * 32);
-            Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
+        MapProperties mapProp = map.getProperties();
+        hud.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
+        Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
 
-            for (Rock rock : rocks) {
-                if (defaultWindows.size > 0) {
-                    if (rock.getB2body().getPosition().y < player.b2body.getPosition().y + 1500 / FallingMan.PPM && rock.getB2body().getLinearVelocity().y < 5) {
-                        rock.getB2body().applyLinearImpulse(new Vector2(0, 3000), rock.getB2body().getWorldCenter(), true);
+        for (Rock rock : rocks) {
+            if (defaultWindows.size > 0) {
+                if (rock.getB2body().getPosition().y < player.b2body.getPosition().y + 1500 / FallingMan.PPM && rock.getB2body().getLinearVelocity().y < 5) {
+                    rock.getB2body().applyLinearImpulse(new Vector2(0, 3000), rock.getB2body().getWorldCenter(), true);
+                }
+                rock.update(dt, playerPos, true, false);
+            } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
+                rock.update(dt, playerPos, true, false);
+            } else {
+                rock.update(dt, playerPos, false, false);
+            }
+        }
+
+        for (DefaultWindow defaultWindow : defaultWindows) {
+            defaultWindow.update(dt, hud, player.b2body.getPosition());
+        }
+
+        for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
+            if (player.isHunted()) {
+                b2SteeringEntityContainer.getEntity().update(dt);
+                //b2SteeringEntityContainer.getEntity().getBody().setGravityScale(0);
+            } else {
+                b2SteeringEntityContainer.getEntity().getBody().setLinearVelocity(0, 0);
+            }
+        }
+        Array<HuntingSpider> huntingSpidersToRemove = new Array<>();
+        Array<B2SteeringEntityContainer> b2SteeringEntityContainersToRemove = new Array<>();
+        for (HuntingSpider huntingSpider : huntingSpiders) {
+            huntingSpider.update(dt);
+            if (huntingSpider.isToRemove()) {
+                huntingSpidersToRemove.add(huntingSpider);
+                for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
+                    if (b2SteeringEntityContainer.getEntity().getBody().equals(huntingSpider.getBody())) {
+                        b2SteeringEntityContainersToRemove.add(b2SteeringEntityContainer);
                     }
-                    rock.update(dt, playerPos, true, false);
-                } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
-                    rock.update(dt, playerPos, true, false);
-                } else {
-                    rock.update(dt, playerPos, false, false);
                 }
+                world.destroyBody(huntingSpider.getBody());
+                huntingSpider.setBody(null);
             }
+        }
+        b2SteeringEntityContainers.removeAll(b2SteeringEntityContainersToRemove, false);
+        huntingSpiders.removeAll(huntingSpidersToRemove, false);
 
-            for (DefaultWindow defaultWindow : defaultWindows) {
-                defaultWindow.update(dt, hud, player.b2body.getPosition());
-            }
+        if (!addSmoke) {
+            addSmoke = true;
+        }
 
-            for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
-                if (player.isHunted()) {
-                    b2SteeringEntityContainer.getEntity().update(dt);
-                    //b2SteeringEntityContainer.getEntity().getBody().setGravityScale(0);
-                } else {
-                    b2SteeringEntityContainer.getEntity().getBody().setLinearVelocity(0, 0);
-                }
+        Array<Smoke> smokesToRemove = new Array<>();
+        for (Smoke smoke : smokes) {
+            if (smoke.isToRemove()) {
+                smokesToRemove.add(smoke);
+            } else {
+                smoke.update(dt);
             }
-            Array<HuntingSpider> huntingSpidersToRemove = new Array<>();
-            Array<B2SteeringEntityContainer> b2SteeringEntityContainersToRemove = new Array<>();
-            for (HuntingSpider huntingSpider : huntingSpiders) {
-                huntingSpider.update(dt);
-                if (huntingSpider.isToRemove()) {
-                    huntingSpidersToRemove.add(huntingSpider);
-                    for (B2SteeringEntityContainer b2SteeringEntityContainer : b2SteeringEntityContainers) {
-                        if (b2SteeringEntityContainer.getEntity().getBody().equals(huntingSpider.getBody())) {
-                            b2SteeringEntityContainersToRemove.add(b2SteeringEntityContainer);
-                        }
-                    }
-                    world.destroyBody(huntingSpider.getBody());
-                }
-            }
-            b2SteeringEntityContainers.removeAll(b2SteeringEntityContainersToRemove, false);
-            huntingSpiders.removeAll(huntingSpidersToRemove, false);
+        }
+        smokes.removeAll(smokesToRemove, false);
 
-            if (!addSmoke) {
-                addSmoke = true;
-            }
-
-            Array<Smoke> smokesToRemove = new Array<>();
-            for (Smoke smoke : smokes) {
-                if (smoke.isToRemove()) {
-                    smokesToRemove.add(smoke);
-                } else {
-                    smoke.update(dt);
-                }
-            }
-            smokes.removeAll(smokesToRemove, false);
-
-            //oneArmBandit.update(dt);
+        //oneArmBandit.update(dt);
         /*for (PlayerBodyPart playerBodyPart : player.getBodyParts()) {
             if (playerBodyPart.getBodyPartName().equals("handL")) {
                 lHandLight.setPosition(playerBodyPart.getB2body().getPosition().x, playerBodyPart.getB2body().getPosition().y);
@@ -545,13 +577,12 @@ public class PlayScreen implements GameScreen {
         }*/
 
 
-
-            if (gameOver) {
-                if (defaultWindows.size == 0) {
-                    goldFromPreviousLife = hud.getGold();
-                    distFromPreviousLife = hud.getWholeDistance();
-                    defaultWindows.add(new DefaultWindow(this, world, FallingMan.GAME_OVER_WINDOW));
-                    player.createHeadJoint();
+        if (gameOver) {
+            if (defaultWindows.size == 0) {
+                goldFromPreviousLife = hud.getGold();
+                distFromPreviousLife = hud.getWholeDistance();
+                defaultWindows.add(new DefaultWindow(this, world, FallingMan.GAME_OVER_WINDOW));
+                player.createHeadJoint();
                 /*for (Body bodyPart : player.getBodyPartsAll()) {
                     //world.destroyBody(player.b2body);
                     world.destroyBody(bodyPart);
@@ -563,42 +594,42 @@ public class PlayScreen implements GameScreen {
                     filter.maskBits = FallingMan.ROCK_BIT | FallingMan.DEFAULT_BIT;
                     rock.getFixture().setFilterData(filter);
                 }*/
-                    hud.newStageGameOver();
-                    //buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
-                    //buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
-                }
-                gameOver = false;
-                //dispose();
-                //game.setScreen(new PlayScreen(game));
+                hud.newStageGameOver();
+                //buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
+                //buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
             }
-            if (newLife) {
-                defaultWindows = new Array<>();
-                player.setRemoveHeadJoint(true);
-                hud.getStage().dispose();
-                hud = new HUD(game.batch, this);
-                hud.setGold(goldFromPreviousLife);
-                hud.setWholeDistance(distFromPreviousLife);
-                Array<Button> buttonsToRemove = new Array<>();
-                for (Button button : buttons) {
-                    if (button instanceof WatchAdButton || button instanceof ShowLeaderboardButton) {
-                        buttonsToRemove.add(button);
-                    }
+            gameOver = false;
+            //dispose();
+            //game.setScreen(new PlayScreen(game));
+        }
+        if (newLife) {
+            defaultWindows = new Array<>();
+            player.setRemoveHeadJoint(true);
+            //hud.getStage().dispose();
+            hud = new HUD(game.batch, this);
+            hud.setGold(goldFromPreviousLife);
+            hud.setWholeDistance(distFromPreviousLife);
+            Array<Button> buttonsToRemoveAfterDeath = new Array<>();
+            for (Button button : buttons) {
+                if (button instanceof WatchAdButton || button instanceof ShowLeaderboardButton) {
+                    buttonsToRemoveAfterDeath.add(button);
                 }
-                float posX = player.getBelly().getB2body().getPosition().x;
-                float posY = player.getBelly().getB2body().getPosition().y;
-                for (int i = 0; i < 50; i++) {
-                    player.getSparks().add(new Spark(this, posX, posY, (byte) 2));
-                }
-                buttons.removeAll(buttonsToRemove, false);
-                newLife = false;
-            } else if (goldX2) {
+            }
+            float posX = player.getBelly().getB2body().getPosition().x;
+            float posY = player.getBelly().getB2body().getPosition().y;
+            for (int i = 0; i < 50; i++) {
+                player.getSparks().add(new Spark(this, posX, posY, (byte) 2, false));
+            }
+            buttons.removeAll(buttonsToRemoveAfterDeath, false);
+            newLife = false;
+        } else if (goldX2) {
 
-            }
+        }
         if (tutorialOn) {
             playScreenTutorialHandler.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
         }
 
-        Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        //Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
         //Gdx.app.log("delta time ", " " + Gdx.graphics.getDeltaTime());
         //Gdx.app.log("player speed y", " " + player.b2body.getLinearVelocity().y);
     }
@@ -657,7 +688,8 @@ public class PlayScreen implements GameScreen {
         rayHandler.setCombinedMatrix(gameCam);
         game.batch.begin();
         for (Spark spark : sparks) {
-            spark.draw(game.batch);
+            if (!spark.isSparkOverGameOverWindow())
+                spark.draw(game.batch);
         }
         for (InteractiveObjectInterface drawableInteractiveObject : b2WorldCreator.getInteractiveTileObjects()) {
             drawableInteractiveObject.draw(game.batch);
@@ -679,7 +711,7 @@ public class PlayScreen implements GameScreen {
         }
 
         for (Rock rock : rocks) {
-            rock.draw(game.batch);
+            rock.draw(game.batch, skeletonRenderer);
         }
 
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -712,13 +744,14 @@ public class PlayScreen implements GameScreen {
         for (Button button : buttons) {
             button.draw(game.batch);
         }
+        hud.drawHudBackground(game.batch);
         game.batch.end();
 
         //render box2d debug renderer
-        b2dr.render(world, gameCam.combined);
+        //b2dr.render(world, gameCam.combined);
 
-        game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
-        hud.draw();
+        //game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        //hud.draw();
 
         switch (currentScreen) {
             /*case FallingMan.PLAY_SCREEN:
@@ -767,7 +800,7 @@ public class PlayScreen implements GameScreen {
     @Override
     public void dispose() {
         rayHandler.dispose();
-        hud.getStage().dispose();
+        //hud.getStage().dispose();
         map.dispose();
         mapBehind0.dispose();
         mapBehind1.dispose();
@@ -786,9 +819,12 @@ public class PlayScreen implements GameScreen {
         //generating new map
         //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
 
-        String mapName = getRandomMap(hud.getWholeDistance());
+        String mapName = MapGenUtils.getRandomMap(hud.getWholeDistance());
+        mapName = "maps/maps_5/playscreen_map2.tmx";
+        Gdx.app.log("current map: ", mapName);
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
+            body = null;
         }
 
         map.dispose();
@@ -1018,6 +1054,11 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public void watchAdButtonClicked(WatchAdButton watchAdButton) {
         if (game.getAdsController() != null) {
             game.getAdsController().showRewardedVideo(false);
             for (DefaultWindow window : defaultWindows) {
@@ -1026,6 +1067,7 @@ public class PlayScreen implements GameScreen {
                 }
             }
             watchAdButtonClicked = true;
+            watchAdButton.setToRemove(true);
         }
     }
 
@@ -1070,7 +1112,11 @@ public class PlayScreen implements GameScreen {
         this.newLife = newLife;
     }
 
-    public void setGoldX2(boolean goldX2) {this.goldX2 = goldX2;};
+    public void setGoldX2(boolean goldX2) {
+        this.goldX2 = goldX2;
+    }
+
+    ;
 
     public ArrayList<FontMapObject> getFontMapObjects() {
         return fontMapObjects;
@@ -1165,69 +1211,6 @@ public class PlayScreen implements GameScreen {
         }
     }
 
-    public String getRandomMap(Long score) {
-        StringBuilder mapNameBuilder = new StringBuilder();
-        Random random = new Random();
-        mapNameBuilder.append("maps/");
-        if (score < 10) {
-            mapNameBuilder.insert(mapNameBuilder.length(), "maps_1/");
-            if(random.nextInt(10) == 0) {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(2));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            } else {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            }
-        } else if (score < 20) {
-            mapNameBuilder.insert(mapNameBuilder.length(), "maps_2/");
-            if(random.nextInt(12) == 0) {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(3));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            } else {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            }
-        } else if (score < 30) {
-            mapNameBuilder.insert(mapNameBuilder.length(), "maps_3/");
-            if(random.nextInt(14) == 0) {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(4));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            } else {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            }
-        } else if (score < 40) {
-            mapNameBuilder.insert(mapNameBuilder.length(), "maps_4/");
-            if(random.nextInt(16) == 0) {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(5));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            } else {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            }
-        } else {
-            mapNameBuilder.insert(mapNameBuilder.length(), "maps_5/");
-            if(random.nextInt(16) == 0) {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map_special");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(6));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            } else {
-                mapNameBuilder.insert(mapNameBuilder.length(), "playscreen_map");
-                mapNameBuilder.insert(mapNameBuilder.length(), random.nextInt(10));
-                mapNameBuilder.insert(mapNameBuilder.length(), ".tmx");
-            }
-        }
-
-        return mapNameBuilder.toString();
-    }
 
     public void setSmokeToAddPos(Vector2 smokeToAddPos) {
         this.smokeToAddPos = smokeToAddPos;
@@ -1245,5 +1228,21 @@ public class PlayScreen implements GameScreen {
 
     public void setAddSmoke(boolean addSmoke) {
         this.addSmoke = addSmoke;
+    }
+
+    public SkeletonRenderer getSkeletonRenderer() {
+        return skeletonRenderer;
+    }
+
+    public TextureAtlas getWarriorAtlas() {
+        return warriorAtlas;
+    }
+
+    public TextureAtlas getSpiderAtlas() {
+        return spiderAtlas;
+    }
+
+    public TextureAtlas getDragonAtlas() {
+        return dragonAtlas;
     }
 }

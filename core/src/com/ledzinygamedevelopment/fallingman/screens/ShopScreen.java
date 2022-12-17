@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.shopsprites.BodyPartBacklight;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
@@ -94,6 +95,8 @@ public class ShopScreen implements GameScreen {
     private float sunPos;
     private float gameCamBehindPositionFront;
     private Sprite background;
+    private Array<Sprite> playerBackgrounds;
+    private Sprite headHolder;
 
     public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopInAppPurchasesScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         this.game = game;
@@ -178,6 +181,15 @@ public class ShopScreen implements GameScreen {
         this.sunPos = sunPos;
         rendererBehind0.getBatch().setColor(rendererColor);
         rendererBehind1.getBatch().setColor(rendererColor);
+
+        playerBackgrounds = new Array<>();
+        headHolder = new Sprite();
+        int playerBackgroundWidth = 9;
+        int playerBackgroundHeight = 80;
+        headHolder.setBounds(0, 0, playerBackgroundWidth / FallingMan.PPM, playerBackgroundHeight / FallingMan.PPM);
+        headHolder.setRegion(defaultAtlas.findRegion("head_holder"), 0, 0, playerBackgroundWidth, playerBackgroundHeight);
+        headHolder.setPosition(0, players.get(0).b2body.getPosition().y - 20 / FallingMan.PPM);
+        headHolder.setScale(160, 1);
     }
 
     @Override
@@ -254,8 +266,10 @@ public class ShopScreen implements GameScreen {
                             if (playersInScreenMiddle.size > 0) {
                                 for (Player player1 : playersInScreenMiddle) {
                                     world.destroyBody(player1.b2body);
+                                    player1.b2body = null;
                                     for (Body body : player1.getBodyPartsAll()) {
                                         world.destroyBody(body);
+                                        body = null;
                                     }
                                 }
                                 buttons = new Array<>();
@@ -263,7 +277,15 @@ public class ShopScreen implements GameScreen {
                                 playersInScreenMiddle = new Array<>();
                             }
                             bodyPartBacklights = new Array<>();
-                            playersInScreenMiddle.add(new Player(world, this, mapHeight, createPlayerOneSpriteMap(player.getHeadSpriteNumber()), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, mapHeight / FallingMan.PPM / 2, true));
+                            Player player1 = new Player(world, this, mapHeight, createPlayerOneSpriteMap(player.getHeadSpriteNumber()), FallingMan.PLAYER_STARTING_X_POINT / FallingMan.PPM, mapHeight / FallingMan.PPM / 2, true);
+                            playersInScreenMiddle.add(player1);
+                            Sprite playerBackground = new Sprite();
+                            playerBackgrounds.add(playerBackground);
+                            int playerBackgroundWidth = 550;
+                            int playerBackgroundHeight = 940;
+                            playerBackground.setBounds(0, 0, playerBackgroundWidth / FallingMan.PPM, playerBackgroundHeight / FallingMan.PPM);
+                            playerBackground.setRegion(defaultAtlas.findRegion("player_background"), 0, 0, playerBackgroundWidth, playerBackgroundHeight);
+                            playerBackground.setPosition(player1.b2body.getPosition().x - playerBackgroundWidth / FallingMan.PPM / 2, player1.b2body.getPosition().y - 865 / FallingMan.PPM);
                         }
                     }
                     boolean touchedOutsideButtons = true;
@@ -405,6 +427,12 @@ public class ShopScreen implements GameScreen {
 
         boolean createPlayerOnRightSide = true;
         boolean createPlayerOnLeftSide = true;
+
+        if (playerBackgrounds.size > 1) {
+            Array<Sprite> tempBackground = new Array<>();
+            tempBackground.add(playerBackgrounds.get(0));
+            playerBackgrounds = tempBackground;
+        }
 
         for (BodyPartBacklight bodyPartBacklight : bodyPartBacklights) {
             bodyPartBacklight.update(dt);
@@ -576,6 +604,11 @@ public class ShopScreen implements GameScreen {
 
         game.batch.begin();
         background.draw(game.batch);
+
+        headHolder.draw(game.batch);
+        for (Sprite playerBackground : playerBackgrounds) {
+            playerBackground.draw(game.batch);
+        }
 
         for (BodyPartBacklight bodyPartBacklight : bodyPartBacklights) {
             bodyPartBacklight.draw(game.batch);
@@ -754,6 +787,7 @@ public class ShopScreen implements GameScreen {
         world.destroyBody(tempPlayer.b2body);
         for (Body body : tempPlayer.getBodyPartsAll()) {
             world.destroyBody(body);
+            body = null;
         }
         players.removeValue(tempPlayer, false);
 
@@ -786,8 +820,10 @@ public class ShopScreen implements GameScreen {
             }
         }
         world.destroyBody(tempPlayer.b2body);
+        tempPlayer.b2body = null;
         for (Body body : tempPlayer.getBodyPartsAll()) {
             world.destroyBody(body);
+            body = null;
         }
         players.removeValue(tempPlayer, false);
 
@@ -817,10 +853,6 @@ public class ShopScreen implements GameScreen {
         return defaultAtlas;
     }
 
-    @Override
-    public TextureAtlas getBigRockAtlas() {
-        return null;
-    }
 
     @Override
     public Player getPlayer() {
@@ -924,6 +956,11 @@ public class ShopScreen implements GameScreen {
 
     @Override
     public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public void watchAdButtonClicked(WatchAdButton watchAdButton) {
 
     }
 

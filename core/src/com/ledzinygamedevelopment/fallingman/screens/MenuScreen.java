@@ -35,6 +35,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
@@ -65,7 +66,7 @@ public class MenuScreen implements GameScreen {
     private TextureAtlas playerAtlas;
     private TextureAtlas windowAtlas;
     private byte currentScreen;
-    private Array<Rock> rocks;
+    //private Array<Rock> rocks;
     private OrthographicCamera gameCam;
     private OrthographicCamera gameCamBehind0;
     private OrthographicCamera gameCamBehind1;
@@ -81,7 +82,7 @@ public class MenuScreen implements GameScreen {
     private Box2DDebugRenderer b2dr;
     private Player player;
     private TextureAtlas defaultAtlas;
-    private final TextureAtlas bigRockAtlas;
+    //private final TextureAtlas bigRockAtlas;
     private FallingMan game;
     private Array<Body> worldBodies;
     private Array<Button> buttons;
@@ -113,6 +114,7 @@ public class MenuScreen implements GameScreen {
     private Array<RewardCalendarWindow> rewardCalendarWindows;
     private Array<OnePartRoll> flyingRolls;
     private Array<BigChest> bigChests;
+    private Sprite logo;
 
     public MenuScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor, boolean newBackground) {
         this.game = game;
@@ -123,7 +125,7 @@ public class MenuScreen implements GameScreen {
         assetManager.getManager().finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
-        bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
+        //bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         font = assetManager.getManager().get(assetManager.getFont());
         gameCam = new OrthographicCamera();
@@ -155,7 +157,7 @@ public class MenuScreen implements GameScreen {
         player = new Player(world, this, mapProp.get("height", Integer.class) * 32, saveData.getBodySpritesCurrentlyWear());
         world.setContactListener(new WorldContactListener(player, this));
 
-        rocks = new Array<>();
+        //rocks = new Array<>();
         /*for (int i = 0; i < 100; i++) {
             rocks.add(new Rock(this, world));
         }*/
@@ -210,10 +212,8 @@ public class MenuScreen implements GameScreen {
         if (saveData.getSaveUpdated()) {
             saveData.setSaveUpdated(false);
             GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
-
-        } else {
-            GsClientUtils.loadData(game.gsClient, this);
         }
+        GsClientUtils.loadData(game.gsClient, this);
 
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
@@ -260,7 +260,16 @@ public class MenuScreen implements GameScreen {
             }
         }
         bigChests = new Array<>();
+        if (game.getAdsController() != null)
+        game.getAdsController().showRewardedVideo(true);
 
+        logo = new Sprite();
+
+        int logoWidth = 1000;
+        int logoHeight = 948;
+        logo.setBounds(0, 0, logoWidth / FallingMan.PPM, logoHeight / FallingMan.PPM);
+        logo.setRegion(defaultAtlas.findRegion("logo"), 0, 0, logoWidth, logoHeight);
+        logo.setPosition(FallingMan.MAX_WORLD_WIDTH / 2f / FallingMan.PPM - logo.getWidth() / 2, player.b2body.getPosition().y + 300 / FallingMan.PPM);
     }
 
     @Override
@@ -383,12 +392,13 @@ public class MenuScreen implements GameScreen {
 
         player.update(dt);
 
+        logo.setPosition(FallingMan.MAX_WORLD_WIDTH / 2f / FallingMan.PPM - logo.getWidth() / 2, player.b2body.getPosition().y + 300 / FallingMan.PPM);
         goldAndHighScoresBackground.update(dt, player.b2body.getPosition(), gamePort.getWorldHeight());
         goldAndHighScoresIcons.update(dt, player.b2body.getPosition(), gamePort.getWorldHeight());
 
-        for (Rock rock : rocks) {
+        /*for (Rock rock : rocks) {
             rock.update(dt, player.b2body.getPosition(), false, true);
-        }
+        }*/
         if (player.b2body.getLinearVelocity().y < -20) {
             player.b2body.setLinearVelocity(new Vector2(player.b2body.getLinearVelocity().x, -20));
         }
@@ -521,16 +531,18 @@ public class MenuScreen implements GameScreen {
         for (PlayerBodyPart bodyPart : player.getBodyParts()) {
             bodyPart.draw(game.batch);
         }
-        for (Rock rock : rocks) {
+        /*for (Rock rock : rocks) {
             rock.draw(game.batch);
-        }
-        goldAndHighScoresBackground.draw(game.batch);
-        goldAndHighScoresIcons.draw(game.batch);
+        }*/
+        //goldAndHighScoresBackground.draw(game.batch);
+        //goldAndHighScoresIcons.draw(game.batch);
         for (Button button : buttons) {
             button.draw(game.batch);
         }
 
-        //preparing font
+        logo.draw(game.batch);
+
+        /*//preparing font
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         font.setUseIntegerPositions(false);
         font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
@@ -554,7 +566,7 @@ public class MenuScreen implements GameScreen {
             }
         }
         GlyphLayout glyphLayout = new GlyphLayout(font, "SWIPE UP\nOR\nTOUCH THE SCREEN");
-        font.draw(game.batch, "SWIPE UP\nOR\nTOUCH THE SCREEN", 720 / FallingMan.PPM - glyphLayout.width / 2, player.getY() + glyphLayout.height * 2, glyphLayout.width, Align.center, false);
+        font.draw(game.batch, "SWIPE UP\nOR\nTOUCH THE SCREEN", 720 / FallingMan.PPM - glyphLayout.width / 2, player.getY() + glyphLayout.height * 2 - 1200 / FallingMan.PPM, glyphLayout.width, Align.center, false);*/
 
         if (tutorialOn) {
             tutorialHandler.draw(game.batch);
@@ -571,6 +583,7 @@ public class MenuScreen implements GameScreen {
         for (BigChest bigChest : bigChests) {
             bigChest.draw(game.batch, 0);
         }
+
 
         for (Cloud cloud : clouds) {
             cloud.draw(game.batch);
@@ -655,10 +668,6 @@ public class MenuScreen implements GameScreen {
         return defaultAtlas;
     }
 
-    @Override
-    public TextureAtlas getBigRockAtlas() {
-        return bigRockAtlas;
-    }
 
     @Override
     public Player getPlayer() {
@@ -758,6 +767,11 @@ public class MenuScreen implements GameScreen {
     }
 
     @Override
+    public void watchAdButtonClicked(WatchAdButton watchAdButton) {
+
+    }
+
+    @Override
     public Array<Button> getButtons() {
         return buttons;
     }
@@ -816,9 +830,9 @@ public class MenuScreen implements GameScreen {
         player.updateBodyParts(mapProp.get("height", Integer.class) * 32, true);
 
         //transforming rocks position to new map
-        for (Rock rock : rocks) {
+        /*for (Rock rock : rocks) {
             rock.generateMapRockUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
-        }
+        }*/
 
         for (OnePartRoll onePartRoll : flyingRolls) {
             onePartRoll.setPosition(onePartRoll.getX(), onePartRoll.getY() + player.b2body.getPosition().y - playerPosPrevious.y);

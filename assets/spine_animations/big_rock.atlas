@@ -1,0 +1,97 @@
+
+big_rock.png
+size: 1448,1448
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+badan
+  rotate: true
+  xy: 2, 78
+  size: 579, 1444
+  orig: 579, 1444
+  offset: 0, 0
+  index: -1
+kaki belakang A1
+  rotate: false
+  xy: 220, 1218
+  size: 264, 165
+  orig: 264, 165
+  offset: 0, 0
+  index: -1
+kaki belakang A2
+  rotate: false
+  xy: 1225, 1311
+  size: 212, 135
+  orig: 212, 135
+  offset: 0, 0
+  index: -1
+kaki belakang B1
+  rotate: false
+  xy: 486, 1214
+  size: 248, 165
+  orig: 248, 165
+  offset: 0, 0
+  index: -1
+kaki belakang B2
+  rotate: false
+  xy: 2, 1272
+  size: 216, 136
+  orig: 216, 136
+  offset: 0, 0
+  index: -1
+kaki deapan 2
+  rotate: false
+  xy: 736, 1114
+  size: 322, 260
+  orig: 322, 260
+  offset: 0, 0
+  index: -1
+kaki depan 1
+  rotate: false
+  xy: 1060, 1039
+  size: 318, 270
+  orig: 318, 270
+  offset: 0, 0
+  index: -1
+kepala 1
+  rotate: false
+  xy: 681, 659
+  size: 460, 378
+  orig: 460, 378
+  offset: 0, 0
+  index: -1
+kepala 2
+  rotate: false
+  xy: 2, 895
+  size: 677, 317
+  orig: 677, 317
+  offset: 0, 0
+  index: -1
+lidah
+  rotate: true
+  xy: 883, 1376
+  size: 70, 340
+  orig: 70, 340
+  offset: 0, 0
+  index: -1
+mata 1
+  rotate: false
+  xy: 346, 1385
+  size: 359, 61
+  orig: 359, 61
+  offset: 0, 0
+  index: -1
+mata 2
+  rotate: false
+  xy: 2, 1410
+  size: 342, 36
+  orig: 342, 36
+  offset: 0, 0
+  index: -1
+mulut bawah
+  rotate: false
+  xy: 707, 1381
+  size: 174, 65
+  orig: 174, 65
+  offset: 0, 0
+  index: -1

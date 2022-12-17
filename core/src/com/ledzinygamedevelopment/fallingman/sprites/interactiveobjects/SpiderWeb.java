@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,6 +16,8 @@ public class SpiderWeb extends InteractiveTileObject {
     private boolean toRemove;
     private PlayScreen playScreen;
     private boolean tByBelly;
+    private boolean leftScreenSideTouched;
+    private boolean rightScreenSideTouched;
 
     public SpiderWeb(PlayScreen playScreen, World world, TiledMap map, Rectangle bounds, int mapLayer) {
         super(world, map, bounds, mapLayer);
@@ -24,6 +27,8 @@ public class SpiderWeb extends InteractiveTileObject {
         defineFilter();
         toRemove = false;
         tByBelly = false;
+        leftScreenSideTouched = false;
+        rightScreenSideTouched = false;
     }
 
     @Override
@@ -44,7 +49,21 @@ public class SpiderWeb extends InteractiveTileObject {
                 playScreen.getPlayer().b2body.setLinearVelocity(playScreen.getPlayer().b2body.getLinearVelocity().x, -0.5f);*/
             //playScreen.getPlayer().b2body.setLinearVelocity(playScreen.getPlayer().b2body.getLinearVelocity());
             //touched = false;
-            if (playScreen.getPlayer().b2body.getLinearVelocity().x > 2f) {
+            if (leftScreenSideTouched) {
+                playScreen.getPlayer().b2body.setLinearVelocity(-2f, playScreen.getPlayer().b2body.getLinearVelocity().y);
+                for (Body body : playScreen.getPlayer().getBodyPartsAll()) {
+                    body.setLinearVelocity(-2f, body.getLinearVelocity().y);
+                }
+                Gdx.app.log("left", "touched");
+
+            } else if (rightScreenSideTouched) {
+                playScreen.getPlayer().b2body.setLinearVelocity(2f, playScreen.getPlayer().b2body.getLinearVelocity().y);
+                for (Body body : playScreen.getPlayer().getBodyPartsAll()) {
+                    body.setLinearVelocity(2f, body.getLinearVelocity().y);
+                }
+                Gdx.app.log("right", "touched");
+
+            } else if (playScreen.getPlayer().b2body.getLinearVelocity().x > 2f) {
                 playScreen.getPlayer().b2body.setLinearVelocity(2f, playScreen.getPlayer().b2body.getLinearVelocity().y);
                 for (Body body : playScreen.getPlayer().getBodyPartsAll()) {
                     body.setLinearVelocity(2f, body.getLinearVelocity().y);
@@ -89,5 +108,13 @@ public class SpiderWeb extends InteractiveTileObject {
         filter.categoryBits = FallingMan.INTERACTIVE_TILE_OBJECT_BIT;
         filter.maskBits = FallingMan.PLAYER_BELLY_BIT;
         fixture.setFilterData(filter);
+    }
+
+    public void setLeftScreenSideTouched(boolean leftScreenSideTouched) {
+        this.leftScreenSideTouched = leftScreenSideTouched;
+    }
+
+    public void setRightScreenSideTouched(boolean rightScreenSideTouched) {
+        this.rightScreenSideTouched = rightScreenSideTouched;
     }
 }

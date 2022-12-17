@@ -77,8 +77,8 @@ public class Player extends Sprite {
     private boolean beforeTeleportation;
     private boolean createSecondStateHeadJoint;
     private float teleportationTimer;
-    private float xDist;
-    private float yDist;
+    private float xDistTeleports;
+    private float yDistTeleports;
     private Vector2 teleportTargetPos;
     private Array<Spark> sparks;
 
@@ -189,6 +189,7 @@ public class Player extends Sprite {
                 if (removeHeadJoint) {
                     if (headJointsExist) {
                         world.destroyJoint(headJoint);
+                        headJoint = null;
                         headJointsExist = false;
                     }
                     //world.destroyBody(playScreen.getB2WorldCreator().getButton().getB2body());
@@ -219,14 +220,16 @@ public class Player extends Sprite {
                     teleportationTimer += dt;
                 } else if (beforeTeleportation) {
                     world.destroyJoint(headJoint);
+                    headJoint = null;
                     world.destroyBody(headHolderBody);
+                    headHolderBody = null;
                     headJointsExist = false;
                     removeHeadJoint = false;
                     teleportationTimer = 0;
-                    b2body.setTransform(b2body.getPosition().x + xDist, b2body.getPosition().y + yDist, b2body.getAngle());
+                    b2body.setTransform(b2body.getPosition().x + xDistTeleports, b2body.getPosition().y + yDistTeleports, b2body.getAngle());
                     setPosition(teleportTargetPos.x - getWidth() / 2, teleportTargetPos.y - getHeight() / 2);
                     for (Body body : getBodyPartsAll()) {
-                        body.setTransform(body.getPosition().x + xDist, body.getPosition().y + yDist, body.getAngle());
+                        body.setTransform(body.getPosition().x + xDistTeleports, body.getPosition().y + yDistTeleports, body.getAngle());
                     }
 
                     beforeTeleportation = false;
@@ -243,7 +246,9 @@ public class Player extends Sprite {
                     }
                     setScale(1);
                     world.destroyJoint(headJoint);
+                    headJoint = null;
                     world.destroyBody(headHolderBody);
+                    headHolderBody = null;
                     headJointsExist = false;
                     removeHeadJoint = false;
                     currentState = CurrentState.NORMAL;
@@ -860,6 +865,7 @@ public class Player extends Sprite {
 
         for (Body body : bodyPartsAll) {
             world.destroyBody(body);
+            body = null;
         }
         bodyPartsAll = new Array<>();
         bodyParts = new Array<>();
@@ -881,6 +887,10 @@ public class Player extends Sprite {
 
     public void setCurrentStateToTeleport(TeleportTarget teleportTarget, Teleport teleport) {
 
+        if (!currentState.equals(CurrentState.TELEPORTING)) {
+            createHeadJoint();
+        }
+
         setRegion(gameScreen.getDefaultAtlas().findRegion("teleportation_effect"), 0, 0, 1280, 1280);
         setPosition(teleport.getBody().getPosition().x - getWidth() / 2, teleport.getBody().getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -888,13 +898,14 @@ public class Player extends Sprite {
         for (PlayerBodyPart playerBodyPart : bodyParts) {
             playerBodyPart.setRegion(gameScreen.getDefaultAtlas().findRegion("blank160"), 0, 0, 160, 160);
         }
-        createHeadJoint();
-        currentState = CurrentState.TELEPORTING;
         changeTexturesToTeleportationEffect = true;
         beforeTeleportation = true;
 
-        yDist = teleportTarget.getBody().getPosition().y - teleport.getBody().getPosition().y;
-        xDist = teleportTarget.getBody().getPosition().x - teleport.getBody().getPosition().x;
+        float yToTpDist = teleport.getBody().getPosition().y - b2body.getPosition().y;
+        float xToTpDist = teleport.getBody().getPosition().x - b2body.getPosition().x;
+
+        yDistTeleports = teleportTarget.getBody().getPosition().y - teleport.getBody().getPosition().y + yToTpDist;
+        xDistTeleports = teleportTarget.getBody().getPosition().x - teleport.getBody().getPosition().x + xToTpDist;
 
         teleportTargetPos = teleportTarget.getBody().getPosition();
         /*b2body.setTransform(xDist, yDist, b2body.getAngle());
@@ -905,6 +916,7 @@ public class Player extends Sprite {
         teleportationTimer = 0;
         createSecondStateHeadJoint = true;
         gameScreen.setStopRock(true);
+        currentState = CurrentState.TELEPORTING;
     }
 
     public boolean isHunted() {

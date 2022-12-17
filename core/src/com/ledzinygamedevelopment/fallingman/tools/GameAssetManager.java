@@ -14,7 +14,7 @@ public class GameAssetManager {
 
     //MenuScreen
     private final String menuScreenDefault = "images/menuScreen/default.atlas";
-    private final String menuScreenBigRock = "images/playScreen/big_rock.atlas";
+    //private final String menuScreenBigRock = "images/playScreen/big_rock.atlas";
     private final Array<String> rockTexturesPaths = new Array<>();
 
     //OneArmedBandtScreen
@@ -24,7 +24,10 @@ public class GameAssetManager {
     //PlayScreen
     private final String playScreenDefault = "images/playScreen/default.atlas";
     private final String playScreenWindow = "images/playScreen/window.atlas";
-    private final String playScreenBigRock = "images/playScreen/big_rock.atlas";
+    private final String playScreenBigRockSpine = "spine_animations/big_rock.atlas";
+    private final String playScreenDragonSpine = "spine_animations/dragon.atlas";
+    private final String playScreenSpiderSpine = "spine_animations/spider.atlas";
+    private final String playScreenWarriorSpine = "spine_animations/warrior.atlas";
     private final String playScreenDragon = "images/playScreen/dragon.png";
     private final String playScreenDragonFire = "images/playScreen/dragon_fire.png";
 
@@ -47,9 +50,12 @@ public class GameAssetManager {
     public void loadPlayScreen() {
         manager.load(playScreenDefault, TextureAtlas.class);
         manager.load(playScreenWindow, TextureAtlas.class);
-        manager.load(playScreenBigRock, TextureAtlas.class);
         manager.load(playerSprite, TextureAtlas.class);
-        rockTexturesPaths.add("images/menuScreen/rock1.png");
+        manager.load(playScreenBigRockSpine, TextureAtlas.class);
+        manager.load(playScreenDragonSpine, TextureAtlas.class);
+        manager.load(playScreenSpiderSpine, TextureAtlas.class);
+        manager.load(playScreenWarriorSpine, TextureAtlas.class);
+        //rockTexturesPaths.add("images/menuScreen/rock1.png");
         /*rockTexturesPaths.add("images/menuScreen/rock2.png");
         rockTexturesPaths.add("images/menuScreen/rock3.png");
         rockTexturesPaths.add("images/menuScreen/rock4.png");
@@ -71,11 +77,11 @@ public class GameAssetManager {
 
     public void loadMenuScreen() {
         manager.load(menuScreenDefault, TextureAtlas.class);
-        manager.load(menuScreenBigRock, TextureAtlas.class);
+        //manager.load(menuScreenBigRock, TextureAtlas.class);
         manager.load(playScreenWindow, TextureAtlas.class);
         manager.load(playerSprite, TextureAtlas.class);
 
-        rockTexturesPaths.add("images/menuScreen/rock1.png");
+        /*rockTexturesPaths.add("images/menuScreen/rock1.png");
         rockTexturesPaths.add("images/menuScreen/rock2.png");
         rockTexturesPaths.add("images/menuScreen/rock3.png");
         rockTexturesPaths.add("images/menuScreen/rock4.png");
@@ -87,7 +93,7 @@ public class GameAssetManager {
         rockTexturesPaths.add("images/menuScreen/rock10.png");
         for (String path : rockTexturesPaths) {
             manager.load(path, Texture.class);
-        }
+        }*/
 
         manager.load(font, BitmapFont.class);
         //manager.load(backgroundImage, Texture.class);
@@ -147,13 +153,13 @@ public class GameAssetManager {
         return playScreenWindow;
     }
 
-    public String getPlayScreenBigRock() {
-        return playScreenBigRock;
+    public String getPlayScreenBigRockSpine() {
+        return playScreenBigRockSpine;
     }
 
-    public String getMenuScreenBigRock() {
+    /*public String getMenuScreenBigRock() {
         return menuScreenBigRock;
-    }
+    }*/
 
     public Array<String> getRockTexturesPaths() {
         return rockTexturesPaths;
@@ -201,5 +207,17 @@ public class GameAssetManager {
 
     public String getBackgroundImage() {
         return backgroundImage;
+    }
+
+    public String getPlayScreenDragonSpine() {
+        return playScreenDragonSpine;
+    }
+
+    public String getPlayScreenSpiderSpine() {
+        return playScreenSpiderSpine;
+    }
+
+    public String getPlayScreenWarriorSpine() {
+        return playScreenWarriorSpine;
     }
 }

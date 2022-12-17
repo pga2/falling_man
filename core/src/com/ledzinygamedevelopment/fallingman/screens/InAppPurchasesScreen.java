@@ -25,6 +25,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.MicroPaymentButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
@@ -35,7 +36,6 @@ import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Random;
 
 public class InAppPurchasesScreen implements GameScreen {
@@ -406,12 +406,12 @@ public class InAppPurchasesScreen implements GameScreen {
         buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_280000));
         buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 * 2 / FallingMan.PPM + 20 / FallingMan.PPM * 3, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.gold_750000));
 
-        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_10));
-        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_24));
-        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_54));
-        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_120));
-        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_280));
-        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_750));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_250));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_550));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 540 / FallingMan.PPM + 20 / FallingMan.PPM * 2, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_1350));
+        buttons.add(new MicroPaymentButton(this, world, 160 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_3000));
+        buttons.add(new MicroPaymentButton(this, world, 540 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_7000));
+        buttons.add(new MicroPaymentButton(this, world, 920 / FallingMan.PPM, 20 / FallingMan.PPM, 360 / FallingMan.PPM, 540 / FallingMan.PPM, FallingMan.spin_20000));
 
     }
 
@@ -452,11 +452,6 @@ public class InAppPurchasesScreen implements GameScreen {
     @Override
     public TextureAtlas getDefaultAtlas() {
         return defaultAtlas;
-    }
-
-    @Override
-    public TextureAtlas getBigRockAtlas() {
-        return null;
     }
 
     @Override
@@ -566,6 +561,11 @@ public class InAppPurchasesScreen implements GameScreen {
 
     @Override
     public void watchAdButtonClicked() {
+
+    }
+
+    @Override
+    public void watchAdButtonClicked(WatchAdButton watchAdButton) {
 
     }
 

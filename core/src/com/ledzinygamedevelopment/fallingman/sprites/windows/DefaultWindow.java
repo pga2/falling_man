@@ -14,6 +14,7 @@ import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ShowLeaderboardButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.coins.Spark;
 import com.ledzinygamedevelopment.fallingman.tools.loadinganimation.LoadingAnimation;
 
 public class DefaultWindow extends Sprite {
@@ -37,6 +38,9 @@ public class DefaultWindow extends Sprite {
     private ScoreWindow scoreWindow;
     private GoldWindow goldWindow;
     private Sprite scoreAndGoldBackground;
+    private boolean goldAfterAd;
+    private float afterAdTimer;
+    private float wholeGold;
     /*private boolean clicked;
     private boolean locked;*/
 
@@ -72,7 +76,7 @@ public class DefaultWindow extends Sprite {
         drawText = false;
         tapGrow = true;
         tapExist = false;
-        adLoadingAnimation = new LoadingAnimation(playScreen, getX() + getWidth() / 2, getY() + getHeight() / 4.3f);
+        adLoadingAnimation = new LoadingAnimation(playScreen, getX() + getWidth() / 2, getY() + 335 / FallingMan.PPM);
         isRewardedVideoAdLoaded = false;
         watchAdToGetSecondLifeReady = false;
         playScreen.getGame().gsClient.submitToLeaderboard("CgkI-N6Fv6wJEAIQAg", playScreen.getHud().getWholeDistance(), "someTag");
@@ -80,6 +84,9 @@ public class DefaultWindow extends Sprite {
         scoreWindow = new ScoreWindow(playScreen, world, getY() + 760 / FallingMan.PPM, playScreen.getHud().getWholeDistance() > playScreen.getSaveData().getHighScore());
         goldWindow = new GoldWindow(playScreen, world, getY() + 1300 / FallingMan.PPM);
         playScreen.getButtons().add(new ShowLeaderboardButton(playScreen, world, getX() + getWidth() / 2, getY() + 590 / FallingMan.PPM));
+        goldAfterAd = false;
+        afterAdTimer = 0;
+        wholeGold = 0;
     }
 
     public void update(float dt, HUD hud, Vector2 playerPos){
@@ -87,7 +94,9 @@ public class DefaultWindow extends Sprite {
         if (typeOfWindowText == FallingMan.GAME_OVER_WINDOW) {
             int loadingTapTime = 3;
             if (timer + dt < loadingTapTime) {
-                gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
+                if (!goldAfterAd) {
+                    gold = (int) (hud.getGold() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
+                }
                 wholeDistance = (int) (hud.getWholeDistance() * Math.sqrt(Math.sqrt(timer / loadingTapTime)));
             } else {
                 tapExist = true;
@@ -104,6 +113,7 @@ public class DefaultWindow extends Sprite {
             watchAdToGetSecondLifeReady = true;
             isRewardedVideoAdLoaded = true;
         }
+        wholeGold = hud.getGold();
         timer += dt;
     }
 
@@ -126,7 +136,16 @@ public class DefaultWindow extends Sprite {
         font.getData().setScale(0.0058f);
         font.setColor(Color.BLACK);
         //font.draw(batch, "Gold:", getX() + 120 / FallingMan.PPM, getY() + 1900 / FallingMan.PPM);
-        font.draw(batch, String.valueOf(gold), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 189 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
+        if (goldAfterAd) {
+            for (Spark spark : playScreen.getSparks()) {
+                if (spark.isSparkOverGameOverWindow())
+                    spark.draw(batch);
+            }
+            playScreen.getSparks().add(new Spark(playScreen, goldWindow.getX() + goldWindow.getWidth() / 2, goldWindow.getY() + 150 / FallingMan.PPM, (byte) 5, true));
+            font.draw(batch, String.valueOf((int) (wholeGold * 2)), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 189 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
+        } else {
+            font.draw(batch, String.valueOf(gold), goldWindow.getX() + goldWindow.getWidth() / 2 - glyphLayoutGold.width / 2, goldWindow.getY() + 189 / FallingMan.PPM, glyphLayoutGold.width, Align.center, false);
+        }
 
         font.getData().setScale(0.008f);
         font.setColor(Color.BLACK);
@@ -173,5 +192,10 @@ public class DefaultWindow extends Sprite {
 
     public boolean isWatchAdToGetSecondLifeReady() {
         return watchAdToGetSecondLifeReady;
+    }
+
+
+    public void GoldX2AfterAd() {
+        goldAfterAd = true;
     }
 }

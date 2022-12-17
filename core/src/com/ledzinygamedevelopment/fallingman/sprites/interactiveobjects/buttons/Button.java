@@ -93,4 +93,8 @@ public abstract class Button extends Sprite {
     public boolean isToRemove() {
         return toRemove;
     }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
+    }
 }

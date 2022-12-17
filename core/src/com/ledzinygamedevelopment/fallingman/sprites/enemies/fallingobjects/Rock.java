@@ -1,8 +1,11 @@
 package com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,68 +16,51 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.AnimationState;
+import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonJson;
+import com.esotericsoftware.spine.SkeletonRenderer;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 
 import java.util.Random;
 
-public class Rock extends Sprite {
+public class Rock {
 
-    private Texture texture;
     private Random random;
     private GameScreen gameScreen;
     private World world;
     private Body b2body;
     private int radius;
-    private Animation animation;
     private float animationTimer;
     private Fixture fixture;
-    private float changeTextureTimer;
-    private int currentTextureNumber;
+    private Skeleton skeleton;
+    private AnimationState animationState;
 
-    public Rock(GameScreen gameScreen, World world) {
+    public Rock(GameScreen gameScreen, World world, boolean bigRock) {
         this.gameScreen = gameScreen;
         this.world = world;
-        random = new Random();
-        int chosenSprite = random.nextInt(10);
+        //animation = new Animation(0.017f, textures);
 
-        if (chosenSprite == 0) {
-            chosenSprite = 0;
-        } else if (chosenSprite < 8) {
-            chosenSprite = 1;
-        } else {
-            chosenSprite = 2;
-        }
-        switch (chosenSprite) {
-            case 0:
-                setBounds(0, 0, 48 / FallingMan.PPM, 48 / FallingMan.PPM);
-                setRegion(gameScreen.getDefaultAtlas().findRegion("rock48"), 0, 0, 48, 48);
-                break;
-            case 1:
-                setBounds(0, 0, 96 / FallingMan.PPM, 96 / FallingMan.PPM);
-                setRegion(gameScreen.getDefaultAtlas().findRegion("rock96"), 0, 0, 96, 96);
-                break;
-            default:
-                setBounds(0, 0, 160 / FallingMan.PPM, 160 / FallingMan.PPM);
-                setRegion(gameScreen.getDefaultAtlas().findRegion("rock160"), 0, 0, 160, 160);
-                break;
-        }
-
-        setOrigin(getWidth() / 2, getHeight() / 2);
-        defineRock(chosenSprite);
-    }
-
-    public Rock(GameScreen gameScreen, World world, boolean bigRock, Array<Texture> textures) {
-        this.gameScreen = gameScreen;
-        this.world = world;
-        animation = new Animation(0.017f, textures);
         animationTimer = 0.0001f;
-        changeTextureTimer = 0;
 
+        TextureAtlas bigRockAtlas = ((PlayScreen) gameScreen).getBigRockAtlas();
+        SkeletonJson json = new SkeletonJson(bigRockAtlas);
+        json.setScale(1 / FallingMan.PPM);
+        SkeletonData rockSkeletonData = json.readSkeletonData(Gdx.files.internal("spine_animations/big_rock.json"));
+        AnimationStateData rockAnimationStateData = new AnimationStateData(rockSkeletonData);
+        skeleton = new Skeleton(rockSkeletonData);
+        animationState = new AnimationState(rockAnimationStateData);
+        animationState.setAnimation(0, "walk", true);
+
+        //setRegion(((PlayScreen) gameScreen).getBigRockAtlas());
         random = new Random();
-        setBounds(0, 0, 1232 / FallingMan.PPM, 1232 / FallingMan.PPM);
+        //setBounds(0, 0, 1024 / FallingMan.PPM, 2048 / FallingMan.PPM);
         //setRegion(gameScreen.getBigRockAtlas().findRegion("rock1056"), 0, 0, 1232, 1232);
-        setOrigin(getWidth() / 2, getHeight() / 2);
+        //setOrigin(getWidth() / 2, getHeight() / 2);
         defineRock(11);
     }
 
@@ -123,15 +109,26 @@ public class Rock extends Sprite {
             b2body.setTransform((1440 - (160 + random.nextInt(100))) / FallingMan.PPM, b2body.getPosition().y, b2body.getAngle());
             b2body.setLinearVelocity(0, 0);
         }
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        setRotation((float) Math.toDegrees(b2body.getAngle()));
-        setRegion(getFrame(dt));
+        //setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        //setRotation((float) Math.toDegrees(b2body.getAngle()));
+        skeleton.setPosition(b2body.getPosition().x, b2body.getPosition().y - 850 / FallingMan.PPM);
+        //setRegion(getFrame(dt));
+        Gdx.app.log("y speed ", String.valueOf(b2body.getLinearVelocity().y));
+        animationState.update(dt * -b2body.getLinearVelocity().y * 0.15f);
+        animationState.apply(skeleton);
     }
 
-    private Texture getFrame(float dt) {
+
+    public void draw(Batch batch, SkeletonRenderer skeletonRenderer) {
+        skeleton.updateWorldTransform();
+
+        skeletonRenderer.draw(batch, skeleton);
+    }
+
+    /*private Texture getFrame(float dt) {
         animationTimer += dt;
         return (Texture) animation.getKeyFrame(animationTimer, true);
-    }
+    }*/
 
     public void defineRock(int chosenSprite) {
         BodyDef bdef = new BodyDef();

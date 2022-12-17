@@ -38,6 +38,8 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
 
     private PlayScreen playScreen;
     private boolean toRemove;
+    private boolean animationReversed;
+    private boolean flip;
 
     public Spin(World world, TiledMap map, Rectangle bounds, int mapLayer, PlayScreen playScreen) {
         this.world = world;
@@ -53,7 +55,7 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
             textureRegions.add(new TextureRegion(playScreen.getDefaultAtlas().findRegion("spin" + i), 0, 0, 64, 64));
         }
 
-        animation = new Animation(0.1f, textureRegions);
+        animation = new Animation(0.07f, textureRegions);
         animationTimer = 0.0001f;
 
         BodyDef bdef = new BodyDef();
@@ -76,10 +78,14 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
         setRegion(new TextureRegion(playScreen.getDefaultAtlas().findRegion("spin1"), 0, 0, 64, 64));
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
+
+        animationReversed = false;
+        flip = false;
     }
 
     public void update(float dt) {
         setRegion(getFrame(dt));
+        setFlip(flip, false);
     }
 
     @Override
@@ -93,7 +99,23 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
     }
 
     private TextureRegion getFrame(float dt) {
-        animationTimer += dt;
+        if (!animationReversed) {
+            if (animationTimer + dt > animation.getAnimationDuration()) {
+                animationReversed = true;
+                flip = true;
+            } else {
+                animationTimer += dt;
+                flip = false;
+            }
+        } else {
+            if (animationTimer - dt < 0) {
+                animationReversed = false;
+                flip = false;
+            } else {
+                animationTimer -= dt;
+                flip = true;
+            }
+        }
         return (TextureRegion) animation.getKeyFrame(animationTimer, true);
     }
 
@@ -104,7 +126,7 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
 
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         for (int i = 0; i < 40; i++) {
-            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 4));
+            playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 4, false));
         }
 
        // playScreen.getHud().setGold(playScreen.getHud().getGold() + amountOfSpins);

@@ -86,6 +86,7 @@ public abstract class PlayerBodyPart extends Sprite {
                         Body bodyB = joint.getBodyB();
                         for (Joint joint1 : joints) {
                             world.destroyJoint(joint1);
+                            joint = null;
                                 //Gdx.input.vibrate(50);
                         }
                         joints = new Array<>();
@@ -101,6 +102,7 @@ public abstract class PlayerBodyPart extends Sprite {
                 Body bodyB = joint.getBodyB();
                 for (Joint joint1 : joints) {
                     world.destroyJoint(joint1);
+                    joint1 = null;
                 }
                 joints = new Array<>();
                 setConnectedBodiesBitToDeafault(bodyB);

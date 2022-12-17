@@ -100,7 +100,7 @@ public class RewardCalendarWindow extends Sprite {
 
             if (day == 1L) {
 
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 20; i++) {
                     OnePartRoll tempRoll = new OnePartRoll(menuScreen, dailyRewardCurrentDayButton.getX() + dailyRewardCurrentDayButton.getWidth() / 2, dailyRewardCurrentDayButton.getY() + dailyRewardCurrentDayButton.getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
                     tempRoll.setAmount(10);
                     tempRoll.startFlying();
@@ -116,9 +116,9 @@ public class RewardCalendarWindow extends Sprite {
                 }
             } else if (day == 3L) {
 
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 40; i++) {
                     OnePartRoll tempRoll = new OnePartRoll(menuScreen,  dailyRewardCurrentDayButton.getX() + dailyRewardCurrentDayButton.getWidth() / 2, dailyRewardCurrentDayButton.getY() + dailyRewardCurrentDayButton.getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                    tempRoll.setAmount(20);
+                    tempRoll.setAmount(10);
                     tempRoll.startFlying();
                     menuScreen.getFlyingRolls().add(tempRoll);
                 }
@@ -132,17 +132,17 @@ public class RewardCalendarWindow extends Sprite {
                 }
             } else if (day == 5L) {
 
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 80; i++) {
                     OnePartRoll tempRoll = new OnePartRoll(menuScreen,  dailyRewardCurrentDayButton.getX() + dailyRewardCurrentDayButton.getWidth() / 2, dailyRewardCurrentDayButton.getY() + dailyRewardCurrentDayButton.getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                    tempRoll.setAmount(40);
+                    tempRoll.setAmount(10);
                     tempRoll.startFlying();
                     menuScreen.getFlyingRolls().add(tempRoll);
                 }
             } else if (day == 6L) {
 
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 80; i++) {
                     OnePartRoll tempRoll = new OnePartRoll(menuScreen,  dailyRewardCurrentDayButton.getX() + dailyRewardCurrentDayButton.getWidth() / 2, dailyRewardCurrentDayButton.getY() + dailyRewardCurrentDayButton.getHeight() / 2, 192 / FallingMan.PPM, 192 / FallingMan.PPM, 1);
-                    tempRoll.setAmount(80);
+                    tempRoll.setAmount(20);
                     tempRoll.startFlying();
                     menuScreen.getFlyingRolls().add(tempRoll);
                 }

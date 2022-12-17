@@ -1,5 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.sprites.onearmbandit;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,6 +31,7 @@ public class BaloonButton extends Button {
     private boolean addGoldFont;
     private float goldFontPosY;
     private float goldFontDrawTimer;
+    private int goldToDraw;
 
     public BaloonButton(OneArmedBanditScreen gameScreen, World world, float posX, float posY, float width, float height) {
         super(gameScreen, world, posX, posY, width, height);
@@ -36,6 +39,8 @@ public class BaloonButton extends Button {
         setBounds(0, 0, width, height);
         setRegion(oneArmedBanditScreen.getBaloonAtlas().findRegion("baloon"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX, posY);
+        if (new Random().nextBoolean())
+            flip(true, false);
         destroyBaloon = false;
         destroyBaloonTimer = 0;
         font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
@@ -64,6 +69,7 @@ public class BaloonButton extends Button {
         goldFontPosY = getY() + getHeight() / 1.5f;
         goldFontDrawTimer = 0;
         //setPosition(500 / FallingMan.PPM, 500 / FallingMan.PPM);
+        goldToDraw = 0;
     }
 
     public void update(float dt) {
@@ -74,8 +80,13 @@ public class BaloonButton extends Button {
         if (animation.isAnimationFinished(animationTimer) && !addGoldFont) {
             speedX = 0;
             addGoldFont = true;
-            oneArmedBanditScreen.getSaveData().addGold(1);
-            oneArmedBanditScreen.getGoldAndHighScoresIcons().setGold(oneArmedBanditScreen.getSaveData().getGold());
+            if(random.nextInt(20) == 0) {
+                oneArmedBanditScreen.getSaveData().addGold(1);
+                oneArmedBanditScreen.getGoldAndHighScoresIcons().setGold(oneArmedBanditScreen.getSaveData().getGold());
+                goldToDraw = 1;
+            } else {
+                goldToDraw = 0;
+            }
         }
         if (addGoldFont) {
             goldFontDrawTimer += dt;
@@ -118,7 +129,7 @@ public class BaloonButton extends Button {
             if (goldFontDrawTimer > 0.5) {
                 font.setColor(font.getColor().r, font.getColor().g, font.getColor().b, (1 - goldFontDrawTimer) * 2);
             }
-            font.draw(batch, "1", getX() + getWidth() / 2 - glyphLayout.width / 2, goldFontPosY);
+            font.draw(batch, String.valueOf(goldToDraw), getX() + getWidth() / 2 - glyphLayout.width / 2, goldFontPosY);
         } else if (addGoldFont){
             toRemove = true;
         } else {

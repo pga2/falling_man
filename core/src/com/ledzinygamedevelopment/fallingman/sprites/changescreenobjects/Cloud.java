@@ -1,5 +1,7 @@
 package com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
@@ -23,6 +25,7 @@ public class Cloud extends Sprite {
         setRegion(cloudTexture);
         setOrigin(getWidth() / 2, getHeight() / 2);
         setPosition(posX - getWidth() / 2, posY - getHeight() / 2);
+        setFlip(false, random.nextBoolean());
     }
 
     public void update(float dt, float speedX, float speedY) {

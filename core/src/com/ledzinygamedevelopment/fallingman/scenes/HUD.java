@@ -1,18 +1,16 @@
 package com.ledzinygamedevelopment.fallingman.scenes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
@@ -31,7 +29,7 @@ public class HUD {
     private Label distanceLabel;
     private Label goldIntLabel;
     private Label distanceIntLabel;
-    private SpriteBatch sb;
+    private Batch sb;
     private PlayScreen playScreen;
 
     private float gameOverTimer;
@@ -43,8 +41,9 @@ public class HUD {
     private boolean spawnReturnButton;
     private Table table;
     private boolean stopUpdatingGOHud;
+    private Sprite hudBackground;
 
-    public HUD(SpriteBatch sb, PlayScreen playScreen) {
+    public HUD(Batch sb, PlayScreen playScreen) {
         this.sb = sb;
         this.playScreen = playScreen;
         gold = 0;
@@ -54,42 +53,48 @@ public class HUD {
         spawnReturnButton = false;
         stopUpdatingGOHud = false;
 
-        viewport = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
+        /*viewport = new ExtendViewport(FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM, FallingMan.MIN_WORLD_HEIGHT / FallingMan.PPM,
                 FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM, FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM, new OrthographicCamera());
 
         stage = new Stage(viewport, sb);
         Table table = new Table();
         table.top();
         table.setPosition(table.getX(), table.getY() - 0.2f);
-        table.setFillParent(true);
+        table.setFillParent(true);*/
 
-        hudFont = playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getFont());
-        hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        hudFont.setUseIntegerPositions(false);
-        hudFont.getData().setScale(0.01f);
+
         //hudFont = new BitmapFont(Gdx.files.internal("test_font/FSM.fnt"), false);
-        goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
+        /*goldLabel = new Label("GOLD", new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
         distanceLabel = new Label("DIST", new Label.LabelStyle(hudFont, Color.BLACK));
         goldIntLabel = new Label(String.valueOf(gold), new Label.LabelStyle(hudFont, new Color(174/255f, 132/255f, 26/255f, 1)));
-        distanceIntLabel = new Label(String.valueOf(wholeDistance), new Label.LabelStyle(hudFont, Color.BLACK));
+        distanceIntLabel = new Label(String.valueOf(wholeDistance), new Label.LabelStyle(hudFont, Color.BLACK));*/
 
-        table.add(goldLabel).expandX();
+        /*table.add(goldLabel).expandX();
         table.add(distanceLabel).expandX();
         table.row();
         table.add(goldIntLabel).expandX().padTop(-1);
-        table.add(distanceIntLabel).expandX().padTop(-1);
+        table.add(distanceIntLabel).expandX().padTop(-1);*/
 
-        stage.addActor(table);
+        //stage.addActor(table);
         //stage.setDebugAll(true);
 
+        hudFont = playScreen.getAssetManager().getManager().get(playScreen.getAssetManager().getFont());
+
+        hudBackground = new Sprite();
+
+        int hudBackgroundWidth = 1057;
+        int hudBackgroundHeight = 257;
+        hudBackground.setBounds(0, 0, hudBackgroundWidth / FallingMan.PPM, hudBackgroundHeight / FallingMan.PPM);
+        hudBackground.setRegion(playScreen.getDefaultAtlas().findRegion("hud"), 0, 0, hudBackgroundWidth, hudBackgroundHeight);
+        hudBackground.setPosition(FallingMan.MAX_WORLD_WIDTH / 2f / FallingMan.PPM - hudBackground.getWidth() / 2, 100 / FallingMan.PPM);
     }
 
-    public void update(float dt, float playerYPos, int mapHeight) {
-        if(!gameOverStage) {
+    public void update(float dt, float playerYPos, float screenHeight) {
+        /*if(!gameOverStage) {
             distanceIntLabel.setText(String.valueOf(wholeDistance));
 
             goldIntLabel.setText(String.valueOf(gold));
-        }/* else {
+        }*//* else {
             if(gameOverTimer < 2) {
                 goldIntLabelGameOver.setText((int) (gold * Math.sqrt(Math.sqrt(gameOverTimer / 2))));
                 goldIntLabelGameOver.setPosition(table.getWidth() / 2f - goldIntLabelGameOver.getWidth() / 2, goldIntLabelGameOver.getY());
@@ -114,21 +119,43 @@ public class HUD {
             }
         }*/
         //Gdx.app.log("HUD height", String.valueOf());
+        hudBackground.setPosition(FallingMan.MAX_WORLD_WIDTH / 2f / FallingMan.PPM - hudBackground.getWidth() / 2, playerYPos + screenHeight / 2 - 300 / FallingMan.PPM);
 
     }
 
-    public void draw() {
+    public void drawHudBackground(Batch batch) {
+        if (!gameOverStage) {
+            hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            hudFont.setUseIntegerPositions(false);
+            hudFont.getData().setScale(0.0035f);
+            hudBackground.draw(batch);
+            //hudFont.draw(batch, )
+
+            hudFont.setColor(Color.BLACK);
+            GlyphLayout glyphLayout = new GlyphLayout(hudFont, String.valueOf(wholeDistance));
+            hudFont.draw(batch, String.valueOf(wholeDistance), 720 / FallingMan.PPM - 298 / FallingMan.PPM, hudBackground.getY() + 135 / FallingMan.PPM, glyphLayout.width, Align.center, false);
+
+
+            hudFont.setColor(239f / 255, 168f / 255, 41f / 255, 1);
+            glyphLayout = new GlyphLayout(hudFont, String.valueOf(gold));
+            hudFont.draw(batch, String.valueOf(gold), 720 / FallingMan.PPM + 292 / FallingMan.PPM - glyphLayout.width, hudBackground.getY() + 135 / FallingMan.PPM, glyphLayout.width, Align.center, false);
+        }
+    }
+
+    /*public void draw() {
         hudFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         hudFont.setUseIntegerPositions(false);
         hudFont.getData().setScale(0.01f);
 
         stage.draw();
-    }
+    }*/
 
     public void newStageGameOver() {
         gameOverStage = true;
-        stage.dispose();
-        stage = new Stage(viewport, sb);
+        /*stage.dispose();
+        stage = new Stage(viewport, sb);*/
+
+
 
         /*goldLabelGameOver = new Label("GOLD", new Label.LabelStyle(hudFont, Color.GOLD));
         goldLabelGameOver.setAlignment(Align.center);
@@ -152,37 +179,36 @@ public class HUD {
         stage.addActor(table);*/
     }
 
-    public Stage getStage() {
-        return stage;
+        public Stage getStage () {
+            return stage;
+        }
+
+        public long getPreviousDist () {
+            return previousDist;
+        }
+
+        public void setPreviousDist ( long previousDist){
+            this.previousDist = previousDist;
+        }
+
+        public long getGold () {
+            return gold;
+        }
+
+        public void setGold ( long gold){
+            this.gold = gold;
+        }
+
+        public long getWholeDistance () {
+            return wholeDistance;
+        }
+
+        public boolean isGameOverStage () {
+            return gameOverStage;
+        }
+
+        public void setWholeDistance ( long wholeDistance){
+            this.wholeDistance = wholeDistance;
+        }
+
     }
-
-    public long getPreviousDist() {
-        return previousDist;
-    }
-
-    public void setPreviousDist(long previousDist) {
-        this.previousDist = previousDist;
-    }
-
-    public long getGold() {
-        return gold;
-    }
-
-    public void setGold(long gold) {
-        this.gold = gold;
-    }
-
-    public long getWholeDistance() {
-        return wholeDistance;
-    }
-
-    public boolean isGameOverStage() {
-        return gameOverStage;
-    }
-
-    public void setWholeDistance(long wholeDistance) {
-        this.wholeDistance = wholeDistance;
-    }
-
-
-}

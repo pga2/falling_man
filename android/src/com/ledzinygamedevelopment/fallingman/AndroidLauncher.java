@@ -20,6 +20,10 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.ledzinygamedevelopment.fallingman.scenes.HUD;
+import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.windows.DefaultWindow;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -148,7 +152,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     public void onRewardedVideoAdLoaded() {
-        Toast.makeText(this, "ad loaded", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "ad loaded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -169,9 +173,15 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     public void onRewarded(RewardItem rewardItem) {
-        Toast.makeText(this, "Reward:", rewardItem.getAmount()).show();
+        //Toast.makeText(this, "Reward:", rewardItem.getAmount()).show();
         //FallingMan.getGameScreen().setNewLife(true);
-        FallingMan.getGameScreen().setGoldX2(true);
+        GameScreen gameScreen = FallingMan.getGameScreen();
+        gameScreen.setGoldX2(true);
+        if (gameScreen.getClass().equals(PlayScreen.class)) {
+            for (DefaultWindow defaultWindow : ((PlayScreen) gameScreen).getDefaultWindows()) {
+                defaultWindow.GoldX2AfterAd();
+            }
+        }
     }
 
     @Override

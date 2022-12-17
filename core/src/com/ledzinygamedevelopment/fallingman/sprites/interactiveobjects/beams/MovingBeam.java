@@ -27,6 +27,7 @@ public class MovingBeam extends Sprite implements InteractiveObjectInterface {
     private Body body;
     private Body headHolderBody;
     private RevoluteJoint headJoint;
+    private boolean widthGreaterThanHeight;
 
     public MovingBeam(World world, Rectangle bounds, PlayScreen playScreen) {
         this.world = world;
@@ -51,7 +52,14 @@ public class MovingBeam extends Sprite implements InteractiveObjectInterface {
         setRegion(new TextureRegion(playScreen.getDefaultAtlas().findRegion("moving_beam"), 0, 0, 256, 32));
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setOrigin(getWidth() / 2, getHeight() / 2);
-        setScale(bounds.getWidth() / 256, getScaleY());
+        if (bounds.getHeight() > bounds.getWidth()) {
+            setScale(bounds.getHeight() / 256, getScaleY());
+            setRotation(getRotation() + 90);
+            widthGreaterThanHeight = true;
+        } else {
+            setScale(bounds.getWidth() / 256, getScaleY());
+            widthGreaterThanHeight = false;
+        }
         createJoint();
     }
 
@@ -104,7 +112,10 @@ public class MovingBeam extends Sprite implements InteractiveObjectInterface {
     @Override
     public void update(float dt) {
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-        setRotation((float) Math.toDegrees(body.getAngle()));
+        if (widthGreaterThanHeight)
+            setRotation((float) Math.toDegrees(body.getAngle()) + 90);
+        else
+            setRotation((float) Math.toDegrees(body.getAngle()));
     }
 
     @Override

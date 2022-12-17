@@ -1,5 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.tools;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -38,6 +39,7 @@ public class B2WorldCreator {
     private Array<InteractiveObjectInterface> interactiveTileObjects;
     private Array<Coin> coins;
     private Array<TeleportTarget> teleportsTarget;
+    private Array<SpiderWeb> spiderWebs;
 
     public B2WorldCreator(PlayScreen playScreen, World world, TiledMap map) {
         BodyDef bdef = new BodyDef();
@@ -47,6 +49,7 @@ public class B2WorldCreator {
         b2bodies = new Array<>();
         interactiveTileObjects = new Array<>();
         teleportsTarget = new Array<>();
+        spiderWebs = new Array<>();
 
         //walls
         for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
@@ -208,15 +211,17 @@ public class B2WorldCreator {
                 interactiveTileObjects.removeValue(changingPosBeam, false);
                 b2bodies.removeValue(changingPosBeam.getBody(), false);
                 world.destroyBody(changingPosBeam.getBody());
+                changingPosBeam.setBody(null);
             }
         }
 
         //spider webs
         for (MapObject object : map.getLayers().get(15).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            InteractiveObjectInterface spiderWeb = new SpiderWeb(playScreen, world, map, rect, 3);
+            SpiderWeb spiderWeb = new SpiderWeb(playScreen, world, map, rect, 3);
             b2bodies.add(spiderWeb.getBody());
             interactiveTileObjects.add(spiderWeb);
+            spiderWebs.add(spiderWeb);
         }
 
         //teleports
@@ -259,5 +264,9 @@ public class B2WorldCreator {
 
     public Array<TeleportTarget> getTeleportsTarget() {
         return teleportsTarget;
+    }
+
+    public Array<SpiderWeb> getSpiderWebs() {
+        return spiderWebs;
     }
 }

@@ -1,6 +1,5 @@
 package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
@@ -19,7 +18,7 @@ public class WatchAdButton extends Button {
         height = 256 / FallingMan.PPM;
 
         setBounds(0, 0, width, height);
-        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM),  (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         setPosition(posX - getWidth() / 2, posY - getHeight() / 2);
         this.posX = getX();
         this.posY = getY();
@@ -30,22 +29,22 @@ public class WatchAdButton extends Button {
     @Override
     public void touched() {
         super.touched();
-        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button_clicked"), 0, 0, (int) (width * FallingMan.PPM),  (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button_clicked"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
         clicked = true;
     }
 
     @Override
     public void notTouched() {
         super.notTouched();
-        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM),  (int) (height * FallingMan.PPM));
-        if(clicked) {
-            gameScreen.watchAdButtonClicked();
+        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
+        if (clicked) {
+            gameScreen.watchAdButtonClicked(this);
         }
     }
 
     @Override
     public void restoreNotClickedTexture() {
-        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM),  (int) (height * FallingMan.PPM));
+        setRegion(gameScreen.getDefaultAtlas().findRegion("watch_ad_button"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
 
     }
 
@@ -69,4 +68,6 @@ public class WatchAdButton extends Button {
         leftAdIcon.draw(batch);
         rightAdIcon.draw(batch);*/
     }
+
+
 }
