@@ -25,6 +25,7 @@ import com.esotericsoftware.spine.SkeletonRenderer;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
+import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
 
 import java.util.Random;
 
@@ -62,6 +63,7 @@ public class Rock {
         //setRegion(gameScreen.getBigRockAtlas().findRegion("rock1056"), 0, 0, 1232, 1232);
         //setOrigin(getWidth() / 2, getHeight() / 2);
         defineRock(11);
+
     }
 
     public void update(float dt, Vector2 playerPos, boolean stopRocks, boolean holdClose) {
@@ -75,17 +77,17 @@ public class Rock {
                 if (b2body.getLinearVelocity().y < 0) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 0));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, 10f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * GdxUtils.getDeltaTimeX1(), 10f * GdxUtils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
             } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y < -5) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -5));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, 10f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * GdxUtils.getDeltaTimeX1(), 10f * GdxUtils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
             } else if (b2body.getPosition().y > playerPos.y + 1900 / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y > 5) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 5));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, -10f), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * GdxUtils.getDeltaTimeX1(), -10f * GdxUtils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
             }
         } else {
             if (b2body.getPosition().y > playerPos.y + (holdClose ? 1200 / FallingMan.PPM : 1900 / FallingMan.PPM)) {
@@ -95,7 +97,7 @@ public class Rock {
                 if (holdClose) {
                     b2body.setLinearVelocity(gameScreen.getPlayer().b2body.getLinearVelocity());
                 } else {
-                    b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x, -10f), b2body.getWorldCenter(), true);
+                    b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * GdxUtils.getDeltaTimeX1(), -10f * GdxUtils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
                 }
             } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -2));
@@ -113,7 +115,7 @@ public class Rock {
         //setRotation((float) Math.toDegrees(b2body.getAngle()));
         skeleton.setPosition(b2body.getPosition().x, b2body.getPosition().y - 850 / FallingMan.PPM);
         //setRegion(getFrame(dt));
-        Gdx.app.log("y speed ", String.valueOf(b2body.getLinearVelocity().y));
+        //Gdx.app.log("y speed ", String.valueOf(b2body.getLinearVelocity().y));
         animationState.update(dt * -b2body.getLinearVelocity().y * 0.15f);
         animationState.apply(skeleton);
     }

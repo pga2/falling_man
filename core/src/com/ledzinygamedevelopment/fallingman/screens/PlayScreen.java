@@ -48,6 +48,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.MapGenUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayScreenTutorialHandler;
@@ -296,13 +297,13 @@ public class PlayScreen implements GameScreen {
             //pc
             //To remove in production version
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f, 0.03f), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f * GdxUtils.getDeltaTimeX1(), 0.03f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 //player.restoreBodyParts();
@@ -352,12 +353,12 @@ public class PlayScreen implements GameScreen {
                     }
                 }
                 if (xTouchedPos < Gdx.graphics.getWidth() / 2f) {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setLeftScreenSideTouched(true);
                     }
                 } else {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f, 0f), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setRightScreenSideTouched(true);
                     }
@@ -510,7 +511,7 @@ public class PlayScreen implements GameScreen {
         for (Rock rock : rocks) {
             if (defaultWindows.size > 0) {
                 if (rock.getB2body().getPosition().y < player.b2body.getPosition().y + 1500 / FallingMan.PPM && rock.getB2body().getLinearVelocity().y < 5) {
-                    rock.getB2body().applyLinearImpulse(new Vector2(0, 3000), rock.getB2body().getWorldCenter(), true);
+                    rock.getB2body().applyLinearImpulse(new Vector2(0 * GdxUtils.getDeltaTimeX1(), 3000 * GdxUtils.getDeltaTimeX1()), rock.getB2body().getWorldCenter(), true);
                 }
                 rock.update(dt, playerPos, true, false);
             } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
@@ -752,6 +753,7 @@ public class PlayScreen implements GameScreen {
 
         //game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         //hud.draw();
+        Gdx.app.log("X speed ", String.valueOf(player.b2body.getLinearVelocity().x));
 
         switch (currentScreen) {
             /*case FallingMan.PLAY_SCREEN:
@@ -820,7 +822,7 @@ public class PlayScreen implements GameScreen {
         //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
 
         String mapName = MapGenUtils.getRandomMap(hud.getWholeDistance());
-        mapName = "maps/maps_5/playscreen_map2.tmx";
+        //mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
         Gdx.app.log("current map: ", mapName);
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);

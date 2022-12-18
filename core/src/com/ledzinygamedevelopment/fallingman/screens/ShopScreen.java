@@ -785,6 +785,7 @@ public class ShopScreen implements GameScreen {
             }
         }
         world.destroyBody(tempPlayer.b2body);
+        tempPlayer.b2body = null;
         for (Body body : tempPlayer.getBodyPartsAll()) {
             world.destroyBody(body);
             body = null;

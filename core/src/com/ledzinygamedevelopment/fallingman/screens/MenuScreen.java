@@ -45,6 +45,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.sprites.windows.RewardCalendarWindow;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
+import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -379,15 +380,15 @@ public class MenuScreen implements GameScreen {
 
 
         if (player.b2body.getPosition().x < 0) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH * 5f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x < FallingMan.MIN_WORLD_WIDTH * 3f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         }
 
         player.update(dt);

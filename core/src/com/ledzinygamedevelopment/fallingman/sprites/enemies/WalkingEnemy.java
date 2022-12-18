@@ -20,6 +20,7 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
+import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
 
 public class WalkingEnemy implements InteractiveObjectInterface {
 
@@ -127,7 +128,7 @@ public class WalkingEnemy implements InteractiveObjectInterface {
             changeDirection = false;
         }
         body.setLinearVelocity(body.getLinearVelocity().y >= -0.1 ? speed : 0, body.getLinearVelocity().y);
-        body.applyLinearImpulse(new Vector2(0, -0.1f), body.getWorldCenter(), false);
+        body.applyLinearImpulse(new Vector2(0 * GdxUtils.getDeltaTimeX1(), -0.1f * GdxUtils.getDeltaTimeX1()), body.getWorldCenter(), false);
         if (touched) {
             touched();
             toRemove = true;
