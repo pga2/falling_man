@@ -17,10 +17,9 @@ import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
-import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
-import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 
 public class WalkingEnemy implements InteractiveObjectInterface {
 
@@ -36,6 +35,8 @@ public class WalkingEnemy implements InteractiveObjectInterface {
     private Fixture fixture;
     private Skeleton skeleton;
     private AnimationState animationState;
+    private boolean soundsPlayed;
+    private long soundId;
 
     public WalkingEnemy(PlayScreen playScreen, World world, float posX, float posY, boolean right) {
         this.world = world;
@@ -128,10 +129,29 @@ public class WalkingEnemy implements InteractiveObjectInterface {
             changeDirection = false;
         }
         body.setLinearVelocity(body.getLinearVelocity().y >= -0.1 ? speed : 0, body.getLinearVelocity().y);
-        body.applyLinearImpulse(new Vector2(0 * GdxUtils.getDeltaTimeX1(), -0.1f * GdxUtils.getDeltaTimeX1()), body.getWorldCenter(), false);
+        body.applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(), -0.1f * Utils.getDeltaTimeX1()), body.getWorldCenter(), false);
         if (touched) {
             touched();
+            playScreen.getAssetManager().getWalkingWarriorSound().stop(soundId);
             toRemove = true;
+        }
+
+        if (playScreen.getSaveData().getSounds()) {
+            float distToSound = 6;
+            if (Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) < distToSound && !soundsPlayed) {
+                playScreen.getAssetManager().getWalkingWarriorSound().stop(soundId);
+                soundId = playScreen.getAssetManager().getWalkingWarriorSound().play();
+                playScreen.getAssetManager().getWalkingWarriorSound().setLooping(soundId, true);
+                soundsPlayed = true;
+            } else if (Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) > distToSound + 2) {
+                playScreen.getAssetManager().getWalkingWarriorSound().stop(soundId);
+                soundsPlayed = false;
+            } else {
+                playScreen.getAssetManager().getWalkingWarriorSound().setVolume(soundId, 1 - Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) / distToSound);
+            }
+            if (playScreen.getDefaultWindows().size > 0) {
+                playScreen.getAssetManager().getWalkingWarriorSound().setVolume(soundId, 0);
+            }
         }
 
         if (body.getLinearVelocity().x < 0 && skeleton.getScaleX() != 1) {

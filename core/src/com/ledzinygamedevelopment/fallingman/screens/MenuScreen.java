@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
@@ -24,13 +23,11 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
-import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
@@ -45,7 +42,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.sprites.windows.RewardCalendarWindow;
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
-import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
@@ -123,7 +120,7 @@ public class MenuScreen implements GameScreen {
 
         assetManager = new GameAssetManager();
         assetManager.loadMenuScreen();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
         //bigRockAtlas = assetManager.getManager().get(assetManager.getMenuScreenBigRock());
@@ -380,15 +377,15 @@ public class MenuScreen implements GameScreen {
 
 
         if (player.b2body.getPosition().x < 0) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH * 5f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x < FallingMan.MIN_WORLD_WIDTH * 3f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         } else {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f * GdxUtils.getDeltaTimeX1(), 0 * GdxUtils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
         }
 
         player.update(dt);
@@ -459,7 +456,7 @@ public class MenuScreen implements GameScreen {
                         break;
                 }
             } else {
-                onePartRoll.flyingRollUpdate(dt, new Vector2(goldAndHighScoresIcons.getX() + goldAndHighScoresIcons.getWidth() / 2, goldAndHighScoresIcons.getY() + goldAndHighScoresIcons.getHeight() / 4), saveData);
+                onePartRoll.flyingRollUpdate(dt, new Vector2(FallingMan.MAX_WORLD_WIDTH / 2f / FallingMan.PPM - onePartRoll.getWidth() / 2, goldAndHighScoresIcons.getY() + 350 / FallingMan.PPM), saveData);
             }
         }
         flyingRolls.removeAll(flyingRollsToRemove, false);

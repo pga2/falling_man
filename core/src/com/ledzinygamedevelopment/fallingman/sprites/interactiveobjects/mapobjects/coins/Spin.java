@@ -120,6 +120,9 @@ public class Spin extends Sprite implements InteractiveObjectInterface {
     }
 
     public void touched() {
+        if (playScreen.getSaveData().getSounds()) {
+            playScreen.getAssetManager().getTouchSpinSound().play();
+        }
         Random random = new Random();
         int amountOfSpins = 1;
         int amountOfAllSpins = 0;

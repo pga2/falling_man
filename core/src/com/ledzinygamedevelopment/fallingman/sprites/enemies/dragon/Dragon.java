@@ -25,10 +25,11 @@ import com.esotericsoftware.spine.SkeletonJson;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 
 public class Dragon extends Sprite implements InteractiveObjectInterface {
 
-    private final DragonFire dragonFire;
+    //private final DragonFire dragonFire;
     private World world;
     private TiledMap map;
     private TiledMapTile tile;
@@ -51,6 +52,8 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
 
     private Skeleton skeleton;
     private AnimationState animationState;
+    private boolean soundsPlayed;
+    private long soundId;
 
     public Dragon(World world, Rectangle bounds, PlayScreen playScreen, boolean rightSideFire) {
         this.world = world;
@@ -83,26 +86,45 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
         skeleton = new Skeleton(dragonSkeletonData);
         skeleton.setPosition(body.getPosition().x, body.getPosition().y - getHeight() / 2);
         animationState = new AnimationState(rockAnimationStateData);
-        animationState.setAnimation(0, "idle fire", true);
+        animationState.setAnimation(0, "attack with fire", true);
 
         if (!rightSideFire) {
             setFlip(true, false);
-            dragonFire = new DragonFire(playScreen, getX() - 112 / FallingMan.PPM - getWidth() / 2, getY() + 47 / FallingMan.PPM);
-            dragonFire.setFlip(true, false);
+            //dragonFire = new DragonFire(playScreen, getX() - 112 / FallingMan.PPM - getWidth() / 2, getY() + 47 / FallingMan.PPM);
+            //dragonFire.setFlip(true, false);
             skeleton.setScaleX(-1);
         } else {
-            dragonFire = new DragonFire(playScreen, getX() + 112 / FallingMan.PPM + getWidth() * 3 / 2, getY() + 47 / FallingMan.PPM);
+            //dragonFire = new DragonFire(playScreen, getX() + 112 / FallingMan.PPM + getWidth() * 3 / 2, getY() + 47 / FallingMan.PPM);
         }
     }
 
     @Override
     public void update(float dt) {
+
+        if (playScreen.getSaveData().getSounds()) {
+            float distToSound = 8.5f;
+            if (Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) < distToSound && !soundsPlayed) {
+                playScreen.getAssetManager().getDragonSound().stop(soundId);
+                soundId = playScreen.getAssetManager().getDragonSound().play();
+                playScreen.getAssetManager().getDragonSound().setLooping(soundId, true);
+                soundsPlayed = true;
+            } else if (Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) > distToSound + 2) {
+                playScreen.getAssetManager().getDragonSound().stop(soundId);
+                soundsPlayed = false;
+            } else {
+                playScreen.getAssetManager().getDragonSound().setVolume(soundId, 1 - Utils.getDistBetweenBodies(body, playScreen.getPlayer().b2body) / distToSound);
+            }
+            if (playScreen.getDefaultWindows().size > 0) {
+                playScreen.getAssetManager().getDragonSound().setVolume(soundId, 0);
+            }
+        }
+
         animationTimer += dt;
         if (animationTimer < 3) {
             if (!fireExist) {
                 setCategoryFilter(FallingMan.INTERACTIVE_TILE_OBJECT_BIT, fireFixture);
                 fireExist = true;
-                animationState.setAnimation(0, "idle fire", true);
+                animationState.setAnimation(0, "attack with fire", true);
             }
         } else if (animationTimer < 6) {
             if (fireExist) {
@@ -191,6 +213,7 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
         this.touched = touched;
         if (touched) {
             toRemove = true;
+            playScreen.getAssetManager().getDragonSound().stop(soundId);
         }
     }
 
@@ -215,8 +238,8 @@ public class Dragon extends Sprite implements InteractiveObjectInterface {
     @Override
     public void draw(Batch batch) {
         //super.draw(batch);
-        if (fireExist)
-            dragonFire.draw(batch);
+        /*if (fireExist)
+            dragonFire.draw(batch);*/
         skeleton.updateWorldTransform();
 
         playScreen.getSkeletonRenderer().draw(batch, skeleton);

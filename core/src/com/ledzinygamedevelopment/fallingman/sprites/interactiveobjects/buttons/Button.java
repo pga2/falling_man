@@ -48,14 +48,24 @@ public abstract class Button extends Sprite {
     }
 
     public void touched() {
-        if (!clicked && gameScreen.getSaveData().getVibrations()) {
-            Gdx.input.vibrate(50);
+        if (!clicked) {
+            if (gameScreen.getSaveData().getVibrations()) {
+                Gdx.input.vibrate(50);
+            }
+            if (gameScreen.getSaveData().getSounds()) {
+                gameScreen.getAssetManager().getClickButtonSound().play();
+            }
         }
     }
 
     public void notTouched() {
-        if (clicked && gameScreen.getSaveData().getVibrations()) {
-            Gdx.input.vibrate(50);
+        if (clicked) {
+            if (gameScreen.getSaveData().getVibrations()) {
+                Gdx.input.vibrate(50);
+            }
+            if (gameScreen.getSaveData().getSounds()) {
+                gameScreen.getAssetManager().getReleaseButtonSound().play();
+            }
         }
     }
 

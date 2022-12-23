@@ -48,7 +48,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
-import com.ledzinygamedevelopment.fallingman.tools.GdxUtils;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.MapGenUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayScreenTutorialHandler;
@@ -159,11 +159,12 @@ public class PlayScreen implements GameScreen {
     private boolean goldX2;
     private boolean newMapAlreadyGenerated = false;
     private SkeletonRenderer skeletonRenderer;
+    private boolean gameOverWindowInvoked;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
         assetManager.loadPlayScreen();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getPlayScreenDefault());
         windowAtlas = assetManager.getManager().get(assetManager.getPlayScreenWindow());
         bigRockAtlas = assetManager.getManager().get(assetManager.getPlayScreenBigRockSpine());
@@ -280,6 +281,7 @@ public class PlayScreen implements GameScreen {
         smokes = new Array<>();
         addSmoke = true;
         allTouchedPoints = new Array<>();
+        gameOverWindowInvoked = false;
         //vibrationTimer = 0;
     }
 
@@ -297,13 +299,13 @@ public class PlayScreen implements GameScreen {
             //pc
             //To remove in production version
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f * GdxUtils.getDeltaTimeX1(), 0.03f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f * Utils.getDeltaTimeX1(), 0.03f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 //player.restoreBodyParts();
@@ -353,12 +355,12 @@ public class PlayScreen implements GameScreen {
                     }
                 }
                 if (xTouchedPos < Gdx.graphics.getWidth() / 2f) {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setLeftScreenSideTouched(true);
                     }
                 } else {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * GdxUtils.getDeltaTimeX1(), 0f * GdxUtils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setRightScreenSideTouched(true);
                     }
@@ -437,7 +439,7 @@ public class PlayScreen implements GameScreen {
         }
         buttons.removeAll(buttonsToRemove, false);
 
-        if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 63) {
+        if (dontStopAtNotStraightWalls && player.b2body.getPosition().y > 66) {
             if (player.b2body.getLinearVelocity().y > -5) {
                 player.b2body.setLinearVelocity(player.b2body.getLinearVelocity().x, -5);
             }
@@ -447,6 +449,12 @@ public class PlayScreen implements GameScreen {
             newMapAlreadyGenerated = true;
         } else if (newMapAlreadyGenerated) {
             newMapAlreadyGenerated = false;
+        }
+
+        if (defaultWindows.size > 0) {
+            gameOverWindowInvoked = true;
+        } else {
+            gameOverWindowInvoked = false;
         }
 
         Array<InteractiveObjectInterface> drawableInteractiveObjectToRemove = new Array<>();
@@ -511,7 +519,7 @@ public class PlayScreen implements GameScreen {
         for (Rock rock : rocks) {
             if (defaultWindows.size > 0) {
                 if (rock.getB2body().getPosition().y < player.b2body.getPosition().y + 1500 / FallingMan.PPM && rock.getB2body().getLinearVelocity().y < 5) {
-                    rock.getB2body().applyLinearImpulse(new Vector2(0 * GdxUtils.getDeltaTimeX1(), 3000 * GdxUtils.getDeltaTimeX1()), rock.getB2body().getWorldCenter(), true);
+                    rock.getB2body().applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(), 3000 * Utils.getDeltaTimeX1()), rock.getB2body().getWorldCenter(), true);
                 }
                 rock.update(dt, playerPos, true, false);
             } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
@@ -579,6 +587,9 @@ public class PlayScreen implements GameScreen {
 
 
         if (gameOver) {
+            if (saveData.getSounds()) {
+                assetManager.getPlayerDieSound().play();
+            }
             if (defaultWindows.size == 0) {
                 goldFromPreviousLife = hud.getGold();
                 distFromPreviousLife = hud.getWholeDistance();
@@ -822,7 +833,8 @@ public class PlayScreen implements GameScreen {
         //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
 
         String mapName = MapGenUtils.getRandomMap(hud.getWholeDistance());
-        //mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
+        mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
+        //mapName = "maps/maps_5/playscreen_map2.tmx";
         Gdx.app.log("current map: ", mapName);
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
@@ -847,6 +859,12 @@ public class PlayScreen implements GameScreen {
             huntingSpider.generateMapSpiderUpdate(playerPosPrevious, mapProp.get("height", Integer.class) * 32);
         }
         hud.setWholeDistance(hud.getWholeDistance() + 1);
+
+        if (hud.getWholeDistance() > saveData.getHighScore()) {
+            if (saveData.getSounds()) {
+                assetManager.getHighScoreSound().play();
+            }
+        }
 
         GsClientUtils.distanceAchievementUnlocker(game.gsClient, hud.getWholeDistance());
         fontMapObjects = new ArrayList<>();
@@ -1115,6 +1133,9 @@ public class PlayScreen implements GameScreen {
     }
 
     public void setGoldX2(boolean goldX2) {
+        if (saveData.getSounds()) {
+            assetManager.getAdGoldSound().play();
+        }
         this.goldX2 = goldX2;
     }
 
@@ -1246,5 +1267,9 @@ public class PlayScreen implements GameScreen {
 
     public TextureAtlas getDragonAtlas() {
         return dragonAtlas;
+    }
+
+    public boolean isGameOverWindowInvoked() {
+        return gameOverWindowInvoked;
     }
 }

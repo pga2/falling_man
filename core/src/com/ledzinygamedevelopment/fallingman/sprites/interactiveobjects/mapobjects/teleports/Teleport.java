@@ -24,6 +24,9 @@ public class Teleport extends InteractiveTileObject {
 
     @Override
     public void touched() {
+        if (playScreen.getSaveData().getSounds()) {
+            playScreen.getAssetManager().getTeleportSound().play();
+        }
         for (TeleportTarget teleportTarget : playScreen.getB2WorldCreator().getTeleportsTarget()) {
             if (teleportTarget.getId() == id) {
                 playScreen.getPlayer().setCurrentStateToTeleport(teleportTarget, this);

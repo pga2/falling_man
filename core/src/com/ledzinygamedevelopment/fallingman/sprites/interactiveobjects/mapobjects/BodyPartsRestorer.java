@@ -70,6 +70,9 @@ public class BodyPartsRestorer extends Sprite implements InteractiveObjectInterf
 
     @Override
     public void touched() {
+        if (playScreen.getSaveData().getSounds()) {
+            playScreen.getAssetManager().getTouchReviveSound().play();
+        }
         playScreen.getPlayer().restoreBodyParts(playScreen.getMapHeight());
         setCategoryFilter(FallingMan.DESTROYED_BIT);
         draw = false;

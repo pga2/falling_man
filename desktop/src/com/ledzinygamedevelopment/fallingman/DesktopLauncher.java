@@ -7,7 +7,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setForegroundFPS(10);
+		config.setForegroundFPS(60);
 		config.setTitle("Stick Man Falling");
 		config.setWindowSizeLimits(720, 1280, 1000, 2000);
 		//config.setForegroundFPS(60);

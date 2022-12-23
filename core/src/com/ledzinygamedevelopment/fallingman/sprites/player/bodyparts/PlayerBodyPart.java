@@ -214,6 +214,9 @@ public abstract class PlayerBodyPart extends Sprite {
     public void setRemoveJoint(boolean removeJoint, Object object) {
         if (object instanceof HuntingSpider || object instanceof Spikes || object instanceof WalkingEnemy || object instanceof Dragon || object instanceof DragonFire || object instanceof Rock) {
             this.removeJoint = removeJoint;
+            if (gameScreen.getSaveData().getSounds()) {
+                gameScreen.getAssetManager().getLoseBodyPartsSound().play();
+            }
         }/* else if (object instanceof SpiderWeb && this instanceof Belly) {
             ((SpiderWeb) object).setTouchedByBelly(true);
         }*/ else {

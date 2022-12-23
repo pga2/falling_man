@@ -120,6 +120,10 @@ public class Coin extends Sprite implements InteractiveObjectInterface {
     }
 
     public void touched() {
+
+        if (playScreen.getSaveData().getSounds()) {
+            playScreen.getAssetManager().getTouchCoinSound().play();
+        }
         Random random = new Random();
         int amountOfGold = random.nextInt(6) + 5;
         //int amountOfAllGold = 0;

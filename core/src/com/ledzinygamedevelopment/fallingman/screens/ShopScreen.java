@@ -107,7 +107,7 @@ public class ShopScreen implements GameScreen {
 
         assetManager = new GameAssetManager();
         assetManager.loadShopScreen();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         //defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         defaultAtlas = assetManager.getManager().get(assetManager.getShopScreenDefault());

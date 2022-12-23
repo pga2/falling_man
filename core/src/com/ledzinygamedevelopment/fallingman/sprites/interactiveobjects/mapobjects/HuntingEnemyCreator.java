@@ -100,6 +100,9 @@ public class HuntingEnemyCreator extends Sprite implements InteractiveObjectInte
 
     @Override
     public void touched() {
+        if (playScreen.getSaveData().getSounds()) {
+            playScreen.getAssetManager().getTouchSpiderSound().play();
+        }
         draw = false;
         for (int i = 0; i < 50; i++) {
             playScreen.getSparks().add(new Spark(playScreen, body.getPosition().x, body.getPosition().y, (byte) 3, false));

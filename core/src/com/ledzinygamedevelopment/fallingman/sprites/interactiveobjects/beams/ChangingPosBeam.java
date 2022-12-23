@@ -90,8 +90,8 @@ public class ChangingPosBeam extends Sprite implements InteractiveObjectInterfac
     @Override
     public void update(float dt) {
         if (playScreen.isGameOver()
-                && (body.getPosition().y > playScreen.getPlayer().b2body.getPosition().y - 1000 / FallingMan.PPM
-                && body.getPosition().y < playScreen.getPlayer().b2body.getPosition().y + 1000 / FallingMan.PPM)) {
+                /*&& (body.getPosition().y > playScreen.getPlayer().b2body.getPosition().y - 1000 / FallingMan.PPM
+                && body.getPosition().y < playScreen.getPlayer().b2body.getPosition().y + 1000 / FallingMan.PPM)*/) {
             toRemove = true;
             playScreen.getB2WorldCreator().getInteractiveTileObjects().removeValue(this, false);
             playScreen.getB2WorldCreator().getB2bodies().removeValue(body, false);

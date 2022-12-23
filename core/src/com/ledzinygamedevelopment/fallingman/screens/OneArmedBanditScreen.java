@@ -119,7 +119,7 @@ public class OneArmedBanditScreen implements GameScreen {
 
         assetManager = new GameAssetManager();
         assetManager.loadOneArmedBandit();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         defaultAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenDefault());
         playerAtlas = assetManager.getManager().get(assetManager.getPlayerSprite());
         baloonAtlas = assetManager.getManager().get(assetManager.getOneArmedBanditScreenBaloon());

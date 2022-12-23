@@ -28,6 +28,7 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.dragon.DragonFire;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveObjectInterface;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 
 public class HuntingSpider implements InteractiveObjectInterface {
 
@@ -139,6 +140,9 @@ public class HuntingSpider implements InteractiveObjectInterface {
 
     @Override
     public void update(float dt) {
+
+
+
         //setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
         //setRotation((float) Math.toDegrees(body.getAngle()));
         if (touched) {

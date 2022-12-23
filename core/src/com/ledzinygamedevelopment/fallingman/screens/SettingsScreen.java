@@ -88,7 +88,7 @@ public class SettingsScreen implements GameScreen{
 
         assetManager = new GameAssetManager();
         assetManager.loadSettingsScreen();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         //defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         defaultAtlas = assetManager.getManager().get(assetManager.getSettingsDefault());
         map = assetManager.getManager().get(assetManager.getInAppPurchasesMap());

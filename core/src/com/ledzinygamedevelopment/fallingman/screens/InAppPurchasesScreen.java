@@ -85,7 +85,7 @@ public class InAppPurchasesScreen implements GameScreen {
 
         assetManager = new GameAssetManager();
         assetManager.loadInAppPurchasesScreen();
-        assetManager.getManager().finishLoading();
+        assetManager.finishLoading();
         //defaultAtlas = assetManager.getManager().get(assetManager.getMenuScreenDefault());
         defaultAtlas = assetManager.getManager().get(assetManager.getInAppPurchasesDefault());
         map = assetManager.getManager().get(assetManager.getInAppPurchasesMap());
