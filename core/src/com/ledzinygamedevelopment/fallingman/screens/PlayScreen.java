@@ -282,6 +282,12 @@ public class PlayScreen implements GameScreen {
         addSmoke = true;
         allTouchedPoints = new Array<>();
         gameOverWindowInvoked = false;
+
+        if (saveData.getMusic()) {
+            assetManager.getPlayScreenMusic().play();
+            assetManager.getPlayScreenMusic().setVolume(0.5f);
+            assetManager.getPlayScreenMusic().setLooping(true);
+        }
         //vibrationTimer = 0;
     }
 
@@ -764,7 +770,7 @@ public class PlayScreen implements GameScreen {
 
         //game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
         //hud.draw();
-        Gdx.app.log("X speed ", String.valueOf(player.b2body.getLinearVelocity().x));
+        //Gdx.app.log("X speed ", String.valueOf(player.b2body.getLinearVelocity().x));
 
         switch (currentScreen) {
             /*case FallingMan.PLAY_SCREEN:
@@ -781,6 +787,9 @@ public class PlayScreen implements GameScreen {
                 dispose();
                 FallingMan.gameScreen = new MenuScreen(game, new Array<Vector2>(), gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
                 FallingMan.currentScreen = FallingMan.MENU_SCREEN;
+                if (saveData.getMusic()) {
+                    game.menuScreenMusic.play();
+                }
                 game.setScreen(FallingMan.gameScreen);
                 break;
         }

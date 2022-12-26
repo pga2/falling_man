@@ -242,6 +242,10 @@ public class ShopScreen implements GameScreen {
                     }
                     changeScreen = true;
                     changeToShopInAppPurchasesScreen = true;
+
+                    if (saveData.getSounds()) {
+                        game.swapScreenSound.play();
+                    }
                 }
             }
             //menuScreen
@@ -255,6 +259,10 @@ public class ShopScreen implements GameScreen {
                         }
                     }
                     changeScreen = true;
+
+                    if (saveData.getSounds()) {
+                        game.swapScreenSound.play();
+                    }
                 }
             }
         } else {

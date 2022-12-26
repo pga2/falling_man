@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
+import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.BaloonButton;
 
 public abstract class Button extends Sprite {
 
@@ -52,7 +53,7 @@ public abstract class Button extends Sprite {
             if (gameScreen.getSaveData().getVibrations()) {
                 Gdx.input.vibrate(50);
             }
-            if (gameScreen.getSaveData().getSounds()) {
+            if (gameScreen.getSaveData().getSounds() && !(this instanceof BaloonButton)) {
                 gameScreen.getAssetManager().getClickButtonSound().play();
             }
         }
@@ -63,7 +64,7 @@ public abstract class Button extends Sprite {
             if (gameScreen.getSaveData().getVibrations()) {
                 Gdx.input.vibrate(50);
             }
-            if (gameScreen.getSaveData().getSounds()) {
+            if (gameScreen.getSaveData().getSounds() && !(this instanceof BaloonButton)) {
                 gameScreen.getAssetManager().getReleaseButtonSound().play();
             }
         }

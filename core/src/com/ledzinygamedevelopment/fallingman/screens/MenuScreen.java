@@ -332,6 +332,10 @@ public class MenuScreen implements GameScreen {
                                 button.setClicked(false);
                             }
                             changeScreen = true;
+
+                            if (saveData.getSounds()) {
+                                game.swapScreenSound.play();
+                            }
                         }
                     }
                 }
@@ -611,6 +615,9 @@ public class MenuScreen implements GameScreen {
                 dispose();
                 FallingMan.gameScreen = new PlayScreen(game, playerVectors, /*rockPos, rockAnimationTimer,*/ gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 FallingMan.currentScreen = FallingMan.PLAY_SCREEN;
+                if (saveData.getMusic()) {
+                    game.menuScreenMusic.stop();
+                }
                 game.setScreen(FallingMan.gameScreen);
                 break;
             case FallingMan.IN_APP_PURCHASES_SCREEN:

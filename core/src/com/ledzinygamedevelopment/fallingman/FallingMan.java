@@ -2,6 +2,8 @@ package com.ledzinygamedevelopment.fallingman;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,6 +45,9 @@ public class FallingMan extends Game implements IGameServiceListener {
     public static PurchaseManager purchaseManager;
     public static byte currentScreen;
     public static GameScreen gameScreen;
+
+    public Sound swapScreenSound;
+    public Music menuScreenMusic;
 
     public static final float SUN_SPEED = 0.005f;
 
@@ -133,6 +138,12 @@ public class FallingMan extends Game implements IGameServiceListener {
         gameScreen = new MenuScreen(this, new Array<Vector2>(), 0, 1, 1, 1, Color.BLACK, true);
 		/*currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
 		gameScreen = new InAppPurchasesScreen(this, null, 0);*/
+        swapScreenSound = Gdx.audio.newSound(Gdx.files.internal("sounds/sounds/20. Swapping screen sound.wav"));
+        menuScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/music/MenuScreen.wav"));
+        if (new SaveData().getMusic()) {
+            menuScreenMusic.play();
+            menuScreenMusic.setLooping(true);
+        }
         setScreen(gameScreen);
     }
 
@@ -143,7 +154,8 @@ public class FallingMan extends Game implements IGameServiceListener {
 
     @Override
     public void dispose() {
-
+        swapScreenSound.dispose();
+        menuScreenMusic.dispose();
         batch.dispose();
     }
 

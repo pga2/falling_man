@@ -104,6 +104,9 @@ public class BaloonButton extends Button {
             super.touched();
             destroyBaloon = true;
             clicked = true;
+            if (gameScreen.getSaveData().getSounds()) {
+                gameScreen.getAssetManager().getDestroyedBalloonSound().play();
+            }
         }
     }
 

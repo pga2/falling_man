@@ -183,6 +183,10 @@ public class SettingsScreen implements GameScreen{
                             button.setClicked(false);
                         }
                         changeScreen = true;
+
+                        if (saveData.getSounds()) {
+                            game.swapScreenSound.play();
+                        }
                     }
                 }
             }

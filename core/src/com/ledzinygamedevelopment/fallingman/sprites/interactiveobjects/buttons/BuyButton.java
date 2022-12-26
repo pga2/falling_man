@@ -135,6 +135,9 @@ public class BuyButton extends Button{
                             saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
                         }
                     }
+                    if (saveData.getSounds()) {
+                        gameScreen.getAssetManager().getSelectBodyPartSound().play();
+                    }
                     break;
                 case BUY:
                     setRegion(gameScreen.getDefaultAtlas().findRegion("buy_button"), 0, 0, 544, 192);
@@ -158,6 +161,9 @@ public class BuyButton extends Button{
                             gameScreen.getPlayer().setTexture(spriteNumber);
                         }
                         saveData.saveCurrentBodyPartSprite(bodyPartName, spriteNumber);
+                        if (saveData.getSounds()) {
+                            gameScreen.getAssetManager().getBuyBodyPartSound().play();
+                        }
                     }
                     break;
 

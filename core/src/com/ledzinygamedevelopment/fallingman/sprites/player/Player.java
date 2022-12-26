@@ -231,7 +231,7 @@ public class Player extends Sprite {
                     for (Body body : getBodyPartsAll()) {
                         body.setTransform(body.getPosition().x + xDistTeleports, body.getPosition().y + yDistTeleports, body.getAngle());
                     }
-
+                    gameScreen.getAssetManager().getTeleportExitSound().play();
                     beforeTeleportation = false;
                 } else if (createSecondStateHeadJoint) {
                     createSecondStateHeadJoint = false;

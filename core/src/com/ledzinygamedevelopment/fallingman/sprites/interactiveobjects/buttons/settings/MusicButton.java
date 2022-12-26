@@ -45,10 +45,13 @@ public class MusicButton extends Button {
             if (musicOn) {
                 saveData.setMusic(false);
                 musicOn = false;
+                gameScreen.getGame().menuScreenMusic.stop();
                 setRegion(gameScreen.getDefaultAtlas().findRegion("music_off"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
             } else {
                 saveData.setMusic(true);
                 musicOn = true;
+                gameScreen.getGame().menuScreenMusic.play();
+                gameScreen.getGame().menuScreenMusic.setLooping(true);
                 setRegion(gameScreen.getDefaultAtlas().findRegion("music_on"), 0, 0, (int) (width * FallingMan.PPM), (int) (height * FallingMan.PPM));
             }
             clicked = false;

@@ -181,6 +181,10 @@ public class InAppPurchasesScreen implements GameScreen {
                         }
                         changeScreen = true;
                         changeToInAppPurchasesScreenSettings = true;
+
+                        if (saveData.getSounds()) {
+                            game.swapScreenSound.play();
+                        }
                     }
                 }
                 //ShopScreen
@@ -198,6 +202,10 @@ public class InAppPurchasesScreen implements GameScreen {
                             button.setClicked(false);
                         }
                         changeScreen = true;
+
+                        if (saveData.getSounds()) {
+                            game.swapScreenSound.play();
+                        }
                     }
                 }
             }

@@ -3,12 +3,10 @@ package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobje
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.InteractiveTileObject;
-import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
 
 public class Teleport extends InteractiveTileObject {
     private PlayScreen playScreen;
@@ -25,7 +23,7 @@ public class Teleport extends InteractiveTileObject {
     @Override
     public void touched() {
         if (playScreen.getSaveData().getSounds()) {
-            playScreen.getAssetManager().getTeleportSound().play();
+            playScreen.getAssetManager().getTeleportEntrySound().play();
         }
         for (TeleportTarget teleportTarget : playScreen.getB2WorldCreator().getTeleportsTarget()) {
             if (teleportTarget.getId() == id) {

@@ -250,6 +250,10 @@ public class OneArmedBanditScreen implements GameScreen {
                             }
                             changeScreen = true;
                             changeToShopScreen = false;
+
+                            if (saveData.getSounds()) {
+                                game.swapScreenSound.play();
+                            }
                         }
                     }
 
@@ -265,6 +269,10 @@ public class OneArmedBanditScreen implements GameScreen {
                             }
                             changeScreen = true;
                             changeToShopScreen = true;
+
+                            if (saveData.getSounds()) {
+                                game.swapScreenSound.play();
+                            }
                         }
                     }
                 }
@@ -664,6 +672,9 @@ public class OneArmedBanditScreen implements GameScreen {
                                         allFiguresTheSame = false;
                                     }
                                 }
+                                if (saveData.getSounds()) {
+                                    assetManager.getSpinSound().stop();
+                                }
                                 //to remove in production version
                                 /*allFiguresTheSame = true;
                                 for (Roll rollFigureCheck : rolls) {
@@ -671,6 +682,9 @@ public class OneArmedBanditScreen implements GameScreen {
                                 }*/
                                 //end
                                 if (allFiguresTheSame) {
+                                    if (saveData.getSounds()) {
+                                        assetManager.getWinOneArmedBanditSound().play();
+                                    }
                                     if (rolls.get(0).getCurrentTextureNumber() == 0 || rolls.get(0).getCurrentTextureNumber() == 1) {
                                         for (int j = 0; j < 3; j++) {
                                             OnePartRoll tempRoll = new OnePartRoll(this, 300 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 24 / FallingMan.PPM, 192 / FallingMan.PPM, 192 / FallingMan.PPM, roll.getCurrentTextureNumber());
