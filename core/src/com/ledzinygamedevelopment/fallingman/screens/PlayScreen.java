@@ -304,7 +304,7 @@ public class PlayScreen implements GameScreen {
         if (!hud.isGameOverStage()) {
             //pc
             //To remove in production version
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
+            /*if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
                 player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
@@ -329,7 +329,7 @@ public class PlayScreen implements GameScreen {
                 for (Body body : player.getBodyPartsAll()) {
                     body.setTransform(2000 / FallingMan.PPM, body.getPosition().y, body.getAngle());
                 }
-            }
+            }*/
             //To remove in production version
 
             //mobile
@@ -393,9 +393,9 @@ public class PlayScreen implements GameScreen {
             }
         } else {
             //To remove in production version
-            if (Gdx.input.isKeyPressed(Input.Keys.R)) {
+            /*if (Gdx.input.isKeyPressed(Input.Keys.R)) {
                 newLife = true;
-            }
+            }*/
             //To remove in production version
             if (Gdx.input.isTouched()) {
                 gameOverScreenTouched = true;
@@ -507,7 +507,7 @@ public class PlayScreen implements GameScreen {
         player.getSparks().removeAll(sparksToRemove, false);
 
         //protects player from falling out of tower
-        if (player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) {
+        if ((player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) && ( !dontStopAtNotStraightWalls || player.b2body.getPosition().y < 66)) {
 
             player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
             for (Body body : player.getBodyPartsAll()) {
@@ -842,8 +842,10 @@ public class PlayScreen implements GameScreen {
         //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
 
         String mapName = MapGenUtils.getRandomMap(hud.getWholeDistance());
-        mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
+        //To remove in production version
+        //mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
         //mapName = "maps/maps_5/playscreen_map2.tmx";
+        //To remove in production version
         Gdx.app.log("current map: ", mapName);
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);

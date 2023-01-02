@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Falling Man</string>
+    <string name="app_name">Stickman Falling: Ragdoll Game</string>
     <!--app_id-->
     <string name="app_id" translatable="false">321181020024</string>
 </resources>

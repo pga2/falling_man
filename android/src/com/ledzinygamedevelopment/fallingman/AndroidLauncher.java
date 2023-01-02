@@ -29,6 +29,8 @@ import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
 import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
+import java.util.Arrays;
+
 import de.golfgl.gdxgamesvcs.GpgsClient;
 
 public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener, ToastCreator {
@@ -109,6 +111,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         adView.loadAd(builder.build());
 
         setContentView(layout);*/
+
     }
 
     @Override
@@ -146,8 +149,8 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     public void loadRewardedVideoAd() {
-        rewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                new AdRequest.Builder().build());
+        rewardedVideoAd.loadAd("ca-app-pub-9634464954224086/7471266108",
+                new AdRequest.Builder()/*.addTestDevice("C2BDD513B705BF3B0D03448EF396DAA4")*/.build());
     }
 
     @Override

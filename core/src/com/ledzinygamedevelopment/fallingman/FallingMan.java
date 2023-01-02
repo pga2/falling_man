@@ -227,9 +227,9 @@ public class FallingMan extends Game implements IGameServiceListener {
         public void handlePurchase(Transaction transaction) {
             //checkTransaction(transaction.getIdentifier());
             SaveData saveData = new SaveData();
-            if (currentScreen == IN_APP_PURCHASES_SCREEN) {
+            /*if (currentScreen == IN_APP_PURCHASES_SCREEN) {
                 gameScreen.addOnePartRolls(transaction.getIdentifier().startsWith("gold") ? 2 : 0, new Vector2(MIN_WORLD_WIDTH / 2f / FallingMan.PPM, MIN_WORLD_HEIGHT / 2f / FallingMan.PPM), transaction.getIdentifier());
-            } else {
+            } else {*/
                 if (transaction.getIdentifier().startsWith("spin")) {
                     saveData.addSpins(Integer.parseInt(transaction.getIdentifier().substring(5)));
                 } else if (transaction.getIdentifier().startsWith("gold")) {
@@ -240,16 +240,12 @@ public class FallingMan extends Game implements IGameServiceListener {
                 } else {
                     throw new NullPointerException("transaction identifier incorrect");
                 }
-            }
+            //}
         }
 
         @Override
         public void handlePurchaseError(Throwable e) {
-            if (e.getMessage().equals("There has been a Problem with your Internet connection. Please try again later")) {
-                e.printStackTrace();
-                // this check is needed because user-cancel is a handlePurchaseError too)
-                // getPlatformResolver().showToast("handlePurchaseError: " + e.getMessage());
-            }
+            e.printStackTrace();
             //throw new GdxRuntimeException(e);
         }
 
