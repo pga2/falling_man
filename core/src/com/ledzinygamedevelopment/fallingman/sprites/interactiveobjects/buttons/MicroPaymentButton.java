@@ -23,6 +23,7 @@ public class MicroPaymentButton extends Button{
     private float basicScale;
     private boolean scaleUp;
     private float currentScale;
+    private Information skuBasicInfo;
 
     public MicroPaymentButton(GameScreen gameScreen, World world, float posX, float posY, float width, float height, String typeOfButton) {
         super(gameScreen, world, posX, posY, width, height);
@@ -35,6 +36,7 @@ public class MicroPaymentButton extends Button{
         font = gameScreen.getAssetManager().getManager().get(gameScreen.getAssetManager().getFont());
         if (FallingMan.purchaseManager != null) {
             skuInfo = FallingMan.purchaseManager.getInformation(typeOfButton);
+            skuBasicInfo = FallingMan.purchaseManager.getInformation(FallingMan.gold_10000);
         }
         if (FallingMan.purchaseManager == null) {
             tempText = "unavailable";
@@ -103,10 +105,10 @@ public class MicroPaymentButton extends Button{
 
             if (skuInfo.getPriceAsDouble() != null) {
                 int extraCoins = 0;
-                if (typeOfPurchase.startsWith("gold")) {
-                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (10000f * (skuInfo.getPriceAsDouble() / 9))) * 100) - 100;
-                } else if (typeOfPurchase.startsWith("spin")) {
-                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (250f * (skuInfo.getPriceAsDouble() / 9))) * 100) - 100;
+                if (typeOfPurchase.startsWith("gold") && skuBasicInfo.getPriceAsDouble() != null) {
+                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (10000f * (skuInfo.getPriceAsDouble() / skuBasicInfo.getPriceAsDouble()))) * 100) - 100;
+                } else if (typeOfPurchase.startsWith("spin") && skuBasicInfo.getPriceAsDouble() != null) {
+                    extraCoins = (int) Math.round((Integer.parseInt(typeOfPurchase.replaceAll("\\D+", "")) / (250f * (skuInfo.getPriceAsDouble() / skuBasicInfo.getPriceAsDouble()))) * 100) - 100;
                 }
                 if (extraCoins != 0) {
                     font.getData().setScale(0.0024f);

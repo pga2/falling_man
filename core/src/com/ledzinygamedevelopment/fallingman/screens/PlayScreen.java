@@ -507,7 +507,7 @@ public class PlayScreen implements GameScreen {
         player.getSparks().removeAll(sparksToRemove, false);
 
         //protects player from falling out of tower
-        if (player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) {
+        if ((player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) && ( !dontStopAtNotStraightWalls || player.b2body.getPosition().y < 66)) {
 
             player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
             for (Body body : player.getBodyPartsAll()) {
@@ -842,7 +842,7 @@ public class PlayScreen implements GameScreen {
         //String mapName = "maps/playscreen_map" + new Random().nextInt(3) + ".tmx";
 
         String mapName = MapGenUtils.getRandomMap(hud.getWholeDistance());
-        // to remove in production version
+        //To remove in production version
         //mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
         //mapName = "maps/maps_5/playscreen_map2.tmx";
         // to remove in production version
