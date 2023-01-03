@@ -156,6 +156,7 @@ public class FallingMan extends Game implements IGameServiceListener {
     public void dispose() {
         swapScreenSound.dispose();
         menuScreenMusic.dispose();
+        purchaseManager.dispose();
         batch.dispose();
     }
 
