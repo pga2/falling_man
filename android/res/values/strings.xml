@@ -3,4 +3,5 @@
     <string name="app_name">Falling Man</string>
     <!--app_id-->
     <string name="app_id" translatable="false">321181020024</string>
+    <string name="app_add_id" translatable="false">ca-app-pub-9634464954224086~9614932615</string>
 </resources>

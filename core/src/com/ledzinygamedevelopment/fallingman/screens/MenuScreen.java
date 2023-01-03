@@ -259,7 +259,7 @@ public class MenuScreen implements GameScreen {
         }
         bigChests = new Array<>();
         if (game.getAdsController() != null)
-        game.getAdsController().showRewardedVideo(true);
+            game.getAdsController().showRewardedVideo(true);
 
         logo = new Sprite();
 
