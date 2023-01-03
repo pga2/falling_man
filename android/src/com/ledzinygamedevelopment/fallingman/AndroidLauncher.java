@@ -17,9 +17,11 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
+/*import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;*/
+/*import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;*/
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.screens.GameScreen;
 import com.ledzinygamedevelopment.fallingman.screens.PlayScreen;
@@ -31,10 +33,10 @@ import com.ledzinygamedevelopment.fallingman.tools.ToastCreator;
 
 import de.golfgl.gdxgamesvcs.GpgsClient;
 
-public class AndroidLauncher extends AndroidApplication implements AdsController, RewardedVideoAdListener, ToastCreator {
+public class AndroidLauncher extends AndroidApplication implements AdsController/*, RewardedVideoAdListener*/, ToastCreator {
     //Window window;
     FallingMan fallingMan;
-    private RewardedVideoAd rewardedVideoAd;
+    /*private RewardedVideoAd rewardedVideoAd;*/
     private boolean adLoaded;
 
     @Override
@@ -74,8 +76,8 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
         initialize(fallingMan, config);
 
-        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        rewardedVideoAd.setRewardedVideoAdListener(this);
+        /*rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        rewardedVideoAd.setRewardedVideoAdListener(this);*/
 
         //loadRewardedVideoAd();
 
@@ -127,7 +129,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 
     @Override
     public boolean showRewardedVideo(boolean loadOnly) {
-        runOnUiThread(new Runnable() {
+        /*runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (rewardedVideoAd.isLoaded()) {
@@ -140,17 +142,17 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
                     adLoaded = false;
                 }
             }
-        });
+        });*/
         return adLoaded;
     }
 
     @Override
     public void loadRewardedVideoAd() {
-        rewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                new AdRequest.Builder().build());
+        /*rewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());*/
     }
 
-    @Override
+    /*@Override
     public void onRewardedVideoAdLoaded() {
         //Toast.makeText(this, "ad loaded", Toast.LENGTH_SHORT).show();
     }
@@ -197,7 +199,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
     @Override
     public void onRewardedVideoCompleted() {
 
-    }
+    }*/
 
 
     @Override
