@@ -3,114 +3,121 @@ default.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-logo
-  rotate: false
-  xy: 1, 1087
-  size: 1000, 948
-  orig: 1000, 948
-  offset: 0, 0
-  index: -1
-bigChest
-  rotate: false
-  xy: 1003, 1075
-  size: 960, 960
-  orig: 960, 960
-  offset: 0, 0
-  index: -1
-spark
-  rotate: false
-  xy: 1965, 2003
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-cloud
-  rotate: false
-  xy: 1, 701
-  size: 960, 384
-  orig: 960, 384
-  offset: 0, 0
-  index: -1
 daily_reward_wide
   rotate: false
-  xy: 1, 159
+  xy: 1, 1479
   size: 1120, 540
   orig: 1120, 540
   offset: 0, 0
   index: -1
-gold_and_high_score_background
+bigChest
   rotate: false
-  xy: 963, 829
-  size: 660, 244
-  orig: 660, 244
+  xy: 1, 517
+  size: 960, 960
+  orig: 960, 960
+  offset: 0, 0
+  index: -1
+logo
+  rotate: false
+  xy: 963, 529
+  size: 1000, 948
+  orig: 1000, 948
   offset: 0, 0
   index: -1
 daily_reward
   rotate: false
-  xy: 1625, 533
+  xy: 1123, 1479
   size: 360, 540
   orig: 360, 540
   offset: 0, 0
   index: -1
-pointing_finger
+cloud
   rotate: false
-  xy: 1123, 227
-  size: 300, 600
-  orig: 300, 600
-  offset: 0, 0
-  index: -1
-smallRoll0
-  rotate: false
-  xy: 1425, 635
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-smallRoll1
-  rotate: false
-  xy: 1425, 441
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-in_app_purchases_button
-  rotate: false
-  xy: 1619, 275
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-smallRoll2
-  rotate: false
-  xy: 1425, 247
-  size: 192, 192
-  orig: 192, 192
-  offset: 0, 0
-  index: -1
-in_app_purchases_button_clicked
-  rotate: false
-  xy: 1619, 17
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-smallRoll3
-  rotate: false
-  xy: 1425, 53
-  size: 192, 192
-  orig: 192, 192
+  xy: 963, 143
+  size: 960, 384
+  orig: 960, 384
   offset: 0, 0
   index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 1123, 1
+  xy: 1925, 303
   size: 112, 224
   orig: 112, 224
   offset: 0, 0
   index: -1
+spark
+  rotate: false
+  xy: 1925, 269
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+in_app_purchases_button
+  rotate: false
+  xy: 1485, 1763
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+in_app_purchases_button_clicked
+  rotate: false
+  xy: 1743, 1763
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+one_armed_bandit_button
+  rotate: false
+  xy: 1485, 1505
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+one_armed_bandit_button_clicked
+  rotate: false
+  xy: 1743, 1505
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+settings_button
+  rotate: false
+  xy: 1, 259
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+gold_and_high_score_background
+  rotate: false
+  xy: 259, 271
+  size: 660, 244
+  orig: 660, 244
+  offset: 0, 0
+  index: -1
+settings_button_clicked
+  rotate: false
+  xy: 259, 13
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+shop_button
+  rotate: false
+  xy: 1, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+shop_button_clicked
+  rotate: false
+  xy: 517, 13
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 touched_point
   rotate: false
-  xy: 1237, 97
+  xy: 775, 141
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -120,17 +127,38 @@ default2.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-settings_button
+pointing_finger
   rotate: false
-  xy: 1, 1
-  size: 256, 256
-  orig: 256, 256
+  xy: 1, 389
+  size: 300, 600
+  orig: 300, 600
   offset: 0, 0
   index: -1
-settings_button_clicked
+smallRoll0
   rotate: false
-  xy: 259, 1
-  size: 256, 256
-  orig: 256, 256
+  xy: 1, 195
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll1
+  rotate: false
+  xy: 303, 797
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll2
+  rotate: false
+  xy: 1, 1
+  size: 192, 192
+  orig: 192, 192
+  offset: 0, 0
+  index: -1
+smallRoll3
+  rotate: false
+  xy: 303, 603
+  size: 192, 192
+  orig: 192, 192
   offset: 0, 0
   index: -1

@@ -29,10 +29,12 @@ import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.InApPurchasesScreenButton;
-import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SettingsScreenButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.InApPurchasesScreenButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.OneArmedBanditScreenButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.ShopScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OnePartRoll;
 import com.ledzinygamedevelopment.fallingman.sprites.player.Player;
@@ -167,8 +169,10 @@ public class MenuScreen implements GameScreen {
         //rocks.add(new Rock(this, world, true, rockTextures));
         generateWindows();
         buttons = new Array<>();
-        buttons.add(new InApPurchasesScreenButton(this, world, FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM - 256 / FallingMan.PPM - 64 / FallingMan.PPM, 0));
-        buttons.add(new SettingsScreenButton(this, world, 64 / FallingMan.PPM, 0));
+        buttons.add(new OneArmedBanditScreenButton(this, world, 83 / FallingMan.PPM, 0));
+        buttons.add(new ShopScreenButton(this, world, (83 / FallingMan.PPM) * 2 + (256 / FallingMan.PPM), 0));
+        buttons.add(new InApPurchasesScreenButton(this, world, (83 / FallingMan.PPM) * 3 + (256 / FallingMan.PPM * 2), 0));
+        buttons.add(new SettingsScreenButton(this, world, (83 / FallingMan.PPM) * 4 + (256 / FallingMan.PPM) * 3, 0));
         //buttons.add(new PlayButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 200 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //buttons.add(new HighScoresButton(this, world, (FallingMan.MIN_WORLD_WIDTH / 2 - 320) / FallingMan.PPM, player.b2body.getPosition().y + 424 / FallingMan.PPM, 640 / FallingMan.PPM, 224 / FallingMan.PPM));
         //player.b2body.applyLinearImpulse(new Vector2(3, 0), player.b2body.getWorldCenter(), true);
@@ -210,8 +214,9 @@ public class MenuScreen implements GameScreen {
         if (saveData.getSaveUpdated()) {
             saveData.setSaveUpdated(false);
             GsClientUtils.saveData(game.gsClient, saveData.getSaveCounter());
+        } else {
+            GsClientUtils.loadData(game.gsClient, this);
         }
-        GsClientUtils.loadData(game.gsClient, this);
 
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(1);
@@ -624,6 +629,12 @@ public class MenuScreen implements GameScreen {
                 dispose();
                 FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, player.getY(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
+                break;
+            case FallingMan.SHOP_SCREEN:
+                FallingMan.gameScreen = new ShopScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
+                FallingMan.currentScreen = FallingMan.SHOP_SCREEN;
+                dispose();
                 game.setScreen(FallingMan.gameScreen);
                 break;
             case FallingMan.SETTINGS_SCREEN:

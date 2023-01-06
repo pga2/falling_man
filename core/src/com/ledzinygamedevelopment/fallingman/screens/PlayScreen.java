@@ -26,6 +26,7 @@ import com.esotericsoftware.spine.SkeletonRenderer;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
+import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.fallingobjects.Rock;
 import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.HuntingSpider;
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
@@ -330,7 +331,7 @@ public class PlayScreen implements GameScreen {
                     body.setTransform(2000 / FallingMan.PPM, body.getPosition().y, body.getAngle());
                 }
             }*/
-            //To remove in production version
+            //end
 
             //mobile
             if (Gdx.input.isTouched()) {
@@ -396,7 +397,7 @@ public class PlayScreen implements GameScreen {
             /*if (Gdx.input.isKeyPressed(Input.Keys.R)) {
                 newLife = true;
             }*/
-            //To remove in production version
+            //end
             if (Gdx.input.isTouched()) {
                 gameOverScreenTouched = true;
                 mouseVector = gamePort.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
@@ -845,7 +846,7 @@ public class PlayScreen implements GameScreen {
         //To remove in production version
         //mapName = "maps/maps_5/playscreen_map" + new Random().nextInt(10) + ".tmx";
         //mapName = "maps/maps_5/playscreen_map2.tmx";
-        // to remove in production version
+        //end
         Gdx.app.log("current map: ", mapName);
         for (Body body : b2WorldCreator.getB2bodies()) {
             world.destroyBody(body);
@@ -1282,5 +1283,24 @@ public class PlayScreen implements GameScreen {
 
     public boolean isGameOverWindowInvoked() {
         return gameOverWindowInvoked;
+    }
+
+    @Override
+    public Array<Cloud> getClouds() {
+        return null;
+    }
+
+    @Override
+    public boolean isChangeScreen() {
+        return false;
+    }
+
+    @Override
+    public void setChangeScreen(boolean changeScreen) {
+    }
+
+    @Override
+    public ExtendViewport getGamePort() {
+        return null;
     }
 }

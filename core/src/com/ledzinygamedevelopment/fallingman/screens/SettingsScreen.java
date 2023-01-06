@@ -26,6 +26,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.MicroPaymentButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.ReturnMenuButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.MusicButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.RateUsButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.settings.SoundsButton;
@@ -175,7 +176,7 @@ public class SettingsScreen implements GameScreen{
                         //currentScreen = FallingMan.MENU_SCREEN;
                         for (int i = 0; i < 3; i++) {
                             for (int j = 0; j < 26; j++) {
-                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, ((-150 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.ONE_ARMED_BANDIT_SCREEN));
+                                clouds.add(new Cloud(this, ((i * 640) - random.nextInt(220)) / FallingMan.PPM, ((-150 * j) - random.nextInt(21)) / FallingMan.PPM, false, FallingMan.IN_APP_PURCHASES_SCREEN));
                             }
                         }
                         for (Button button : buttons) {
@@ -251,7 +252,10 @@ public class SettingsScreen implements GameScreen{
                             cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
                         }
                     }
-                    currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                    if (cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN)
+                        currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
+                    else if (cloud.getScreen() == FallingMan.MENU_SCREEN)
+                        currentScreen = FallingMan.MENU_SCREEN;
                     break outerloop;
                 }
                 cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
@@ -357,10 +361,17 @@ public class SettingsScreen implements GameScreen{
                 FallingMan.currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
                 game.setScreen(FallingMan.gameScreen);
                 break;
+            case FallingMan.MENU_SCREEN:
+                dispose();
+                FallingMan.gameScreen = new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
+                FallingMan.currentScreen = FallingMan.MENU_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
+                break;
         }
     }
 
     private void generateButtons() {
+        buttons.add(new ReturnMenuButton(this, world, (83 / FallingMan.PPM) * 4 + (256 / FallingMan.PPM) * 3, goldAndHighScoresBackground.getY() - 15 / FallingMan.PPM));
         buttons.add(new SoundsButton(this, world, 72 / FallingMan.PPM, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
         buttons.add(new MusicButton(this, world, 72 / FallingMan.PPM * 2 + 384 / FallingMan.PPM, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
         buttons.add(new VibrationsButton(this, world, 72 / FallingMan.PPM * 3 + 384 / FallingMan.PPM * 2, goldAndHighScoresIcons.getY() - 72 / FallingMan.PPM - 384 / FallingMan.PPM, 384 / FallingMan.PPM, 384 / FallingMan.PPM));
@@ -600,5 +611,25 @@ public class SettingsScreen implements GameScreen{
     @Override
     public void setGoldX2(boolean goldX2) {
 
+    }
+
+    @Override
+    public Array<Cloud> getClouds() {
+        return clouds;
+    }
+
+    @Override
+    public boolean isChangeScreen() {
+        return changeScreen;
+    }
+
+    @Override
+    public void setChangeScreen(boolean changeScreen) {
+        this.changeScreen = changeScreen;
+    }
+
+    @Override
+    public ExtendViewport getGamePort() {
+        return gamePort;
     }
 }

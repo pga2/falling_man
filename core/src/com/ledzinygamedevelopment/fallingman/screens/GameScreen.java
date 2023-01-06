@@ -4,9 +4,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.scenes.HUD;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
+import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
@@ -54,5 +56,9 @@ public interface GameScreen extends Screen {
     public void setAddSmoke(boolean addSmoke);
     public TextureAtlas getWindowAtlas();
     public void setGoldX2(boolean goldX2);
+    public Array<Cloud> getClouds();
+    public boolean isChangeScreen();
+    public void setChangeScreen(boolean changeScreen);
+    public ExtendViewport getGamePort();
 
 }

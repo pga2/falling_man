@@ -26,6 +26,8 @@ import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.ReturnMenuButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.SettingsScreenButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.mapobjects.treasurechest.BigChest;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.BaloonButton;
 import com.ledzinygamedevelopment.fallingman.sprites.onearmbandit.OneArmBandit;
@@ -837,6 +839,7 @@ public class OneArmedBanditScreen implements GameScreen {
         buttons = new Array<>();
         spinButton = new SpinButton(this, world, 448 / FallingMan.PPM, gamePort.getWorldHeight() / 2 + 420 / FallingMan.PPM, 544 / FallingMan.PPM, 192 / FallingMan.PPM);
         buttons.add(spinButton);
+        buttons.add(new ReturnMenuButton(this, world, (83 / FallingMan.PPM) * 4 + (256 / FallingMan.PPM) * 3, gamePort.getWorldHeight() - 256 / FallingMan.PPM - 125 / FallingMan.PPM));
         startRolling = false;
         rollingTime = 0;
         Gdx.app.log("world height", String.valueOf(
@@ -1048,6 +1051,26 @@ public class OneArmedBanditScreen implements GameScreen {
     @Override
     public void setGoldX2(boolean goldX2) {
 
+    }
+
+    @Override
+    public Array<Cloud> getClouds() {
+        return clouds;
+    }
+
+    @Override
+    public boolean isChangeScreen() {
+        return changeScreen;
+    }
+
+    @Override
+    public void setChangeScreen(boolean changeScreen) {
+        this.changeScreen = changeScreen;
+    }
+
+    @Override
+    public ExtendViewport getGamePort() {
+        return gamePort;
     }
 
     private void prepareDayAndNightCycle() {

@@ -5,77 +5,91 @@ filter: Nearest,Nearest
 repeat: none
 rate_button
   rotate: false
-  xy: 1, 1545
+  xy: 1, 1663
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
 rate_button_clicked
   rotate: false
-  xy: 1, 1159
+  xy: 1, 1277
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
 tutorial_off
   rotate: false
-  xy: 1, 773
+  xy: 1, 891
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
 tutorial_off_clicked
   rotate: false
-  xy: 1, 387
+  xy: 1, 505
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
 tutorial_on
   rotate: false
-  xy: 1, 1
+  xy: 1, 119
   size: 1296, 384
   orig: 1296, 384
   offset: 0, 0
   index: -1
 gold_and_high_score_background
   rotate: false
-  xy: 1299, 1685
+  xy: 1299, 1803
   size: 660, 244
   orig: 660, 244
   offset: 0, 0
   index: -1
 music_off
   rotate: false
-  xy: 1299, 1299
+  xy: 1299, 1417
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 music_off_clicked
   rotate: false
-  xy: 1299, 913
+  xy: 1299, 1031
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 music_on
   rotate: false
-  xy: 1299, 527
+  xy: 1299, 645
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
 music_on_clicked
   rotate: false
-  xy: 1299, 141
+  xy: 1299, 259
   size: 384, 384
   orig: 384, 384
   offset: 0, 0
   index: -1
+return_menu_button
+  rotate: false
+  xy: 1299, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+return_menu_button_clicked
+  rotate: false
+  xy: 1557, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 1685, 1459
+  xy: 1685, 1577
   size: 112, 224
   orig: 112, 224
   offset: 0, 0

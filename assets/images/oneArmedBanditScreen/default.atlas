@@ -108,16 +108,30 @@ smallRoll2
   orig: 192, 192
   offset: 0, 0
   index: -1
+return_menu_button
+  rotate: false
+  xy: 1739, 781
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+return_menu_button_clicked
+  rotate: false
+  xy: 1739, 523
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 smallRoll3
   rotate: false
-  xy: 1739, 845
+  xy: 1739, 329
   size: 192, 192
   orig: 192, 192
   offset: 0, 0
   index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 1739, 619
+  xy: 1703, 103
   size: 112, 224
   orig: 112, 224
   offset: 0, 0

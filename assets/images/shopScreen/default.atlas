@@ -52,30 +52,44 @@ body_part_backlight
   orig: 256, 256
   offset: 0, 0
   index: -1
+return_menu_button
+  rotate: false
+  xy: 1215, 381
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+return_menu_button_clicked
+  rotate: false
+  xy: 1773, 633
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 select_button
   rotate: false
-  xy: 1215, 439
+  xy: 1473, 439
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 set_sprite_button_clicked
   rotate: false
-  xy: 1215, 245
+  xy: 1473, 245
   size: 544, 192
   orig: 544, 192
   offset: 0, 0
   index: -1
 gold_and_high_score_icons
   rotate: false
-  xy: 1773, 665
+  xy: 1099, 167
   size: 112, 224
   orig: 112, 224
   offset: 0, 0
   index: -1
 price_background_coin
   rotate: false
-  xy: 1887, 739
+  xy: 1213, 229
   size: 150, 150
   orig: 150, 150
   offset: 0, 0

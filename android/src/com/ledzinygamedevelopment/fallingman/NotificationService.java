@@ -48,29 +48,6 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        /*myschedule_executor = Executors.newScheduledThreadPool(1);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel();
-            PendingIntent pendingIntent =
-                    PendingIntent.getActivity(this, 0, intent,
-                            PendingIntent.FLAG_IMMUTABLE);
-            Notification notification =
-                    new Notification.Builder(this, "ForegroundServiceChannel")
-                            .setContentTitle("My notification")
-                            .setContentText("Hello World!")
-                            .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentIntent(pendingIntent)
-                            .setTicker("ticker")
-                            .build();
-            //startForeground(123, notification);
-            myschedule_executor.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    //NotificationHandler notificationHandler = new AndroidNotificationHandler(getApplicationContext());
-                    //notificationHandler.showNotification(new NotificationParameters(12, "this is title", "this is description"));
-                }
-            }, 1, 1, TimeUnit.SECONDS);
-        }*/
 
         return START_STICKY;
     }
@@ -78,31 +55,16 @@ public class NotificationService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        NotificationHandler notificationHandler = new AndroidNotificationHandler(getApplicationContext());
-        notificationHandler.showNotification(new NotificationParameters(12, "Stickman falling is waiting for you", "come back and earn new skins!"));
+        try {
+            NotificationHandler notificationHandler = new AndroidNotificationHandler(getApplicationContext());
+            notificationHandler.showNotification(new NotificationParameters(12, "Stickman falling is waiting for you", "Come back and earn new skins!"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-    /*@Nullable
-    @Override
-    public ComponentName startForegroundService(Intent service) {
-        return super.startForegroundService(service);
-    }*/
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //myschedule_executor.shutdown();
     }
-
-    /*private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    "ForegroundServiceChannel",
-                    "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
-        }
-    }*/
 }

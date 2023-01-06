@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.sprites.Smoke;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu.ReturnMenuButton;
 import com.ledzinygamedevelopment.fallingman.sprites.shopsprites.BodyPartBacklight;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresBackground;
 import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIcons;
@@ -97,6 +98,7 @@ public class ShopScreen implements GameScreen {
     private Sprite background;
     private Array<Sprite> playerBackgrounds;
     private Sprite headHolder;
+    private boolean createReturnMenuButton;
 
     public ShopScreen(FallingMan game, Array<Vector2> cloudsPositionForNextScreen, float screenHeight, boolean changeToShopInAppPurchasesScreen, float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         this.game = game;
@@ -190,6 +192,7 @@ public class ShopScreen implements GameScreen {
         headHolder.setRegion(defaultAtlas.findRegion("head_holder"), 0, 0, playerBackgroundWidth, playerBackgroundHeight);
         headHolder.setPosition(0, players.get(0).b2body.getPosition().y - 20 / FallingMan.PPM);
         headHolder.setScale(160, 1);
+        createReturnMenuButton = true;
     }
 
     @Override
@@ -508,13 +511,16 @@ public class ShopScreen implements GameScreen {
         outerloop:
         for (Cloud cloud : clouds) {
             if (!cloud.isSecondScreen()) {
-                if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+                if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN || cloud.getScreen() == FallingMan.MENU_SCREEN)) {
                     for (Cloud cloudGetPos : clouds) {
                         if (!cloudGetPos.isSecondScreen()) {
                             cloudsPositionForNextScreen.add(new Vector2(cloudGetPos.getX(), cloudGetPos.getY()));
                         }
                     }
-                    currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                    if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN)
+                        currentScreen = FallingMan.ONE_ARMED_BANDIT_SCREEN;
+                    else if(cloud.getScreen() == FallingMan.MENU_SCREEN)
+                        currentScreen = FallingMan.MENU_SCREEN;
                     break outerloop;
                 } else if (cloud.getY() < 0 && cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN) {
                     for (Cloud cloudGetPos : clouds) {
@@ -525,14 +531,14 @@ public class ShopScreen implements GameScreen {
                     currentScreen = FallingMan.IN_APP_PURCHASES_SCREEN;
                     break outerloop;
                 }
-                if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+                if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN || cloud.getScreen() == FallingMan.MENU_SCREEN) {
                     cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
                 } else if (cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN) {
                     cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
                 }
             } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
                 cloudsToRemove.add(cloud);
-            } else if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
+            } else if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN || cloud.getScreen() == FallingMan.MENU_SCREEN) {
                 if (Gdx.graphics.getDeltaTime() < 0.01666) {
                     cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
                 } else {
@@ -673,8 +679,17 @@ public class ShopScreen implements GameScreen {
                 FallingMan.gameScreen = new InAppPurchasesScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), false, gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor());
                 game.setScreen(FallingMan.gameScreen);
                 break;
+            case FallingMan.MENU_SCREEN:
+                dispose();
+                FallingMan.gameScreen = new MenuScreen(game, cloudsPositionForNextScreen, gamePort.getWorldHeight(), gameCamBehindPositionBack, gameCamBehindPositionFront, sunPos, rendererBehind0.getBatch().getColor(), false);
+                FallingMan.currentScreen = FallingMan.MENU_SCREEN;
+                game.setScreen(FallingMan.gameScreen);
+                break;
         }
-
+        if (createReturnMenuButton) {
+            buttons.add(new ReturnMenuButton(this, world, (83 / FallingMan.PPM) * 4 + (256 / FallingMan.PPM) * 3, gamePort.getWorldHeight() - 256 / FallingMan.PPM - 125 / FallingMan.PPM));
+            createReturnMenuButton = false;
+        }
     }
 
 
@@ -1021,6 +1036,26 @@ public class ShopScreen implements GameScreen {
     @Override
     public void setGoldX2(boolean goldX2) {
 
+    }
+
+    @Override
+    public Array<Cloud> getClouds() {
+        return clouds;
+    }
+
+    @Override
+    public boolean isChangeScreen() {
+        return changeScreen;
+    }
+
+    @Override
+    public void setChangeScreen(boolean changeScreen) {
+        this.changeScreen = changeScreen;
+    }
+
+    @Override
+    public ExtendViewport getGamePort() {
+        return gamePort;
     }
 
     private void prepareDayAndNightCycle() {

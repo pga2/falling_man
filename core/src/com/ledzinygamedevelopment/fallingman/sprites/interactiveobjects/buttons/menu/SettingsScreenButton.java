@@ -1,9 +1,10 @@
-package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons;
+package com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.menu;
 
 import com.badlogic.gdx.physics.box2d.World;
 import com.ledzinygamedevelopment.fallingman.FallingMan;
 import com.ledzinygamedevelopment.fallingman.screens.MenuScreen;
 import com.ledzinygamedevelopment.fallingman.sprites.changescreenobjects.Cloud;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
 
 import java.util.Random;
 
