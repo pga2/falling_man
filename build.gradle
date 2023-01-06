@@ -89,7 +89,7 @@ project(":android") {
         api "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
         implementation 'com.google.android.gms:play-services-ads:21.4.0'
         implementation "games.spooky.gdx:gdx-notifications-android:$gdxNotificationsVersion"
-
+        implementation 'androidx.multidex:multidex:2.0.1'
 
     }
 }

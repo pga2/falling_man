@@ -36,9 +36,10 @@ android {
         applicationId "com.ledzinygamedevelopment.fallingman"
         minSdkVersion 19
         targetSdkVersion 33
+        multiDexEnabled true
 
-        versionCode 49
-        versionName "1.049 PROD"
+        versionCode 50
+        versionName "1.050 PROD"
 
     }
     buildTypes {
