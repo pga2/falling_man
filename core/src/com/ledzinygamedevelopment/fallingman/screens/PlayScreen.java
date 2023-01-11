@@ -1,7 +1,6 @@
 package com.ledzinygamedevelopment.fallingman.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,6 +31,7 @@ import com.ledzinygamedevelopment.fallingman.sprites.enemies.huntingspider.Hunti
 import com.ledzinygamedevelopment.fallingman.sprites.font.FontMapObject;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.SpiderWeb;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.Button;
+import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.PauseButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ShowLeaderboardButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.SpinButton;
 import com.ledzinygamedevelopment.fallingman.sprites.interactiveobjects.buttons.ad.WatchAdButton;
@@ -49,12 +49,12 @@ import com.ledzinygamedevelopment.fallingman.sprites.windows.GoldAndHighScoresIc
 import com.ledzinygamedevelopment.fallingman.tools.AdsController;
 import com.ledzinygamedevelopment.fallingman.tools.B2WorldCreator;
 import com.ledzinygamedevelopment.fallingman.tools.GameAssetManager;
-import com.ledzinygamedevelopment.fallingman.tools.Utils;
 import com.ledzinygamedevelopment.fallingman.tools.GsClientUtils;
 import com.ledzinygamedevelopment.fallingman.tools.MapGenUtils;
 import com.ledzinygamedevelopment.fallingman.tools.PlayScreenTutorialHandler;
 import com.ledzinygamedevelopment.fallingman.tools.PlayerVectors;
 import com.ledzinygamedevelopment.fallingman.tools.SaveData;
+import com.ledzinygamedevelopment.fallingman.tools.Utils;
 import com.ledzinygamedevelopment.fallingman.tools.WorldContactListener;
 import com.ledzinygamedevelopment.fallingman.tools.entities.B2SteeringEntityContainer;
 import com.ledzinygamedevelopment.fallingman.tools.entities.B2dSteeringEntity;
@@ -161,6 +161,10 @@ public class PlayScreen implements GameScreen {
     private boolean newMapAlreadyGenerated = false;
     private SkeletonRenderer skeletonRenderer;
     private boolean gameOverWindowInvoked;
+    private boolean pause;
+    private Button pausePlayButton;
+    private boolean dontShowPauseButton;
+    private float dtOnPause;
 
     public PlayScreen(FallingMan game, PlayerVectors playerVectors, /*Vector3 rockPos, float rockAnimationTimer,*/ float gameCamBehindPositionBack, float gameCamBehindPositionFront, float sunPos, Color rendererColor) {
         assetManager = new GameAssetManager();
@@ -237,6 +241,7 @@ public class PlayScreen implements GameScreen {
         //Gdx.app.log("roll y", String.valueOf(roll.getX()));
         //gameCam.zoom = 1.1f;
         hud = new HUD(game.batch, this);
+        pausePlayButton = new PauseButton(this, world, FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM - 256 / 2f / FallingMan.PPM, hud.getHudBackground().getY());
 
         defaultWindows = new Array<>();
         loadNewGame = false;
@@ -250,7 +255,7 @@ public class PlayScreen implements GameScreen {
         newLife = false;
         goldFromPreviousLife = 0;
         distFromPreviousLife = 0;
-        //gameCam.zoom = 12f;
+        //gameCam.zoom = 1.1f;
         dontStopAtNotStraightWalls = true;
         this.sunPos = sunPos;
         rendererBehind0.getBatch().setColor(rendererColor);
@@ -290,6 +295,8 @@ public class PlayScreen implements GameScreen {
             assetManager.getPlayScreenMusic().setLooping(true);
         }
         //vibrationTimer = 0;
+        pause = false;
+        dontShowPauseButton = false;
     }
 
     public TextureAtlas getDefaultAtlas() {
@@ -306,13 +313,13 @@ public class PlayScreen implements GameScreen {
             //pc
             //To remove in production version
             /*if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(dt), 0f * Utils.getDeltaTimeX1(dt)), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 5) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(dt), 0f * Utils.getDeltaTimeX1(dt)), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f * Utils.getDeltaTimeX1(), 0.03f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                player.getBelly().getB2body().applyLinearImpulse(new Vector2(0f * Utils.getDeltaTimeX1(dt), 0.03f * Utils.getDeltaTimeX1(dt)), player.getBelly().getB2body().getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 //player.restoreBodyParts();
@@ -351,7 +358,13 @@ public class PlayScreen implements GameScreen {
                         button.restoreNotClickedTexture();
                     }
                 }
-
+                if (pausePlayButton.mouseOver(mouseVector) && !pausePlayButton.isLocked()) {
+                    pausePlayButton.touched();
+                    pausePlayButton.setClicked(true);
+                } else if (pausePlayButton.isClicked()) {
+                    pausePlayButton.setClicked(false);
+                    pausePlayButton.restoreNotClickedTexture();
+                }
 
                 //moving player
                 float xTouchedPos = Gdx.input.getX();
@@ -362,12 +375,12 @@ public class PlayScreen implements GameScreen {
                     }
                 }
                 if (xTouchedPos < Gdx.graphics.getWidth() / 2f) {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(-0.03f * Utils.getDeltaTimeX1(dt), 0f * Utils.getDeltaTimeX1(dt)), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setLeftScreenSideTouched(true);
                     }
                 } else {
-                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(), 0f * Utils.getDeltaTimeX1()), player.getBelly().getB2body().getWorldCenter(), true);
+                    player.getBelly().getB2body().applyLinearImpulse(new Vector2(0.03f * Utils.getDeltaTimeX1(dt), 0f * Utils.getDeltaTimeX1(dt)), player.getBelly().getB2body().getWorldCenter(), true);
                     for (SpiderWeb spiderWeb : b2WorldCreator.getSpiderWebs()) {
                         spiderWeb.setRightScreenSideTouched(true);
                     }
@@ -390,6 +403,10 @@ public class PlayScreen implements GameScreen {
                         //removeButton(button);
                         button.setClicked(false);
                     }
+                }
+                if (pausePlayButton.isClicked() && !pausePlayButton.isLocked()) {
+                    pausePlayButton.notTouched();
+                    pausePlayButton.setClicked(false);
                 }
             }
         } else {
@@ -434,7 +451,7 @@ public class PlayScreen implements GameScreen {
     }
 
     public void update(float dt) {
-        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+        world.step(dt, 8, 5);
 
         handleInput(dt);
 
@@ -508,7 +525,7 @@ public class PlayScreen implements GameScreen {
         player.getSparks().removeAll(sparksToRemove, false);
 
         //protects player from falling out of tower
-        if ((player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) && ( !dontStopAtNotStraightWalls || player.b2body.getPosition().y < 66)) {
+        if ((player.b2body.getPosition().x < 0 || player.b2body.getPosition().x > 1440 / FallingMan.PPM) && (!dontStopAtNotStraightWalls || player.b2body.getPosition().y < 66)) {
 
             player.b2body.setTransform(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM / 2, player.b2body.getPosition().y, player.b2body.getAngle());
             for (Body body : player.getBodyPartsAll()) {
@@ -523,10 +540,12 @@ public class PlayScreen implements GameScreen {
         hud.update(dt, player.b2body.getPosition().y, gamePort.getWorldHeight());
         Vector2 playerPos = new Vector2(player.b2body.getPosition().x, player.b2body.getPosition().y);
 
+        pausePlayButton.update(dtOnPause, new Vector2(FallingMan.MAX_WORLD_WIDTH / FallingMan.PPM - 170 / FallingMan.PPM, hud.getHudBackground().getY() + 32 / FallingMan.PPM));
+
         for (Rock rock : rocks) {
             if (defaultWindows.size > 0) {
                 if (rock.getB2body().getPosition().y < player.b2body.getPosition().y + 1500 / FallingMan.PPM && rock.getB2body().getLinearVelocity().y < 5) {
-                    rock.getB2body().applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(), 3000 * Utils.getDeltaTimeX1()), rock.getB2body().getWorldCenter(), true);
+                    rock.getB2body().applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(dt), 3000 * Utils.getDeltaTimeX1(dt)), rock.getB2body().getWorldCenter(), true);
                 }
                 rock.update(dt, playerPos, true, false);
             } else if (tutorialOn && playScreenTutorialHandler.isTutorialOn()) {
@@ -617,6 +636,7 @@ public class PlayScreen implements GameScreen {
                 //buttons.add(new PlayAgainButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 850 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
                 //buttons.add(new MenuButton(this, world, 224 / FallingMan.PPM, player.b2body.getPosition().y - 370 / FallingMan.PPM, 992 / FallingMan.PPM, 480 / FallingMan.PPM));
             }
+            dontShowPauseButton = true;
             gameOver = false;
             //dispose();
             //game.setScreen(new PlayScreen(game));
@@ -641,6 +661,7 @@ public class PlayScreen implements GameScreen {
             }
             buttons.removeAll(buttonsToRemoveAfterDeath, false);
             newLife = false;
+            dontShowPauseButton = false;
         } else if (goldX2) {
 
         }
@@ -649,12 +670,16 @@ public class PlayScreen implements GameScreen {
         }
 
         //Gdx.app.log("FPS: ", String.valueOf(Gdx.graphics.getFramesPerSecond()));
-        //Gdx.app.log("delta time ", " " + Gdx.graphics.getDeltaTime());
+        //Gdx.app.log("delta time ", " " + dt);
         //Gdx.app.log("player speed y", " " + player.b2body.getLinearVelocity().y);
     }
 
     @Override
     public void render(float delta) {
+        if (pause) {
+            dtOnPause = delta;
+            delta = 0;
+        }
         update(delta);
 
         //clear screen with black
@@ -662,7 +687,8 @@ public class PlayScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        if (!pause)
+            sunPos += FallingMan.SUN_SPEED * 60 * delta;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -670,20 +696,24 @@ public class PlayScreen implements GameScreen {
 
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{0, 1});
-        gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
-        if (gameCamBehindPositionBack < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
-            gameCamBehindPositionBack += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        if (!pause) {
+            gameCamBehindPositionBack += player.b2body.getLinearVelocity().y / 2 / FallingMan.PPM;
+            if (gameCamBehindPositionBack < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
+                gameCamBehindPositionBack += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+            }
         }
         gameCam.position.y = gameCamBehindPositionBack;
         gameCam.update();
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{2});
-        gameCam.position.y = gameCamBehindPositionBack + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        if (!pause)
+            gameCam.position.y = gameCamBehindPositionBack + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         gameCam.update();
         rendererBehind1.setView(gameCam);
         rendererBehind1.render(new int[]{2});
 
-        gameCamBehindPositionFront += player.b2body.getLinearVelocity().y / 1.5f / FallingMan.PPM;
+        if (!pause)
+            gameCamBehindPositionFront += player.b2body.getLinearVelocity().y / 1.5f / FallingMan.PPM;
         if (gameCamBehindPositionFront < -(mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM / 2) {
             gameCamBehindPositionFront += (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         }
@@ -692,10 +722,12 @@ public class PlayScreen implements GameScreen {
         gameCam.update();
         rendererBehind0.setView(gameCam);
         rendererBehind0.render(new int[]{3});
-        gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
+        if (!pause)
+            gameCam.position.y = gameCamBehindPositionFront + (mapBehind0.getProperties().get("height", Integer.class) * 32) / FallingMan.PPM;
         gameCam.update();
         rendererBehind1.setView(gameCam);
         rendererBehind1.render(new int[]{3});
+
 
         gameCam.position.y = player.b2body.getPosition().y;
         gameCam.update();
@@ -763,6 +795,8 @@ public class PlayScreen implements GameScreen {
         for (Button button : buttons) {
             button.draw(game.batch);
         }
+        if (!dontShowPauseButton)
+            pausePlayButton.draw(game.batch);
         hud.drawHudBackground(game.batch);
         game.batch.end();
 
@@ -1208,13 +1242,15 @@ public class PlayScreen implements GameScreen {
     }
 
     private void prepareDayAndNightCycle() {
+        float ambientLight = 1;
         if (sunPos > 54 && sunPos < 62) {
             rendererBehind0.getBatch().setColor(rendererBehind0.getBatch().getColor().r, (62 - sunPos) / 9 + 0.11111f, (62 - sunPos) / 16 + 0.5f, 1);
             if (sunPos > 59 && sunPos < 62) {
                 rendererBehind0.getBatch().setColor((62 - sunPos) / 3.375f + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
             }
             rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            rayHandler.setAmbientLight((62 - sunPos) / 8 / 1.5f + 0.3333f);
+            ambientLight = (62 - sunPos) / 8 / 1.5f + 0.3333f;
+            rayHandler.setAmbientLight(ambientLight);
             if (sunPos > 58) {
                 turnOnLights = true;
             } else {
@@ -1226,7 +1262,8 @@ public class PlayScreen implements GameScreen {
                 rendererBehind0.getBatch().setColor(1 - ((19.8f - sunPos) / 3.375f) + 0.11111f, rendererBehind0.getBatch().getColor().g, rendererBehind0.getBatch().getColor().b, 1);
             }
             rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            rayHandler.setAmbientLight(((sunPos - 16.8f) / 8 / 1.5f) + 0.3333f);
+            ambientLight = ((sunPos - 16.8f) / 8 / 1.5f) + 0.3333f;
+            rayHandler.setAmbientLight(ambientLight);
             if (sunPos > 20.8f) {
                 turnOnLights = false;
             } else {
@@ -1235,15 +1272,32 @@ public class PlayScreen implements GameScreen {
         } else if (sunPos <= 16.8 || sunPos >= 62) {
             rendererBehind0.getBatch().setColor(0.11111f, 0.11111f, 0.5f, 1);
             rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
-            rayHandler.setAmbientLight(0.3333f);
+            ambientLight = 0.3333f;
+            rayHandler.setAmbientLight(ambientLight);
             turnOnLights = true;
         } else {
-            rayHandler.setAmbientLight(1);
+            ambientLight = 1;
+            rayHandler.setAmbientLight(ambientLight);
             turnOnLights = false;
         }
         if (sunPos > 99) {
             sunPos = FallingMan.MAX_WORLD_HEIGHT / 2f / FallingMan.PPM;
         }
+        /*if (pause) {
+            rendererBehind0.getBatch().setColor(
+                    Math.min(rendererBehind0.getBatch().getColor().r, 0.2f),
+                    Math.min(rendererBehind0.getBatch().getColor().g, 0.2f),
+                    Math.min(rendererBehind0.getBatch().getColor().b, 0.2f),
+                    1);
+            rendererBehind1.getBatch().setColor(rendererBehind0.getBatch().getColor());
+        } else {
+            if (rendererBehindColorBeforePause != null && !(rendererBehind0.getBatch().getColor().equals(rendererBehindColorBeforePause))) {
+                rendererBehind0.getBatch().setColor(rendererBehindColorBeforePause);
+                rendererBehind1.getBatch().setColor(rendererBehindColorBeforePause);
+
+            }
+            rendererBehindColorBeforePause = new Color(rendererBehind0.getBatch().getColor());
+        }*/
     }
 
 
@@ -1297,6 +1351,22 @@ public class PlayScreen implements GameScreen {
 
     @Override
     public void setChangeScreen(boolean changeScreen) {
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    public void setPausePlayButton(Button pausePlayButton) {
+        this.pausePlayButton = pausePlayButton;
+    }
+
+    public OrthographicCamera getGameCam() {
+        return gameCam;
     }
 
     @Override

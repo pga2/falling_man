@@ -283,7 +283,14 @@ public class ShopScreen implements GameScreen {
                                         body = null;
                                     }
                                 }
-                                buttons = new Array<>();
+                                bodyPartBacklights = new Array<>();
+                                Array<Button> buttonsToRemove = new Array<>();
+                                for (Button button : buttons) {
+                                    if (button instanceof BuyButton) {
+                                        buttonsToRemove.add(button);
+                                    }
+                                }
+                                buttons.removeAll(buttonsToRemove, false);
                                 drawPriceBackground = false;
                                 playersInScreenMiddle = new Array<>();
                             }
@@ -401,7 +408,13 @@ public class ShopScreen implements GameScreen {
                             player.setColor(player.getColor().r, player.getColor().g, player.getColor().b, 1);
                         }
                         bodyPartBacklights = new Array<>();
-                        buttons = new Array<>();
+                        Array<Button> buttonsToRemove = new Array<>();
+                        for (Button button : buttons) {
+                            if (button instanceof BuyButton) {
+                                buttonsToRemove.add(button);
+                            }
+                        }
+                        buttons.removeAll(buttonsToRemove, false);
                         drawPriceBackground = false;
                     }
                 }
@@ -434,7 +447,7 @@ public class ShopScreen implements GameScreen {
 
     private void update(float dt) {
         handleInput(dt);
-        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+        world.step(dt, 8, 5);
 
         boolean createPlayerOnRightSide = true;
         boolean createPlayerOnLeftSide = true;
@@ -532,23 +545,23 @@ public class ShopScreen implements GameScreen {
                     break outerloop;
                 }
                 if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN || cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                    cloud.update(dt, 0, 1.2f * 60 * dt);
                 } else if (cloud.getScreen() == FallingMan.IN_APP_PURCHASES_SCREEN) {
-                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                    cloud.update(dt, 0, -1.2f * 60 * dt);
                 }
             } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN) {
                 cloudsToRemove.add(cloud);
             } else if (cloud.getScreen() == FallingMan.ONE_ARMED_BANDIT_SCREEN || cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, -1.2f * 60 * dt);
                 } else {
                     cloud.update(dt, 0, -1.2f);
                 }
             } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
                 cloudsToRemove.add(cloud);
             } else {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, 1.2f * 60 * dt);
                 } else {
                     cloud.update(dt, 0, 1.2f);
                 }
@@ -572,7 +585,7 @@ public class ShopScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        /*sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        /*sunPos += FallingMan.SUN_SPEED * 60 * dt;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();

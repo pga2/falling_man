@@ -90,7 +90,7 @@ public class MicroPaymentButton extends Button{
     }
 
     @Override
-    public void draw(Batch batch) {
+    public void draw(Batch batch, float dt) {
         super.draw(batch);
         onePartRoll.draw(batch);
         if (!tempText.equals("unavailable")) {
@@ -123,14 +123,14 @@ public class MicroPaymentButton extends Button{
                 if (font.getData().scaleX > basicScale * 1.05f) {
                     scaleUp = false;
                 } else {
-                    currentScale = currentScale + (basicScale * 0.004f) * 60 * Gdx.graphics.getDeltaTime();
+                    currentScale = currentScale + (basicScale * 0.004f) * 60 * dt;
                     font.getData().setScale(currentScale);
                 }
             } else {
                 if (font.getData().scaleX < basicScale * 0.95f) {
                     scaleUp = true;
                 } else {
-                    currentScale = currentScale - (basicScale * 0.005f) * 60 * Gdx.graphics.getDeltaTime();
+                    currentScale = currentScale - (basicScale * 0.005f) * 60 * dt;
                     font.getData().setScale(currentScale);
                 }
             }

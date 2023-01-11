@@ -208,7 +208,7 @@ public class SettingsScreen implements GameScreen{
 
     private void update(float dt) {
         handleInput(dt);
-        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+        world.step(dt, 8, 5);
 
         if (gamePort.getWorldHeight() / gamePort.getWorldWidth() > 1.8888f) {
             goldAndHighScoresBackground.update(dt, new Vector2(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2), gamePort.getWorldHeight());
@@ -258,12 +258,12 @@ public class SettingsScreen implements GameScreen{
                         currentScreen = FallingMan.MENU_SCREEN;
                     break outerloop;
                 }
-                cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                cloud.update(dt, 0, 1.2f * 60 * dt);
             } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM) {
                 cloudsToRemove.add(cloud);
             } else {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, -1.2f * 60 * dt);
                 } else {
                     cloud.update(dt, 0, -1.2f);
                 }
@@ -285,7 +285,7 @@ public class SettingsScreen implements GameScreen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        /*sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        /*sunPos += FallingMan.SUN_SPEED * 60 * dt;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();

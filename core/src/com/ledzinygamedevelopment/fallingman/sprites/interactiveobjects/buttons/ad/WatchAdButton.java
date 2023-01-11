@@ -53,13 +53,13 @@ public class WatchAdButton extends Button {
         super.draw(batch);
         /*if (leftAdIcon.isScaleUp()) {
             if (leftAdIcon.getScaleX() < 1.12f) {
-                leftAdIcon.setScale(leftAdIcon.getScaleX() + 0.03f * 60 * Gdx.graphics.getDeltaTime());
+                leftAdIcon.setScale(leftAdIcon.getScaleX() + 0.03f * 60 * dt);
             } else {
                 leftAdIcon.setScaleUp(false);
             }
         } else {
             if (leftAdIcon.getScaleX() > 0.85f) {
-                leftAdIcon.setScale(leftAdIcon.getScaleX() - 0.03f * 60 * Gdx.graphics.getDeltaTime());
+                leftAdIcon.setScale(leftAdIcon.getScaleX() - 0.03f * 60 * dt);
             } else {
                 leftAdIcon.setScaleUp(true);
             }

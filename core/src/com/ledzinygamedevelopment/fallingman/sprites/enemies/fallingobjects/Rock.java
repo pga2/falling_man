@@ -75,17 +75,17 @@ public class Rock {
                 if (b2body.getLinearVelocity().y < 0) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 0));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(), 10f * Utils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(dt), 10f * Utils.getDeltaTimeX1(dt)), b2body.getWorldCenter(), true);
             } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y < -5) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -5));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(), 10f * Utils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(dt), 10f * Utils.getDeltaTimeX1(dt)), b2body.getWorldCenter(), true);
             } else if (b2body.getPosition().y > playerPos.y + 1900 / FallingMan.PPM) {
                 if (b2body.getLinearVelocity().y > 5) {
                     b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, 5));
                 }
-                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(), -10f * Utils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
+                b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(dt), -10f * Utils.getDeltaTimeX1(dt)), b2body.getWorldCenter(), true);
             }
         } else {
             if (b2body.getPosition().y > playerPos.y + (holdClose ? 1200 / FallingMan.PPM : 1900 / FallingMan.PPM)) {
@@ -95,7 +95,7 @@ public class Rock {
                 if (holdClose) {
                     b2body.setLinearVelocity(gameScreen.getPlayer().b2body.getLinearVelocity());
                 } else {
-                    b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(), -10f * Utils.getDeltaTimeX1()), b2body.getWorldCenter(), true);
+                    b2body.applyLinearImpulse(new Vector2(b2body.getLinearVelocity().x * Utils.getDeltaTimeX1(dt), -10f * Utils.getDeltaTimeX1(dt)), b2body.getWorldCenter(), true);
                 }
             } else if (b2body.getPosition().y < playerPos.y + (1100 + radius) / FallingMan.PPM) {
                 b2body.setLinearVelocity(new Vector2(b2body.getLinearVelocity().x, -2));

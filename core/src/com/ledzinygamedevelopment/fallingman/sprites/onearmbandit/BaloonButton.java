@@ -73,7 +73,7 @@ public class BaloonButton extends Button {
     }
 
     public void update(float dt) {
-        posX += speedX * 60 * Gdx.graphics.getDeltaTime();
+        posX += speedX * 60 * dt;
         setPosition(posX, posY);
         if (destroyBaloon)
             setRegion(getFrame(dt));
@@ -122,17 +122,19 @@ public class BaloonButton extends Button {
     @Override
     public void draw(Batch batch) {
         if (addGoldFont && goldFontDrawTimer < 1) {
-            font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-            font.setUseIntegerPositions(false);
-            font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
-            font.setColor(Color.GOLD);
-            font.getData().setScale(0.005f);
-            GlyphLayout glyphLayout = new GlyphLayout(font, "1");
-            goldFontPosY += 0.08;
-            if (goldFontDrawTimer > 0.5) {
-                font.setColor(font.getColor().r, font.getColor().g, font.getColor().b, (1 - goldFontDrawTimer) * 2);
+            if(goldToDraw > 0) {
+                font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                font.setUseIntegerPositions(false);
+                font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
+                font.setColor(Color.GOLD);
+                font.getData().setScale(0.005f);
+                GlyphLayout glyphLayout = new GlyphLayout(font, "1");
+                goldFontPosY += 0.08;
+                if (goldFontDrawTimer > 0.5) {
+                    font.setColor(font.getColor().r, font.getColor().g, font.getColor().b, (1 - goldFontDrawTimer) * 2);
+                }
+                font.draw(batch, String.valueOf(goldToDraw), getX() + getWidth() / 2 - glyphLayout.width / 2, goldFontPosY);
             }
-            font.draw(batch, String.valueOf(goldToDraw), getX() + getWidth() / 2 - glyphLayout.width / 2, goldFontPosY);
         } else if (addGoldFont){
             toRemove = true;
         } else {

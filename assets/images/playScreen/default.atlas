@@ -73,9 +73,37 @@ moving_beam
   orig: 256, 32
   offset: 0, 0
   index: -1
+pause_button
+  rotate: false
+  xy: 1283, 1080
+  size: 144, 144
+  orig: 144, 144
+  offset: 0, 0
+  index: -1
+pause_button_clicked
+  rotate: false
+  xy: 1511, 1246
+  size: 144, 144
+  orig: 144, 144
+  offset: 0, 0
+  index: -1
+play_button
+  rotate: false
+  xy: 1283, 934
+  size: 144, 144
+  orig: 144, 144
+  offset: 0, 0
+  index: -1
+play_button_clicked
+  rotate: false
+  xy: 1283, 788
+  size: 144, 144
+  orig: 144, 144
+  offset: 0, 0
+  index: -1
 spider
   rotate: false
-  xy: 1283, 1096
+  xy: 163, 65
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -89,77 +117,77 @@ smoke1
   index: -1
 smoke2
   rotate: false
-  xy: 1511, 1290
+  xy: 1657, 1290
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke3
   rotate: false
-  xy: 163, 93
+  xy: 293, 93
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke4
   rotate: false
-  xy: 1283, 994
+  xy: 1915, 1439
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke5
   rotate: false
-  xy: 1613, 1290
+  xy: 1429, 1124
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke6
   rotate: false
-  xy: 265, 93
+  xy: 1429, 1022
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke7
   rotate: false
-  xy: 1283, 892
+  xy: 1429, 920
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke8
   rotate: false
-  xy: 1283, 790
+  xy: 1429, 818
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 smoke9
   rotate: false
-  xy: 1915, 1439
+  xy: 1531, 1144
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 loading_animationLB
   rotate: false
-  xy: 1413, 1128
+  xy: 1531, 1046
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationLT
   rotate: false
-  xy: 1511, 1192
+  xy: 1531, 948
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loading_animationRB
   rotate: false
-  xy: 1609, 1192
+  xy: 1531, 850
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -194,56 +222,56 @@ coin1
   index: -1
 coin2
   rotate: false
-  xy: 1511, 1126
+  xy: 1657, 1224
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin3
   rotate: false
-  xy: 1577, 1126
+  xy: 1283, 722
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin4
   rotate: false
-  xy: 1643, 1126
+  xy: 1349, 722
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin5
   rotate: false
-  xy: 1715, 1326
+  xy: 1633, 1158
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin6
   rotate: false
-  xy: 367, 129
+  xy: 1254, 656
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin7
   rotate: false
-  xy: 1283, 724
+  xy: 1254, 590
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 coin8
   rotate: false
-  xy: 1254, 658
+  xy: 1320, 656
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spark_hounting_enemy
   rotate: false
-  xy: 1254, 592
+  xy: 1320, 590
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -264,21 +292,14 @@ spark_coin
   index: -1
 spark_new_life
   rotate: false
-  xy: 1715, 1260
+  xy: 1723, 1224
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin1
   rotate: false
-  xy: 1707, 1194
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-spin2
-  rotate: false
-  xy: 1709, 1128
+  xy: 1699, 1158
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -290,46 +311,60 @@ spark_spin
   orig: 32, 32
   offset: 0, 0
   index: -1
+spin2
+  rotate: false
+  xy: 421, 163
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 spin3
   rotate: false
-  xy: 367, 63
+  xy: 487, 163
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin4
   rotate: false
-  xy: 1349, 724
+  xy: 553, 163
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin5
   rotate: false
-  xy: 1320, 658
+  xy: 619, 163
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin6
   rotate: false
-  xy: 1320, 592
+  xy: 685, 163
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin7
   rotate: false
-  xy: 1027, 388
+  xy: 751, 163
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 spin8
   rotate: false
-  xy: 1027, 322
+  xy: 817, 163
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+game_pause_background
+  rotate: false
+  xy: 1813, 1436
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1
 

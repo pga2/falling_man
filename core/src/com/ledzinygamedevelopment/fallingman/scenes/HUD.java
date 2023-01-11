@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -179,36 +178,39 @@ public class HUD {
         stage.addActor(table);*/
     }
 
-        public Stage getStage () {
-            return stage;
-        }
-
-        public long getPreviousDist () {
-            return previousDist;
-        }
-
-        public void setPreviousDist ( long previousDist){
-            this.previousDist = previousDist;
-        }
-
-        public long getGold () {
-            return gold;
-        }
-
-        public void setGold ( long gold){
-            this.gold = gold;
-        }
-
-        public long getWholeDistance () {
-            return wholeDistance;
-        }
-
-        public boolean isGameOverStage () {
-            return gameOverStage;
-        }
-
-        public void setWholeDistance ( long wholeDistance){
-            this.wholeDistance = wholeDistance;
-        }
-
+    public Stage getStage() {
+        return stage;
     }
+
+    public long getPreviousDist() {
+        return previousDist;
+    }
+
+    public void setPreviousDist(long previousDist) {
+        this.previousDist = previousDist;
+    }
+
+    public long getGold() {
+        return gold;
+    }
+
+    public void setGold(long gold) {
+        this.gold = gold;
+    }
+
+    public long getWholeDistance() {
+        return wholeDistance;
+    }
+
+    public boolean isGameOverStage() {
+        return gameOverStage;
+    }
+
+    public void setWholeDistance(long wholeDistance) {
+        this.wholeDistance = wholeDistance;
+    }
+
+    public Sprite getHudBackground() {
+        return hudBackground;
+    }
+}

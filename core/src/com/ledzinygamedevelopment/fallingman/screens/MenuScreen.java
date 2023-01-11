@@ -372,7 +372,7 @@ public class MenuScreen implements GameScreen {
         //game.getAdsController().showRewardedVideo();
 
         handleInput(dt);
-        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+        world.step(dt, 8, 5);
         rayHandler.update();
 
         //checking if should generate new map
@@ -386,15 +386,15 @@ public class MenuScreen implements GameScreen {
 
 
         if (player.b2body.getPosition().x < 0) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / 300f * Utils.getDeltaTimeX1(dt), 0 * Utils.getDeltaTimeX1(dt)), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(new Random().nextInt(6) / -300f * Utils.getDeltaTimeX1(dt), 0 * Utils.getDeltaTimeX1(dt)), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x > FallingMan.MIN_WORLD_WIDTH * 5f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 3.5f) / 300f * Utils.getDeltaTimeX1(dt), 0 * Utils.getDeltaTimeX1(dt)), player.b2body.getWorldCenter(), true);
         } else if (player.b2body.getPosition().x < FallingMan.MIN_WORLD_WIDTH * 3f / 8 / FallingMan.PPM) {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(7) - 2.5f) / 300f * Utils.getDeltaTimeX1(dt), 0 * Utils.getDeltaTimeX1(dt)), player.b2body.getWorldCenter(), true);
         } else {
-            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f * Utils.getDeltaTimeX1(), 0 * Utils.getDeltaTimeX1()), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2((new Random().nextInt(11) - 5) / 300f * Utils.getDeltaTimeX1(dt), 0 * Utils.getDeltaTimeX1(dt)), player.b2body.getWorldCenter(), true);
         }
 
         player.update(dt);
@@ -427,12 +427,12 @@ public class MenuScreen implements GameScreen {
                     currentScreen = cloud.getScreen();
                     break outerloop;
                 }
-                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM * 60 * Gdx.graphics.getDeltaTime());
+                cloud.update(dt, 0, (player.b2body.getLinearVelocity().y - 120) / FallingMan.PPM * 60 * dt);
             } else if (cloud.getY() > player.getY() + gamePort.getWorldHeight() * 2) {
                 cloudsToRemove.add(cloud);
             } else {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM * 60 * dt);
                 } else {
                     cloud.update(dt, 0, (player.b2body.getLinearVelocity().y + 120) / FallingMan.PPM);
                 }
@@ -490,7 +490,7 @@ public class MenuScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        sunPos += FallingMan.SUN_SPEED * 60 * delta;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -555,7 +555,7 @@ public class MenuScreen implements GameScreen {
         font.setColor(100 / 256f, 80 / 256f, 0 / 256f, 1);
         if (fontScaleUp) {
             if (fontScale < 0.0066f) {
-                fontScale += 0.00004f * 60 * Gdx.graphics.getDeltaTime();
+                fontScale += 0.00004f * 60 * dt;
                 font.getData().setScale(fontScale);
             } else {
                 font.getData().setScale(fontScale);
@@ -564,10 +564,10 @@ public class MenuScreen implements GameScreen {
             }
         } else {
             if (fontScale > 0.0058f) {
-                fontScale -= 0.00004f * 60 * Gdx.graphics.getDeltaTime();
+                fontScale -= 0.00004f * 60 * dt;
                 font.getData().setScale(fontScale);
             } else {
-                fontScale -= 0.00004f * 60 * Gdx.graphics.getDeltaTime();
+                fontScale -= 0.00004f * 60 * dt;
                 font.getData().setScale(fontScale);
                 fontScaleUp = true;
             }

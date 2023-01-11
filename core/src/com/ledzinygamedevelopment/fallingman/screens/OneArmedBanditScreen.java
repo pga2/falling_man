@@ -308,7 +308,7 @@ public class OneArmedBanditScreen implements GameScreen {
 
     public void update(float dt) {
         handleInput(dt);
-        world.step(Gdx.graphics.getDeltaTime(), 8, 5);
+        world.step(dt, 8, 5);
 
         if (startRolling) {
             spinButton.setLocked(true);
@@ -379,23 +379,23 @@ public class OneArmedBanditScreen implements GameScreen {
                     break outerloop;
                 }
                 if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                    cloud.update(dt, 0, 1.2f * 60 * dt);
                 } else if (cloud.getScreen() == FallingMan.SHOP_SCREEN) {
-                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                    cloud.update(dt, 0, -1.2f * 60 * dt);
                 }
             } else if (cloud.getY() < -FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM && cloud.getScreen() == FallingMan.MENU_SCREEN) {
                 cloudsToRemove.add(cloud);
             } else if (cloud.getScreen() == FallingMan.MENU_SCREEN) {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, -1.2f * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, -1.2f * 60 * dt);
                 } else {
                     cloud.update(dt, 0, -1.2f);
                 }
             } else if (cloud.getY() > FallingMan.MAX_WORLD_HEIGHT / FallingMan.PPM * 2) {
                 cloudsToRemove.add(cloud);
             } else {
-                if (Gdx.graphics.getDeltaTime() < 0.01666) {
-                    cloud.update(dt, 0, 1.2f * 60 * Gdx.graphics.getDeltaTime());
+                if (dt < 0.01666) {
+                    cloud.update(dt, 0, 1.2f * 60 * dt);
                 } else {
                     cloud.update(dt, 0, 1.2f);
                 }
@@ -464,7 +464,7 @@ public class OneArmedBanditScreen implements GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //render map
-        /*sunPos += FallingMan.SUN_SPEED * 60 * Gdx.graphics.getDeltaTime();
+        /*sunPos += FallingMan.SUN_SPEED * 60 * dt;
         gameCam.position.y = sunPos;
         //gameCam.position.y = 16.9f;
         gameCam.update();
@@ -646,11 +646,11 @@ public class OneArmedBanditScreen implements GameScreen {
             if (roll.isRollingCurrently()) {
                 int nextRollPosDiffY;
                 if (rollingTime > 1.6f) {
-                    nextRollPosDiffY = (int) ((Math.round((2.05f - (rollingTime < 2 ? rollingTime : 2f)) * 100)) * 60 * Gdx.graphics.getDeltaTime());
+                    nextRollPosDiffY = (int) ((Math.round((2.05f - (rollingTime < 2 ? rollingTime : 2f)) * 100)) * 60 * dt);
                     //nextRollPosDiffY = Math.round(3.1f - rollingTime * 100);
                     rollingTime -= dt / 1.4f;
                 } else {
-                    nextRollPosDiffY = (int) ((random.nextInt(20) + 40) * 60 * Gdx.graphics.getDeltaTime());
+                    nextRollPosDiffY = (int) ((random.nextInt(20) + 40) * 60 * dt);
                 }
                 if (roll.getY() - nextRollPosDiffY / FallingMan.PPM > gamePort.getWorldHeight() / 2 - 360 / FallingMan.PPM) {
                     roll.setPosition(roll.getX(), roll.getY() - nextRollPosDiffY / FallingMan.PPM);

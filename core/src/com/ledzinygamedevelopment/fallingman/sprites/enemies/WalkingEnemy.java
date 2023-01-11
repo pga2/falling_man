@@ -129,7 +129,7 @@ public class WalkingEnemy implements InteractiveObjectInterface {
             changeDirection = false;
         }
         body.setLinearVelocity(body.getLinearVelocity().y >= -0.1 ? speed : 0, body.getLinearVelocity().y);
-        body.applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(), -0.1f * Utils.getDeltaTimeX1()), body.getWorldCenter(), false);
+        body.applyLinearImpulse(new Vector2(0 * Utils.getDeltaTimeX1(dt), -0.1f * Utils.getDeltaTimeX1(dt)), body.getWorldCenter(), false);
         if (touched) {
             touched();
             playScreen.getAssetManager().getWalkingWarriorSound().stop(soundId);

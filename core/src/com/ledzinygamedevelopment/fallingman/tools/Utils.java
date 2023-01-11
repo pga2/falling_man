@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Utils {
 
-    public static float getDeltaTimeX1() {
-        return 60 * Gdx.graphics.getDeltaTime();
+    public static float getDeltaTimeX1(float dt) {
+        return 60 * dt;
     }
 
     public static float getDistBetweenBodies(Body body1, Body body2) {

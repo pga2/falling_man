@@ -60,7 +60,7 @@ public class Spark extends Sprite {
 
     public void update(float dt) {
         existTime += dt;
-        setPosition(getX() + speedX * 60 * Gdx.graphics.getDeltaTime(), getY() + speedY * 60 * Gdx.graphics.getDeltaTime());
+        setPosition(getX() + speedX * 60 * dt, getY() + speedY * 60 * dt);
         if (!(existTime < 0.3f)) {
             setColor(new Color(getColor().r, getColor().g, getColor().b, getColor().a - 0.03f));
             if (getColor().a < 0.03f) {

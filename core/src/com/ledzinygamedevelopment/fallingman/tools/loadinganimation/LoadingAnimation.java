@@ -50,7 +50,7 @@ public class LoadingAnimation {
     }
 
     public void update(float dt) {
-        colorChangeSpeed = 12 * 60 * Gdx.graphics.getDeltaTime();
+        colorChangeSpeed = 12 * 60 * dt;
         switch (colorChangeFirstPart) {
             case LT:
                 if (loadingAnimationParts.get(0).getrColor() <= colorChangeSpeed / 255f ) {
