@@ -34,52 +34,52 @@ public class Prices {
         pricesMap.put("pricePlayer0footR", 0L);
 
         //sprite 1
-        pricesMap.put("pricePlayer1head", BASIC_PRICE_HEAD * 2);
-        pricesMap.put("pricePlayer1belly", BASIC_PRICE_BODY);
-        pricesMap.put("pricePlayer1armL", BASIC_PRICE_ARM);
-        pricesMap.put("pricePlayer1foreArmL", BASIC_PRICE_FOREARM);
-        pricesMap.put("pricePlayer1handL", BASIC_PRICE_HAND);
-        pricesMap.put("pricePlayer1armR", BASIC_PRICE_ARM);
-        pricesMap.put("pricePlayer1foreArmR", BASIC_PRICE_FOREARM);
-        pricesMap.put("pricePlayer1handR", BASIC_PRICE_HAND);
-        pricesMap.put("pricePlayer1thighL", BASIC_PRICE_THIGH);
-        pricesMap.put("pricePlayer1shinL", BASIC_PRICE_SHEEN);
-        pricesMap.put("pricePlayer1footL", BASIC_PRICE_FOOT);
-        pricesMap.put("pricePlayer1thighR", BASIC_PRICE_THIGH);
-        pricesMap.put("pricePlayer1shinR", BASIC_PRICE_SHEEN);
-        pricesMap.put("pricePlayer1footR", BASIC_PRICE_FOOT);
+        pricesMap.put("pricePlayer1head", BASIC_PRICE_HEAD * 2 / 5);
+        pricesMap.put("pricePlayer1belly", BASIC_PRICE_BODY / 5);
+        pricesMap.put("pricePlayer1armL", BASIC_PRICE_ARM / 5);
+        pricesMap.put("pricePlayer1foreArmL", BASIC_PRICE_FOREARM / 5);
+        pricesMap.put("pricePlayer1handL", BASIC_PRICE_HAND / 5);
+        pricesMap.put("pricePlayer1armR", BASIC_PRICE_ARM / 5);
+        pricesMap.put("pricePlayer1foreArmR", BASIC_PRICE_FOREARM / 5);
+        pricesMap.put("pricePlayer1handR", BASIC_PRICE_HAND / 5);
+        pricesMap.put("pricePlayer1thighL", BASIC_PRICE_THIGH / 5);
+        pricesMap.put("pricePlayer1shinL", BASIC_PRICE_SHEEN / 5);
+        pricesMap.put("pricePlayer1footL", BASIC_PRICE_FOOT / 5);
+        pricesMap.put("pricePlayer1thighR", BASIC_PRICE_THIGH / 5);
+        pricesMap.put("pricePlayer1shinR", BASIC_PRICE_SHEEN / 5);
+        pricesMap.put("pricePlayer1footR", BASIC_PRICE_FOOT / 5);
 
         //sprite 2
-        pricesMap.put("pricePlayer2head", BASIC_PRICE_HEAD);
-        pricesMap.put("pricePlayer2belly", BASIC_PRICE_BODY * 2);
-        pricesMap.put("pricePlayer2armL", BASIC_PRICE_ARM);
-        pricesMap.put("pricePlayer2foreArmL", BASIC_PRICE_FOREARM * 3);
-        pricesMap.put("pricePlayer2handL", BASIC_PRICE_HAND);
-        pricesMap.put("pricePlayer2armR", BASIC_PRICE_ARM);
-        pricesMap.put("pricePlayer2foreArmR", BASIC_PRICE_FOREARM * 3);
-        pricesMap.put("pricePlayer2handR", BASIC_PRICE_HAND);
-        pricesMap.put("pricePlayer2thighL", BASIC_PRICE_THIGH);
-        pricesMap.put("pricePlayer2shinL", BASIC_PRICE_SHEEN * 3);
-        pricesMap.put("pricePlayer2footL", BASIC_PRICE_FOOT);
-        pricesMap.put("pricePlayer2thighR", BASIC_PRICE_THIGH);
-        pricesMap.put("pricePlayer2shinR", BASIC_PRICE_SHEEN * 3);
-        pricesMap.put("pricePlayer2footR", BASIC_PRICE_FOOT);
+        pricesMap.put("pricePlayer2head", BASIC_PRICE_HEAD / 5);
+        pricesMap.put("pricePlayer2belly", BASIC_PRICE_BODY * 2 / 5);
+        pricesMap.put("pricePlayer2armL", BASIC_PRICE_ARM / 5);
+        pricesMap.put("pricePlayer2foreArmL", BASIC_PRICE_FOREARM * 3 / 5);
+        pricesMap.put("pricePlayer2handL", BASIC_PRICE_HAND / 5);
+        pricesMap.put("pricePlayer2armR", BASIC_PRICE_ARM / 5);
+        pricesMap.put("pricePlayer2foreArmR", BASIC_PRICE_FOREARM * 3 / 5);
+        pricesMap.put("pricePlayer2handR", BASIC_PRICE_HAND / 5);
+        pricesMap.put("pricePlayer2thighL", BASIC_PRICE_THIGH / 5);
+        pricesMap.put("pricePlayer2shinL", BASIC_PRICE_SHEEN * 3 / 5);
+        pricesMap.put("pricePlayer2footL", BASIC_PRICE_FOOT / 5);
+        pricesMap.put("pricePlayer2thighR", BASIC_PRICE_THIGH / 5);
+        pricesMap.put("pricePlayer2shinR", BASIC_PRICE_SHEEN * 3 / 5);
+        pricesMap.put("pricePlayer2footR", BASIC_PRICE_FOOT / 5);
 
         //sprite 3
-        pricesMap.put("pricePlayer3head", BASIC_PRICE_HEAD * 2);
-        pricesMap.put("pricePlayer3belly", BASIC_PRICE_BODY * 6);
-        pricesMap.put("pricePlayer3armL", BASIC_PRICE_ARM * 2);
-        pricesMap.put("pricePlayer3foreArmL", BASIC_PRICE_FOREARM * 2);
-        pricesMap.put("pricePlayer3handL", BASIC_PRICE_HAND * 3);
-        pricesMap.put("pricePlayer3armR", BASIC_PRICE_ARM * 2);
-        pricesMap.put("pricePlayer3foreArmR", BASIC_PRICE_FOREARM * 2);
-        pricesMap.put("pricePlayer3handR", BASIC_PRICE_HAND * 3);
-        pricesMap.put("pricePlayer3thighL", BASIC_PRICE_THIGH * 2);
-        pricesMap.put("pricePlayer3shinL", BASIC_PRICE_SHEEN * 2);
-        pricesMap.put("pricePlayer3footL", BASIC_PRICE_FOOT * 3);
-        pricesMap.put("pricePlayer3thighR", BASIC_PRICE_THIGH * 2);
-        pricesMap.put("pricePlayer3shinR", BASIC_PRICE_SHEEN * 2);
-        pricesMap.put("pricePlayer3footR", BASIC_PRICE_FOOT * 3);
+        pricesMap.put("pricePlayer3head", BASIC_PRICE_HEAD);
+        pricesMap.put("pricePlayer3belly", BASIC_PRICE_BODY * 3);
+        pricesMap.put("pricePlayer3armL", BASIC_PRICE_ARM);
+        pricesMap.put("pricePlayer3foreArmL", BASIC_PRICE_FOREARM);
+        pricesMap.put("pricePlayer3handL", BASIC_PRICE_HAND * 2);
+        pricesMap.put("pricePlayer3armR", BASIC_PRICE_ARM);
+        pricesMap.put("pricePlayer3foreArmR", BASIC_PRICE_FOREARM);
+        pricesMap.put("pricePlayer3handR", BASIC_PRICE_HAND * 2);
+        pricesMap.put("pricePlayer3thighL", BASIC_PRICE_THIGH);
+        pricesMap.put("pricePlayer3shinL", BASIC_PRICE_SHEEN);
+        pricesMap.put("pricePlayer3footL", BASIC_PRICE_FOOT * 2);
+        pricesMap.put("pricePlayer3thighR", BASIC_PRICE_THIGH);
+        pricesMap.put("pricePlayer3shinR", BASIC_PRICE_SHEEN);
+        pricesMap.put("pricePlayer3footR", BASIC_PRICE_FOOT * 2);
 
         //sprite 4
         pricesMap.put("pricePlayer4head", BASIC_PRICE_HEAD * 8);
